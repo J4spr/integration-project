@@ -1,0 +1,13 @@
+# Use Maven with Amazon Corretto 21
+image: maven:3.9-amazoncorretto-21
+
+# We only need one stage now
+stages:
+  - build
+
+# The Build Stage: Just compile the code
+build_project:
+  stage: build
+  script:
+    - echo "Checking if the JavaFX code compiles..."
+    - mvn clean compile
