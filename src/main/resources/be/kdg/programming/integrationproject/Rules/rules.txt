@@ -1,0 +1,86 @@
+===== GAME OVERVIEW =====
+Players: 2
+Goal: Earn the most buttons by the end of the game by building the most complete 9x9 quilt board.
+
+
+===== COMPONENTS =====
+- 1 central time board (circular track with 53 spaces, numbered 0 to 52)
+- 2 player quilt boards (9x9 grid each)
+- 1 neutral token (small leather piece marker)
+- 2 player tokens (placed on the time board)
+- ~33 patch tiles (each with a button cost, time cost, and button income)
+- Buttons (currency) — each player starts with 5 buttons
+- Special 1x1 leather patches (placed on specific time board spaces)
+
+
+===== SETUP =====
+1. Place all patches in a random circle around the time board.
+2. Find the smallest patch (the 2x2 patch) and place the neutral token directly to its left.
+3. Each player places their token on space 0 of the time board.
+4. Each player receives 5 buttons.
+5. Randomly determine the first player.
+
+
+===== TURN STRUCTURE =====
+On your turn, you MUST choose one of two actions:
+
+-- Action 1: Advance & Receive Buttons --
+- Move your token to the space directly in front of the other player's token (one space ahead of them).
+- Receive 1 button for each space you moved.
+- The other player then takes their turn.
+
+-- Action 2: Take a Patch --
+- You may only choose from the first 3 patches clockwise from the neutral token.
+- Pay the patch's button cost to the bank.
+- Move your token forward on the time board by the patch's time cost.
+- Place the patch on your quilt board (it can be rotated and flipped freely).
+- Move the neutral token to the space where the chosen patch was.
+- If you pass or land on a leather patch space, take that leather patch immediately and place it on your quilt board.
+
+
+===== TIME BOARD & TURN ORDER =====
+- The player whose token is furthest back always goes next.
+- If tokens are on the same space, the player on top goes next.
+- Passing over or landing on button income spaces (marked with a button icon): receive buttons equal to your current button income (sum of button icons on all patches placed on your quilt board).
+- Passing over or landing on leather patch spaces: take the 1x1 leather patch tile and place it anywhere empty on your quilt board.
+
+
+===== PLACING PATCHES ON THE QUILT BOARD =====
+- Each patch must be placed orthogonally within the 9x9 grid.
+- Patches cannot overlap.
+- Patches cannot be placed outside the grid.
+- Patches can be rotated (90, 180, 270 degrees) and flipped (mirrored).
+- Leather patches are 1x1 and always fit anywhere that is empty.
+
+
+===== SPECIAL TILE — 7x7 BONUS =====
+- A special tile is awarded to the first player to completely fill a 7x7 area on their quilt board.
+- Worth +7 points at the end of the game.
+- Only one player can earn this tile.
+
+
+===== GAME END =====
+- The game ends when both players have reached space 52 (the last space) on the time board.
+- Players cannot move past space 52.
+
+
+===== SCORING =====
+Calculate each player's final score:
+
+  Each button remaining          +1 per button
+  Each empty square on the board -2 per square
+  7x7 bonus tile (if earned)     +7 points
+
+The player with the highest score wins.
+Tiebreaker: the player who reached space 52 first wins.
+
+
+===== KEY CONSTANTS =====
+TIME_BOARD_SIZE      = 53
+QUILT_BOARD_SIZE     = 9
+STARTING_BUTTONS     = 5
+ADVANCE_BUTTON_RATE  = 1   (per space moved)
+EMPTY_SQUARE_PENALTY = -2
+SEVEN_BY_SEVEN_BONUS = 7
+PATCH_CHOICES        = 3   (from neutral token)
+LEATHER_PATCH_SIZE   = 1   (1x1)

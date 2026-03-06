@@ -6,7 +6,8 @@ public enum Difficulty {
     HARD("hard");
 
     private String difficulty;
-    private Difficulty(String difficulty){
+
+    private Difficulty(String difficulty) {
         this.difficulty = difficulty;
     }
 
