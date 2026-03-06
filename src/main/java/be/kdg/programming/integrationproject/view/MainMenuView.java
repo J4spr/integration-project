@@ -7,6 +7,9 @@ import javafx.scene.layout.GridPane;
 
 public class MainMenuView {
     private Button startButton;
+    private Button rulesButton;
+    private Button settingsButton;
+
     private GridPane pane;
 
     public MainMenuView() {
@@ -15,21 +18,33 @@ public class MainMenuView {
     }
 
     private void initialiseNodes() {
-        Label label = new Label("Start");
+        pane = new GridPane();
 
-
+        startButton = new Button("Start");
+        rulesButton = new Button("Rules");
+        settingsButton = new Button("Settings");
     }
 
     private void layoutNodes() {
-        pane.setPadding(new Insets(15));
+        pane.setPadding(new Insets(30));
+        pane.setVgap(10);
 
+        pane.add(startButton, 0, 0);
+        pane.add(rulesButton, 0, 1);
+        pane.add(settingsButton, 0, 2);
     }
 
     public Button getStartButton() {
-        return this.startButton;
+        return startButton;
+    }
+    public Button getRulesButton() {
+        return rulesButton;
+    }
+    public Button getSettingsButton(){
+        return settingsButton;
+    }
+    public GridPane getPane() {
+        return pane;
     }
 
-    public GridPane getPane() {
-        return this.pane;
-    }
 }
