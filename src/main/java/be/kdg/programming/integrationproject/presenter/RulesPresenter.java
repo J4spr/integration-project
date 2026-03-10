@@ -2,6 +2,13 @@ package be.kdg.programming.integrationproject.presenter;
 
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.RulesView;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -10,7 +17,11 @@ import java.nio.charset.StandardCharsets;
 
 public class RulesPresenter {
     private final RulesView view;
-    private final MainMenuView mainMenuView; // For navigation back
+    private final MainMenuView mainMenuView;
+    private Image image;
+    private BackgroundImage backgroundImage;
+    private BackgroundSize backgroundSize;
+
 
     public RulesPresenter(RulesView view, MainMenuView mainMenuView) {
         this.view = view;
@@ -40,8 +51,7 @@ public class RulesPresenter {
 
     private void addEventHandlers() {
         view.getBtnBack().setOnAction(event -> {
-            // Logic to switch back to MainMenuView
-//            view.getScene().setRoot(mainMenuView);
+            view.getPane().getScene().setRoot(mainMenuView.getPane());
         });
     }
 }
