@@ -23,10 +23,8 @@ public class MainMenuPresenter {
         });
         view.getRulesButton().setOnAction(event -> {
             rv = new RulesView();
-            // RulesPresenter handles the loading of text and the back button logic
             new RulesPresenter(rv, view);
 
-            // Switch the root to the RulesView's pane
             view.getPane().getScene().setRoot(rv.getPane());
         });
         view.getSettingsButton().setOnAction(new EventHandler<ActionEvent>() {
