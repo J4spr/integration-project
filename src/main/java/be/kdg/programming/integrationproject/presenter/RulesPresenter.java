@@ -6,8 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 
 import java.io.BufferedReader;
@@ -32,7 +30,7 @@ public class RulesPresenter {
 
     private void loadRules() {
         // Use a leading slash to start from the root of the resources folder
-        try (InputStream is = getClass().getResourceAsStream("/be/kdg/programming/integrationproject/rules.txt");
+        try (InputStream is = getClass().getResourceAsStream("/rules.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
 
             StringBuilder sb = new StringBuilder();
@@ -50,8 +48,11 @@ public class RulesPresenter {
     }
 
     private void addEventHandlers() {
-        view.getBtnBack().setOnAction(event -> {
-            view.getPane().getScene().setRoot(mainMenuView.getPane());
+        view.getBtnBack().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                view.getPane().getScene().setRoot(mainMenuView.getPane());
+            }
         });
     }
 }
