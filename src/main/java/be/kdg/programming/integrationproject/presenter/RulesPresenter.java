@@ -41,7 +41,7 @@ public class RulesPresenter {
     private void addEventHandlers() {
         view.getBtnBack().setOnAction(event -> {
             // Logic to switch back to MainMenuView
-            view.getScene().setRoot(mainMenuView);
+//            view.getScene().setRoot(mainMenuView);
         });
     }
 }
