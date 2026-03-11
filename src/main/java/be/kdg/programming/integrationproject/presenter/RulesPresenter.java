@@ -28,6 +28,15 @@ public class RulesPresenter {
         addEventHandlers();
     }
 
+    private void addEventHandlers() {
+        view.getBtnBack().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                view.getPane().getScene().setRoot(mainMenuView.getPane());
+            }
+        });
+    }
+
     private void loadRules() {
         // Use a leading slash to start from the root of the resources folder
         try (InputStream is = getClass().getResourceAsStream("/rules.txt");
@@ -47,12 +56,5 @@ public class RulesPresenter {
         }
     }
 
-    private void addEventHandlers() {
-        view.getBtnBack().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                view.getPane().getScene().setRoot(mainMenuView.getPane());
-            }
-        });
-    }
+
 }
