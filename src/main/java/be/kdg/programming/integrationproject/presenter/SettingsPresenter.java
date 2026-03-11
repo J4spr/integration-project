@@ -21,6 +21,7 @@ public class SettingsPresenter {
             @Override
             public void handle(ActionEvent event) {
                 Stage stage = (Stage) view.getPane().getScene().getWindow();
+                stage.setFullScreenExitHint("");
                 stage.setFullScreen(!stage.isFullScreen());
             }
         });
