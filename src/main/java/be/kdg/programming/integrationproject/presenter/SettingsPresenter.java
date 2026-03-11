@@ -4,6 +4,7 @@ import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.SettingsView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 public class SettingsPresenter {
@@ -22,6 +23,7 @@ public class SettingsPresenter {
             public void handle(ActionEvent event) {
                 Stage stage = (Stage) view.getPane().getScene().getWindow();
                 stage.setFullScreenExitHint("");
+                stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
                 stage.setFullScreen(!stage.isFullScreen());
             }
         });
