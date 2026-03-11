@@ -8,11 +8,12 @@ import javafx.scene.layout.*;
 
 public class SettingsView {
     private Button fullscreenBtn;
-    private StackPane pane;
+    private VBox pane;
     private Image image;
     private BackgroundImage backgroundImage;
     private BackgroundSize backgroundSize;
     private Button btnBack;
+    private StackPane sp;
 
     public SettingsView() {
         btnBack = new Button("Go back");
@@ -25,20 +26,24 @@ public class SettingsView {
     }
 
     private void initialiseNodes() {
-        this.pane = new StackPane();
+        this.sp = new StackPane();
+        this.pane = new VBox();
         this.fullscreenBtn = new Button("Toggle Fullscreen");
-        pane.setBackground(new Background(backgroundImage));
+        sp.setBackground(new Background(backgroundImage));
         btnBack = new Button("Go back");
-        pane.getChildren().addAll(btnBack, fullscreenBtn);
+        pane.getChildren().add(fullscreenBtn);
+        sp.getChildren().add(pane);
+        sp.getChildren().add(btnBack);
 
     }
 
     private void layoutNodes() {
         StackPane.setAlignment(btnBack, Pos.TOP_LEFT);
-        StackPane.setAlignment(fullscreenBtn, Pos.CENTER);
+        pane.setAlignment(Pos.CENTER);
         btnBack.setStyle("-fx-margin: 10");
-        pane.setPadding(new Insets(15));
-
+        sp.setPadding(new Insets(15));
+        pane.setPadding(new Insets(20));
+        pane.setSpacing(20);
     }
 
     public Button getBtnBack() {
@@ -51,6 +56,6 @@ public class SettingsView {
     }
 
     public StackPane getPane() {
-        return this.pane;
+        return this.sp;
     }
 }

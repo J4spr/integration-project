@@ -7,37 +7,37 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 public class MainMenuPresenter {
-    private final MainMenuView view;
+    private final MainMenuView mmv;
     private RulesView rv;
     private SettingsView sv;
 
 
     public MainMenuPresenter(MainMenuView view) {
-        this.view = view;
+        this.mmv = view;
         addEventHandlers();
     }
 
     private void addEventHandlers() {
-        view.getStartButton().setOnAction(new EventHandler<ActionEvent>() {
+        mmv.getStartButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 //                TODO remove this when it is ready for production
                 System.out.println("Start pressed");
             }
         });
-        view.getRulesButton().setOnAction(event -> {
+        mmv.getRulesButton().setOnAction(event -> {
             rv = new RulesView();
-            new RulesPresenter(rv, view);
+            new RulesPresenter(rv, mmv);
 
-            view.getPane().getScene().setRoot(rv.getPane());
+            mmv.getPane().getScene().setRoot(rv.getPane());
         });
-        view.getSettingsButton().setOnAction(new EventHandler<ActionEvent>() {
+        mmv.getSettingsButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 sv = new SettingsView();
-                new SettingsPresenter(sv, view);
+                new SettingsPresenter(sv, mmv);
                 System.out.println("Settings pressed");
-                view.getPane().getScene().setRoot(sv.getPane());
+                mmv.getPane().getScene().setRoot(sv.getPane());
             }
         });
     }
