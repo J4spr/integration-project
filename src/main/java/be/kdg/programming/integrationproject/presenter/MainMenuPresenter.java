@@ -4,6 +4,8 @@ import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.RulesView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import be.kdg.programming.integrationproject.view.StartMenuView;
+import be.kdg.programming.integrationproject.presenter.StartMenuPresenter;
 
 public class MainMenuPresenter {
     private final MainMenuView view;
@@ -14,12 +16,12 @@ public class MainMenuPresenter {
         addEventHandlers();
     }
     private void addEventHandlers() {
-        view.getStartButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-//                TODO remove this when it is ready for production
-                System.out.println("Start pressed");
-            }
+        view.getStartButton().setOnAction(event -> {
+
+            StartMenuView startMenuView = new StartMenuView();
+            new StartMenuPresenter(startMenuView, view);
+
+            view.getPane().getScene().setRoot(startMenuView.getPane());
         });
         view.getRulesButton().setOnAction(event -> {
             rv = new RulesView();
