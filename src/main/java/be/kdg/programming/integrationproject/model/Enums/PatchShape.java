@@ -4,6 +4,7 @@ public enum PatchShape {
     SMALL(new boolean[][]{
             {true, true}
     });
+    //first test shape, will add the other 32 shapes later
 
     private final boolean[][] shape;
 
