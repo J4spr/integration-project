@@ -12,7 +12,7 @@ public class MainMenuPresenter {
     private final MainMenuView mmv;
     private RulesView rv;
     private SettingsView sv;
-
+    private StartMenuView smv;
 
     public MainMenuPresenter(MainMenuView view) {
         this.mmv = view;
@@ -23,8 +23,10 @@ public class MainMenuPresenter {
         mmv.getStartButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-//                TODO remove this when it is ready for production
-                System.out.println("Start pressed");
+            smv = new StartMenuView();
+            new StartMenuPresenter(smv,mmv);
+
+            smv.getPane().getScene().setRoot(smv.getPane());
             }
         });
         mmv.getRulesButton().setOnAction(event -> {
