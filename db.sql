@@ -1,68 +1,122 @@
-DROP TABLE IF EXISTS PlayerTable;
-DROP TABLE IF EXISTS PatchTable;
-DROP TABLE IF EXISTS GameTable;
-DROP TABLE IF EXISTS TurnTable;
-DROP TABLE IF EXISTS MoveTable;
+DROP TABLE IF EXISTS "PlayerTable";
+DROP TABLE IF EXISTS "MoveTable";
+DROP TABLE IF EXISTS "TurnTable";
+DROP TABLE IF EXISTS "MoveTable";
+DROP TABLE IF EXISTS "PatchTable";
 
 
-CREATE TABLE PlayerTable (
-                             PlayerID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                             Username VARCHAR(50) NOT NULL CHECK (Username NOT LIKE '% %'),
-                             Email VARCHAR(100) NOT NULL
+CREATE TABLE "PlayerTable" (
+
+                               "PlayerID" int PRIMARY KEY,
+
+                               "Username" varchar NOT NULL,
+
+                               "Email" varchar NOT NULL
+
 );
 
-CREATE TABLE PatchTable (
-                            PatchID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                            ButtonCost INTEGER NOT NULL,
-                            TimeCost INTEGER NOT NULL,
-                            ButtonIncome INTEGER NOT NULL
+
+CREATE TABLE "GameTable" (
+
+                             "GameID" int PRIMARY KEY,
+
+                             "GameType" varchar NOT NULL,
+
+                             "State" varchar NOT NULL,
+
+                             "Player1ID" int,
+
+                             "Player2ID" int,
+
+                             "StartingPlayer" int NOT NULL,
+
+                             "GameStartTime" time NOT NULL,
+
+                             "GameEndTime" time,
+
+                             "WinnerID" int,
+
+                             "7x7BonusWinner" int,
+
+                             "EmptySpacesP1" int,
+
+                             "EmptySpacesP2" int
+
 );
 
-CREATE TABLE GameTable (
-                           GameID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                           GameType VARCHAR(30) NOT NULL,
-                           State VARCHAR(20) NOT NULL,
-                           Player1ID INTEGER,
-                           Player2ID INTEGER,
-                           StartingPlayer INTEGER,
-                           GameStartTime TIMESTAMP,
-                           GameEndTime TIMESTAMP,
-                           WinnerID INTEGER,
-                           "7x7BonusWinner" INTEGER,
-                           EmptySpacesP1 INTEGER,
-                           EmptySpacesP2 INTEGER,
 
-                           FOREIGN KEY (Player1ID) REFERENCES PlayerTable(PlayerID),
-                           FOREIGN KEY (Player2ID) REFERENCES PlayerTable(PlayerID),
-                           FOREIGN KEY (WinnerID) REFERENCES PlayerTable(PlayerID),
-                           FOREIGN KEY ("7x7BonusWinner") REFERENCES PlayerTable(PlayerID)
+CREATE TABLE "TurnTable" (
+
+                             "TurnID" int PRIMARY KEY,
+
+                             "GameID" int,
+
+                             "TurnStartTime" time NOT NULL,
+
+                             "TurnEndTime" time
+
 );
 
-CREATE TABLE TurnTable (
-                           TurnID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                           GameID INTEGER NOT NULL,
-                           TurnStartTime TIMESTAMP,
-                           TurnEndTime TIMESTAMP,
 
-                           FOREIGN KEY (GameID) REFERENCES GameTable(GameID)
+CREATE TABLE "MoveTable" (
+
+                             "MoveID" int PRIMARY KEY,
+
+                             "TurnID" int,
+
+                             "PatchID" int,
+
+                             "MoveStartTime" time NOT NULL,
+
+                             "MoveEndTime" time,
+
+                             "SpecialPatchesCollected" int NOT NULL,
+
+                             "SpacesMoved" int,
+
+                             "Position" int,
+
+                             "RotationDegrees" int,
+
+                             "ButtonsP1" int,
+
+                             "ButtonsP2" int
+
 );
 
-CREATE TABLE MoveTable (
-                           MoveID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                           TurnID INTEGER NOT NULL,
-                           PatchID INTEGER,
-                           MoveStartTime TIMESTAMP,
-                           MoveEndTime TIMESTAMP,
-                           SpecialPatchesCollected INTEGER,
-                           SpacesMoved INTEGER,
-                           Position VARCHAR(50),
-                           RotationDegrees INTEGER,
-                           ButtonsP1 INTEGER,
-                           ButtonsP2 INTEGER,
 
-                           FOREIGN KEY (TurnID) REFERENCES TurnTable(TurnID),
-                           FOREIGN KEY (PatchID) REFERENCES PatchTable(PatchID)
+CREATE TABLE "PatchTable" (
+
+                              "PatchID" int PRIMARY KEY,
+
+                              "ButtonCost" int NOT NULL,
+
+                              "TimeCost" int NOT NULL,
+
+                              "ButtonIncome" int NOT NULL
+
 );
+
+
+ALTER TABLE "GameTable" ADD FOREIGN KEY ("Player1ID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "GameTable" ADD FOREIGN KEY ("Player2ID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "GameTable" ADD FOREIGN KEY ("WinnerID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "GameTable" ADD FOREIGN KEY ("7x7BonusWinner") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "TurnTable" ADD FOREIGN KEY ("GameID") REFERENCES "GameTable" ("GameID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "MoveTable" ADD FOREIGN KEY ("TurnID") REFERENCES "TurnTable" ("TurnID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "MoveTable" ADD FOREIGN KEY ("PatchID") REFERENCES "PatchTable" ("PatchID") DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE "PlayerTable"
     ADD CONSTRAINT unique_username UNIQUE ("Username"),
@@ -83,4 +137,3 @@ ALTER TABLE "MoveTable"
 ALTER TABLE "PatchTable"
     ADD CONSTRAINT check_patch_costs CHECK ("ButtonCost" >= 0 AND "TimeCost" >= 0),
     ADD CONSTRAINT check_patch_income CHECK ("ButtonIncome" >= 0);
-
