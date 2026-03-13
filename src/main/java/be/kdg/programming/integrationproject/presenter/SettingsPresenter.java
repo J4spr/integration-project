@@ -32,6 +32,7 @@ public class SettingsPresenter {
             @Override
             public void handle(ActionEvent event) {
                 view.getPane().getScene().setRoot(mainMenuView.getPane());
+//                add new comment
             }
         });
     }
