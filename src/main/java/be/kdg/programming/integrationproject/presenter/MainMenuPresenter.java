@@ -3,10 +3,9 @@ package be.kdg.programming.integrationproject.presenter;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.RulesView;
 import be.kdg.programming.integrationproject.view.SettingsView;
+import be.kdg.programming.integrationproject.view.StartMenuView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import be.kdg.programming.integrationproject.view.StartMenuView;
-import be.kdg.programming.integrationproject.presenter.StartMenuPresenter;
 
 public class MainMenuPresenter {
     private final MainMenuView mmv;
@@ -15,7 +14,10 @@ public class MainMenuPresenter {
     private StartMenuView smv;
 
     public MainMenuPresenter(MainMenuView view) {
+        smv = new StartMenuView();
+        rv = new RulesView();
         this.mmv = view;
+        sv = new SettingsView();
         addEventHandlers();
     }
 
@@ -23,14 +25,12 @@ public class MainMenuPresenter {
         mmv.getStartButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            smv = new StartMenuView();
-            new StartMenuPresenter(smv,mmv);
+                new StartMenuPresenter(smv, mmv);
 
-            smv.getPane().getScene().setRoot(smv.getPane());
+                mmv.getPane().getScene().setRoot(smv.getPane());
             }
         });
         mmv.getRulesButton().setOnAction(event -> {
-            rv = new RulesView();
             new RulesPresenter(rv, mmv);
 
             mmv.getPane().getScene().setRoot(rv.getPane());
@@ -38,7 +38,6 @@ public class MainMenuPresenter {
         mmv.getSettingsButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                sv = new SettingsView();
                 new SettingsPresenter(sv, mmv);
                 System.out.println("Settings pressed");
                 mmv.getPane().getScene().setRoot(sv.getPane());
