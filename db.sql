@@ -1,9 +1,15 @@
+DROP TABLE IF EXISTS PlayerTable;
+DROP TABLE IF EXISTS PatchTable;
+DROP TABLE IF EXISTS GameTable;
+DROP TABLE IF EXISTS TurnTable;
+DROP TABLE IF EXISTS MoveTable;
+
+
 CREATE TABLE PlayerTable (
                              PlayerID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                              Username VARCHAR(50) NOT NULL CHECK (Username NOT LIKE '% %'),
                              Email VARCHAR(100) NOT NULL
 );
-DROP TABLE PlayerTable;
 
 CREATE TABLE PatchTable (
                             PatchID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -57,9 +63,24 @@ CREATE TABLE MoveTable (
                            FOREIGN KEY (TurnID) REFERENCES TurnTable(TurnID),
                            FOREIGN KEY (PatchID) REFERENCES PatchTable(PatchID)
 );
-ALTER TABLE "PlayerTable" ADD CONSTRAINT un_username UNIQUE ("Username");
-ALTER TABLE "PlayerTable" ADD CONSTRAINT un_email UNIQUE ("Email");
-ALTER TABLE "GameTable" ADD CONSTRAINT ch_gametable CHECK ( "Player1ID" <> "Player2ID" );
-ALTER TABLE "GameTable" ADD CONSTRAINT ch_start_endTime CHECK ( "GameEndTime" >= "GameStartTime" );
-ALTER TABLE "GameTable" ADD CONSTRAINT ch_start_endTime CHECK ( "GameEndTime" >= (SELECT to_date(now())))
+
+ALTER TABLE "PlayerTable"
+    ADD CONSTRAINT unique_username UNIQUE ("Username"),
+    ADD CONSTRAINT unique_email UNIQUE ("Email"),
+    ADD CONSTRAINT check_email_format CHECK ("Email" LIKE '%@%');
+
+ALTER TABLE "GameTable"
+    ADD CONSTRAINT check_different_players CHECK ("Player1ID" <> "Player2ID"),
+    ADD CONSTRAINT check_game_time CHECK ("GameEndTime" >= "GameStartTime");
+
+ALTER TABLE "TurnTable"
+    ADD CONSTRAINT check_turn_time CHECK ("TurnEndTime" >= "TurnStartTime");
+
+ALTER TABLE "MoveTable"
+    ADD CONSTRAINT check_move_time CHECK ("MoveEndTime" >= "MoveStartTime"),
+    ADD CONSTRAINT check_rotation_degrees CHECK ("RotationDegrees" IN (0, 90, 180, 270));
+
+ALTER TABLE "PatchTable"
+    ADD CONSTRAINT check_patch_costs CHECK ("ButtonCost" >= 0 AND "TimeCost" >= 0),
+    ADD CONSTRAINT check_patch_income CHECK ("ButtonIncome" >= 0);
 
