@@ -2,6 +2,8 @@ package be.kdg.programming.integrationproject.presenter;
 
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.StartMenuView;
+import be.kdg.programming.integrationproject.view.GameView;
+import be.kdg.programming.integrationproject.presenter.GamePresenter;
 
 public class StartMenuPresenter {
 
@@ -22,8 +24,12 @@ public class StartMenuPresenter {
                 view.getPane().getScene().setRoot(mainMenuView.getPane())
         );
 
-        view.getBtnStartGame().setOnAction(event ->
-                System.out.println("Game should start now")
-        );
+        view.getBtnStartGame().setOnAction(event -> {
+
+            GameView gameView = new GameView();
+            new GamePresenter(gameView, mainMenuView);
+
+            view.getPane().getScene().setRoot(gameView.getPane());
+        });
     }
 }
