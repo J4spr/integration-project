@@ -40,4 +40,25 @@ public class QuiltBoard {
         placedPatches.add(patch);
         return true;
     }
+
+    //Counts the number of empty spaces on the quilt board
+    //Each empty space is minus 2 score at the end of the game
+    public int countEmptySpaces() {
+        int count = 0;
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                if (!grid[r][c]) count++;
+            }
+        }
+        return count;
+    }
+
+    //Counts the total button income of all placed patches
+    public int countButtons() {
+        int total = 0;
+        for (Patch patch : placedPatches) {
+            total += patch.getButtonIncome();
+        }
+        return total;
+    }
 }
