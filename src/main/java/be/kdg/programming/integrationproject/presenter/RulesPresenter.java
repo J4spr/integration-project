@@ -38,7 +38,6 @@ public class RulesPresenter {
     }
 
     private void loadRules() {
-        // Use a leading slash to start from the root of the resources folder
         try (InputStream is = getClass().getResourceAsStream("/rules.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
 
@@ -48,7 +47,6 @@ public class RulesPresenter {
                 sb.append(line).append("\n");
             }
 
-            // Push the data to the passive view
             view.setRulesText(sb.toString());
 
         } catch (Exception e) {

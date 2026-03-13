@@ -3,6 +3,8 @@ package be.kdg.programming.integrationproject.view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
@@ -14,13 +16,13 @@ public class SettingsView {
     private BackgroundSize backgroundSize;
     private Button btnBack;
     private StackPane sp;
+    private Slider musicSlider;
+    private Label musicSliderLabel;
 
     public SettingsView() {
-        btnBack = new Button("Go back");
-        String path = getClass().getResource("/mainMenu/mainMenuBackGrnd.png").toExternalForm();
+        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
         image = new Image(path);
         backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-
         initialiseNodes();
         layoutNodes();
     }
@@ -28,12 +30,17 @@ public class SettingsView {
     private void initialiseNodes() {
         this.sp = new StackPane();
         this.pane = new VBox();
+        this.musicSlider = new Slider(0, 100, 50);
+        this.musicSliderLabel = new Label("Music controls");
+        this.btnBack = new Button("Go back");
         this.fullscreenBtn = new Button("Toggle Fullscreen");
+
+
         sp.setBackground(new Background(backgroundImage));
         btnBack = new Button("Go back");
         pane.getChildren().add(fullscreenBtn);
-        sp.getChildren().add(pane);
-        sp.getChildren().add(btnBack);
+        pane.getChildren().addAll(musicSliderLabel, musicSlider);
+        sp.getChildren().addAll(pane, btnBack);
 
     }
 
@@ -44,6 +51,8 @@ public class SettingsView {
         sp.setPadding(new Insets(15));
         pane.setPadding(new Insets(20));
         pane.setSpacing(20);
+        musicSlider.adjustValue(100);
+
     }
 
     public Button getBtnBack() {
@@ -57,5 +66,13 @@ public class SettingsView {
 
     public StackPane getPane() {
         return this.sp;
+    }
+
+    public Slider getMusicSlider() {
+        return musicSlider;
+    }
+
+    public Label getMusicSliderLabel() {
+        return musicSliderLabel;
     }
 }
