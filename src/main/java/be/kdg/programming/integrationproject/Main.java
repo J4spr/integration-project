@@ -14,7 +14,8 @@ public class Main extends Application {
 
         Scene scene = new Scene(view.getPane(), 400, 300);
 
-        stage.setTitle("Patchwork Game");
+
+        stage.setTitle("Patchwork");
         stage.setScene(scene);
         stage.show();
     }

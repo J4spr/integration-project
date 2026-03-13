@@ -14,12 +14,13 @@ public class MainMenuView {
     private BackgroundImage backgroundImage;
     private BackgroundSize backgroundSize;
 
-
     private GridPane pane;
     private StackPane stPane;
 
+
+
     public MainMenuView() {
-        String path = getClass().getResource("/mainMenu/mainMenuBackGrnd.png").toExternalForm();
+        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
         image = new Image(path);
         backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         initialiseNodes();
