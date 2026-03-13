@@ -1,6 +1,6 @@
 CREATE TABLE PlayerTable (
                              PlayerID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                             Username VARCHAR(50) NOT NULL,
+                             Username VARCHAR(50) NOT NULL CHECK (Username NOT LIKE '% %'),
                              Email VARCHAR(100) NOT NULL
 );
 
