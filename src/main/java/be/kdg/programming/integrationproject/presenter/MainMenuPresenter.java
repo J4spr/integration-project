@@ -5,6 +5,8 @@ import be.kdg.programming.integrationproject.view.RulesView;
 import be.kdg.programming.integrationproject.view.SettingsView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import be.kdg.programming.integrationproject.view.StartMenuView;
+import be.kdg.programming.integrationproject.presenter.StartMenuPresenter;
 
 public class MainMenuPresenter {
     private final MainMenuView mmv;
