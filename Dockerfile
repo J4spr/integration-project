@@ -8,7 +8,7 @@ ENV POSTGRES_PASSWORD=7sur7
 
 # Copy your SQL file to the special initialization folder
 # Any .sql files here are executed when the container first starts
-COPY ./db.sql /docker-entrypoint-initdb.d/
+COPY ./*.sql /docker-entrypoint-initdb.d/
 
 # 1. docker build -t my-game-db .
 # 2. docker run -d --name pg-test -p 5433:5432 my-game-db
