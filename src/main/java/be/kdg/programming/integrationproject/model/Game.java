@@ -2,8 +2,6 @@ package be.kdg.programming.integrationproject.model;
 
 import be.kdg.programming.integrationproject.model.Enums.GameStatus;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.LinkedList;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
@@ -13,12 +11,12 @@ public class Game {
     private Player player2;
     private Player currentPlayer;
     private Player specialTileOwner;
+    private Player winner;
     private GameStatus status;
     private LocalDate startDate;
     private int startPlayer;
     private Timeboard timeboard;
     private PatchStack patchStack;
-    private List<Turn> turns;
     private Queue<Patch> leatherPatchQueue = new LinkedList<>();
 
     public Game(HumanPlayer player1, Player player2, int startPlayer) {
@@ -30,7 +28,6 @@ public class Game {
         this.startDate = LocalDate.now();
         this.timeboard = new Timeboard();
         this.patchStack = new PatchStack();
-        this.turns = new ArrayList<>();
     }
 
     //game getters & setter
@@ -44,6 +41,10 @@ public class Game {
 
     public Player getSpecialTileOwner() {
         return specialTileOwner;
+    }
+
+    public Player getWinner() {
+        return winner;
     }
 
     public void setSpecialTileOwner(Player specialTileOwner) {
@@ -80,10 +81,6 @@ public class Game {
 
     public PatchStack getPatchStack() {
         return patchStack;
-    }
-
-    public List<Turn> getTurns() {
-        return turns;
     }
 
     //player buys patch, buttons get taken from player and player's button income increases
@@ -127,5 +124,31 @@ public class Game {
         for (int i = 0; i < leatherPatchesPassed; i++) {
             leatherPatchQueue.add(Patch.createLeatherPatch(i));
         }
+    }
+
+    public void pass() {
+        Player otherPlayer = (currentPlayer == player1) ? player2 : player1;
+        int newPosition = otherPlayer.getPosition() + 1;
+        int steps = newPosition - currentPlayer.getPosition();
+        currentPlayer.setTotalButtons(currentPlayer.getTotalButtons() + steps);
+        moveToken(steps);
+    }
+
+    private int calculateScore(Player player) {
+        int score = player.getTotalButtons();
+        score -= player.getQuiltBoard().countEmptySpaces() * 2;
+        if (specialTileOwner == player) score += 7;
+        return score;
+    }
+
+    public boolean checkGameEnd() {
+        if (player1.getPosition() >= timeboard.getSize() - 1 && player2.getPosition() >= timeboard.getSize() - 1) {
+            status = GameStatus.FINISHED;
+            int scorePlayer1 = calculateScore(player1);
+            int scorePlayer2 = calculateScore(player2);
+            winner = scorePlayer1 >= scorePlayer2 ? player1 : player2;
+            return true;
+        }
+        return false;
     }
 }
