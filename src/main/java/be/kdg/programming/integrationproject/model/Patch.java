@@ -20,10 +20,7 @@ public class Patch {
         this.rotation = PatchRotation.NOROTATION; // standaard geen rotatie
     }
 
-    public static Patch createLeatherPatch(int patchID) {
-        return new Patch(patchID, PatchShape.ONE_BY_ONE, 0, 0, 0);
-    }
-
+    //patch getters & setters
     public int getPatchID() {
         return this.patchID;
     }
@@ -50,5 +47,41 @@ public class Patch {
 
     public int getButtonIncome() {
         return this.buttonIncome;
+    }
+
+    public static Patch createLeatherPatch(int patchID) {
+        return new Patch(patchID, PatchShape.ONE_BY_ONE, 0, 0, 0);
+    }
+
+    public boolean[][] getRotatedShape() {
+        boolean[][] original = shape.getShape();
+        int rows = original.length;
+        int cols = original[0].length;
+
+        switch (rotation) {
+            case NINETY: {
+                boolean[][] rotated = new boolean[cols][rows];
+                for (int r = 0; r < rows; r++)
+                    for (int c = 0; c < cols; c++)
+                        rotated[c][rows - 1 - r] = original[r][c];
+                return rotated;
+            }
+            case ONEEIGHTY: {
+                boolean[][] rotated = new boolean[rows][cols];
+                for (int r = 0; r < rows; r++)
+                    for (int c = 0; c < cols; c++)
+                        rotated[rows - 1 - r][cols - 1 - c] = original[r][c];
+                return rotated;
+            }
+            case TWOSEVENTY: {
+                boolean[][] rotated = new boolean[cols][rows];
+                for (int r = 0; r < rows; r++)
+                    for (int c = 0; c < cols; c++)
+                        rotated[cols - 1 - c][r] = original[r][c];
+                return rotated;
+            }
+            default:
+                return original;
+        }
     }
 }

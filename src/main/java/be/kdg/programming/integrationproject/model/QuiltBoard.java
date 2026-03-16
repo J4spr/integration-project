@@ -11,7 +11,7 @@ public class QuiltBoard {
     //Checks if a patch can be placed at the given position without
     //going out of bounds or overlapping with existing patches.
     public boolean canPlacePatch(Patch patch, int row, int col) {
-        boolean[][] shape = patch.getShape().getShape();
+        boolean[][] shape = patch.getRotatedShape();
         for (int r = 0; r < shape.length; r++) {
             for (int c = 0; c < shape[r].length; c++) {
                 if (shape[r][c]) {
@@ -29,7 +29,7 @@ public class QuiltBoard {
     //Returns false if the patch cannot be placed
     public boolean placePatch(Patch patch, int row, int col) {
         if (!canPlacePatch(patch, row, col)) return false;
-        boolean[][] shape = patch.getShape().getShape();
+        boolean[][] shape = patch.getRotatedShape();
         for (int r = 0; r < shape.length; r++) {
             for (int c = 0; c < shape[r].length; c++) {
                 if (shape[r][c]) {
