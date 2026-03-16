@@ -15,7 +15,7 @@ public class HumanPlayer extends Player{
     }
 
     @Override
-    void updatePosition() {
-
+    void updatePosition(int steps) {
+        this.setPosition(this.getPosition() + steps);
     }
 }

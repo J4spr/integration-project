@@ -8,7 +8,7 @@ public abstract class Player {
     private int buttons;
     private TokenColor color;
 
-    abstract void updatePosition();
+    abstract void updatePosition(int steps);
 
     public boolean hasSpecialTile() {
         return this.hasSpecialTile;
