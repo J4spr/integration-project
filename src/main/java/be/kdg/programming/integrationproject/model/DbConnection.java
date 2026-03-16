@@ -33,16 +33,10 @@ public class DbConnection {
         this.username = p.getProperty("username");
         this.password = p.getProperty("password");
         this.databaseName = p.getProperty("dbname");
-        this.url = String.format("jdbc:postgresql://%s:5433/%s", this.hostname, this.databaseName);
+        this.url = String.format("jdbc:postgresql://%s:5432/%s", this.hostname, this.databaseName);
     }
 
     public Connection getConnection() throws SQLException {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Could not load Database class");
-            System.exit(1);
-        }
-        return DriverManager.getConnection(this.url, this.username, this.password);
+        return DriverManager.getConnection(url, username, password);
     }
 }
