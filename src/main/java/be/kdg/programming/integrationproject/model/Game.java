@@ -138,6 +138,12 @@ public class Game {
         }
     }
 
+    public boolean placeLeatherPatch(int row, int col) {
+        Patch leatherPatch = leatherPatchQueue.poll();
+        if (leatherPatch == null) return false;
+        return currentPlayer.getQuiltBoard().placePatch(leatherPatch, row, col);
+    }
+
     public void pass() {
         Player otherPlayer = (currentPlayer == player1) ? player2 : player1;
         int newPosition = otherPlayer.getPosition() + 1;

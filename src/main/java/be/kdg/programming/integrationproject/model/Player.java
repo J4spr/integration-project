@@ -47,4 +47,8 @@ public abstract class Player {
     public TokenColor getColor() {
         return this.color;
     }
+
+    public void setColor(TokenColor color) {
+        this.color = color;
+    }
 }
