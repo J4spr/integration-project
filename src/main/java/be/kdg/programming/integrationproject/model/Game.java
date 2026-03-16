@@ -5,6 +5,7 @@ import be.kdg.programming.integrationproject.model.Enums.GameStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 
 public class Game {
     private HumanPlayer player1;
@@ -101,6 +102,13 @@ public class Game {
         } else {
             currentPlayer = player2;
         }
+    }
+
+    //player can place a patch on his quiltboard and chooses the rotation of the patch
+    public boolean placePatch(Patch patch, int row, int col, PatchRotation rotation) {
+        if (patch == null) return false;
+        patch.setRotation(rotation);
+        return currentPlayer.getQuiltBoard().placePatch(patch, row, col);
     }
 }
     

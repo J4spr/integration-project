@@ -11,8 +11,13 @@ public class Patch {
     private int timeCost;
     private int buttonIncome;
 
-    public Patch() {
-
+    public Patch(int patchID, PatchShape shape, int buttonCost, int timeCost, int buttonIncome) {
+        this.patchID = patchID;
+        this.shape = shape;
+        this.buttonCost = buttonCost;
+        this.timeCost = timeCost;
+        this.buttonIncome = buttonIncome;
+        this.rotation = PatchRotation.THREESIXTY; // standaard geen rotatie
     }
 
     public int getPatchID() {
@@ -25,6 +30,10 @@ public class Patch {
 
     public PatchRotation getRotation() {
         return this.rotation;
+    }
+
+    public void setRotation(PatchRotation rotation) {
+        this.rotation = rotation;
     }
 
     public int getButtonCost() {
