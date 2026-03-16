@@ -2,9 +2,6 @@ package be.kdg.programming.integrationproject.model;
 
 public class HumanPlayer extends Player{
     private String name;
-    public HumanPlayer(){
-
-    }
 
     public String getName() {
         return this.name;
@@ -15,7 +12,7 @@ public class HumanPlayer extends Player{
     }
 
     @Override
-    void updatePosition() {
-
+    void updatePosition(int steps) {
+        this.setPosition(this.getPosition() + steps);
     }
 }

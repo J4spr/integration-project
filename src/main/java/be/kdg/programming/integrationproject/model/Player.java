@@ -3,20 +3,21 @@ package be.kdg.programming.integrationproject.model;
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;
 
 public abstract class Player {
-    private boolean hasSpecialTile;
     private int position;
-    private int buttons;
+    private int totalButtons;
+    private int totalButtonIncome;
+    private QuiltBoard quiltBoard;
     private TokenColor color;
 
-    abstract void updatePosition();
-
-    public boolean hasSpecialTile() {
-        return this.hasSpecialTile;
+    public Player() {
+        this.quiltBoard = new QuiltBoard();
     }
 
-    public void setHasSpecialTile(boolean hasSpecialTile) {
-        this.hasSpecialTile = hasSpecialTile;
+    public QuiltBoard getQuiltBoard() {
+        return quiltBoard;
     }
+
+    abstract void updatePosition(int steps);
 
     public int getPosition() {
         return this.position;
@@ -26,15 +27,27 @@ public abstract class Player {
         this.position = position;
     }
 
-    public int getButtons() {
-        return this.buttons;
+    public int getTotalButtons() {
+        return this.totalButtons;
     }
 
-    public void setButtons(int buttons) {
-        this.buttons = buttons;
+    public void setTotalButtons(int totalButtons) {
+        this.totalButtons = totalButtons;
+    }
+
+    public int getTotalButtonIncome() {
+        return totalButtonIncome;
+    }
+
+    public void setTotalButtonIncome(int totalButtonIncome) {
+        this.totalButtonIncome = totalButtonIncome;
     }
 
     public TokenColor getColor() {
         return this.color;
+    }
+
+    public void setColor(TokenColor color) {
+        this.color = color;
     }
 }
