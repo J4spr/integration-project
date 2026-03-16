@@ -8,6 +8,10 @@ public class Timeboard {
     // positions on the timeboard where players receive a free 1x1 leather patch
     private static final int[] LEATHER_PATCH_POSITIONS = {26, 32, 38, 44, 50};
 
+    public int getSize() {
+        return SIZE;
+    }
+
     // calculates the new position after moving, capped at the final position
     public int updatePosition(int currentPosition, int timeCost) {
         int newPosition = currentPosition + timeCost;
