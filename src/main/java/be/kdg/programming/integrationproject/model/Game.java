@@ -10,11 +10,11 @@ public class Game {
     private HumanPlayer player1;
     private Player player2;
     private Player currentPlayer;
+    private Player specialTileOwner;
     private GameStatus status;
     private LocalDate startDate;
     private int startPlayer;
     private Timeboard timeboard;
-    private QuiltBoard quiltBoard;
     private PatchStack patchStack;
     private List<Turn> turns;
 
@@ -26,7 +26,6 @@ public class Game {
         this.status = GameStatus.ACTIVE;
         this.startDate = LocalDate.now();
         this.timeboard = new Timeboard();
-        this.quiltBoard = new QuiltBoard();
         this.patchStack = new PatchStack();
         this.turns = new ArrayList<>();
     }
@@ -38,6 +37,14 @@ public class Game {
 
     public Player getPlayer2() {
         return player2;
+    }
+
+    public Player getSpecialTileOwner() {
+        return specialTileOwner;
+    }
+
+    public void setSpecialTileOwner(Player specialTileOwner) {
+        this.specialTileOwner = specialTileOwner;
     }
 
     public GameStatus getStatus() {
@@ -62,10 +69,6 @@ public class Game {
 
     public Timeboard getTimeboard() {
         return timeboard;
-    }
-
-    public QuiltBoard getQuiltBoard() {
-        return quiltBoard;
     }
 
     public PatchStack getPatchStack() {

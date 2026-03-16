@@ -7,17 +7,18 @@ public abstract class Player {
     private int position;
     private int totalButtons;
     private int totalButtonIncome;
+    private QuiltBoard quiltBoard;
     private TokenColor color;
 
+    public Player() {
+        this.quiltBoard = new QuiltBoard();
+    }
+
+    public QuiltBoard getQuiltBoard() {
+        return quiltBoard;
+    }
+
     abstract void updatePosition(int steps);
-
-    public boolean hasSpecialTile() {
-        return this.hasSpecialTile;
-    }
-
-    public void setHasSpecialTile(boolean hasSpecialTile) {
-        this.hasSpecialTile = hasSpecialTile;
-    }
 
     public int getPosition() {
         return this.position;
@@ -35,9 +36,13 @@ public abstract class Player {
         this.totalButtons = totalButtons;
     }
 
-    public int getTotalButtonIncome() { return totalButtonIncome;}
+    public int getTotalButtonIncome() {
+        return totalButtonIncome;
+    }
 
-    public void setTotalButtonIncome(int totalButtonIncome) { this.totalButtonIncome = totalButtonIncome;}
+    public void setTotalButtonIncome(int totalButtonIncome) {
+        this.totalButtonIncome = totalButtonIncome;
+    }
 
     public TokenColor getColor() {
         return this.color;
