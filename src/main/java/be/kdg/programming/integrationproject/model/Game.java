@@ -13,10 +13,10 @@ public class Game {
     private Player specialTileOwner;
     private Player winner;
     private GameStatus status;
-    private LocalDate startDate;
     private int startPlayer;
     private Timeboard timeboard;
     private PatchStack patchStack;
+    private int leatherPatchCounter = 0;
     private Queue<Patch> leatherPatchQueue = new LinkedList<>();
 
     public Game(HumanPlayer player1, Player player2, int startPlayer) {
@@ -25,9 +25,8 @@ public class Game {
         this.startPlayer = startPlayer;
         this.currentPlayer = startPlayer == 1 ? player1 : player2;
         this.status = GameStatus.ACTIVE;
-        this.startDate = LocalDate.now();
         this.timeboard = new Timeboard();
-        this.patchStack = new PatchStack();
+        this.patchStack = PatchStackBuilder.build();
         player1.setTotalButtons(5);
         player2.setTotalButtons(5);
     }
@@ -61,10 +60,6 @@ public class Game {
         this.status = status;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
     public int getStartPlayer() {
         return startPlayer;
     }
@@ -87,12 +82,34 @@ public class Game {
 
     //player buys patch, buttons get taken from player and player's button income increases
     public Patch buyPatch(int patchID) {
-        Patch patch = patchStack.removePatch(patchID);
+        Patch patch = patchStack.getPatch(patchID); // eerst alleen ophalen
         if (patch == null) return null;
         if (currentPlayer.getTotalButtons() < patch.getButtonCost()) return null;
+        patchStack.removePatch(patchID); // pas verwijderen als speler genoeg buttons heeft
         currentPlayer.setTotalButtons(currentPlayer.getTotalButtons() - patch.getButtonCost());
         currentPlayer.setTotalButtonIncome(currentPlayer.getTotalButtonIncome() + patch.getButtonIncome());
         return patch;
+    }
+
+    //player can place a patch on his quiltboard and chooses the rotation of the patch
+    public boolean placePatch(Patch patch, int row, int col, PatchRotation rotation) {
+        if (patch == null) return false;
+        patch.setRotation(rotation);
+        return currentPlayer.getQuiltBoard().placePatch(patch, row, col);
+    }
+
+    // public method to be used by presenter - handles buying and placing a patch safely
+    public boolean buyAndPlacePatch(int patchID, int row, int col, PatchRotation rotation) {
+        Patch patch = patchStack.getPatch(patchID);
+        if (patch == null) return false;
+        if (currentPlayer.getTotalButtons() < patch.getButtonCost()) return false;
+        patch.setRotation(rotation);
+        if (!currentPlayer.getQuiltBoard().canPlacePatch(patch, row, col)) return false;
+        patchStack.removePatch(patchID);
+        currentPlayer.setTotalButtons(currentPlayer.getTotalButtons() - patch.getButtonCost());
+        currentPlayer.setTotalButtonIncome(currentPlayer.getTotalButtonIncome() + patch.getButtonIncome());
+        currentPlayer.getQuiltBoard().placePatch(patch, row, col);
+        return true;
     }
 
     //player gets buttons when they pass a buttonPosition
@@ -109,12 +126,7 @@ public class Game {
         }
     }
 
-    //player can place a patch on his quiltboard and chooses the rotation of the patch
-    public boolean placePatch(Patch patch, int row, int col, PatchRotation rotation) {
-        if (patch == null) return false;
-        patch.setRotation(rotation);
-        return currentPlayer.getQuiltBoard().placePatch(patch, row, col);
-    }
+
 
     public void moveToken(int timeCost) {
         int oldPosition = currentPlayer.getPosition();
@@ -124,7 +136,7 @@ public class Game {
         collectButtonIncome(buttonPositionsPassed);
         int leatherPatchesPassed = timeboard.countLeatherPatchesPassed(oldPosition, newPosition);
         for (int i = 0; i < leatherPatchesPassed; i++) {
-            leatherPatchQueue.add(Patch.createLeatherPatch(i));
+            leatherPatchQueue.add(Patch.createLeatherPatch(leatherPatchCounter++));
         }
     }
 
@@ -148,6 +160,7 @@ public class Game {
         Player otherPlayer = (currentPlayer == player1) ? player2 : player1;
         int newPosition = otherPlayer.getPosition() + 1;
         int steps = newPosition - currentPlayer.getPosition();
+        if (steps <= 0) throw new IllegalStateException("Current player is already ahead of the other player");
         currentPlayer.setTotalButtons(currentPlayer.getTotalButtons() + steps);
         moveToken(steps);
     }

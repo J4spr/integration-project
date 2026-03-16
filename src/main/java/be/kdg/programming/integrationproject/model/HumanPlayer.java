@@ -2,6 +2,7 @@ package be.kdg.programming.integrationproject.model;
 
 public class HumanPlayer extends Player{
     private String name;
+
     public HumanPlayer(){
 
     }

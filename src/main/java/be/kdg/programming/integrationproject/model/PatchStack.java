@@ -12,7 +12,8 @@ public class PatchStack {
     //Returns the 3 available patches to the right of the neutral token.
     public List<Patch> getAvailablePatches() {
         List<Patch> available = new ArrayList<>();
-        for (int i = 1; i <= 3; i++) {
+        int count = Math.min(3, patches.size());
+        for (int i = 1; i <= count; i++) {
             int index = (neutralTokenPosition + i) % patches.size();
             available.add(patches.get(index));
         }
@@ -22,6 +23,15 @@ public class PatchStack {
      //Returns the position of the neutral token
     public int getNeutralToken() {
         return this.neutralTokenPosition;
+    }
+
+    public Patch getPatch(int patchID) {
+        for (Patch patch : patches) {
+            if (patch.getPatchID() == patchID) {
+                return patch;
+            }
+        }
+        return null;
     }
 
     //Adds a patch to the list

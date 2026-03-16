@@ -3,7 +3,6 @@ package be.kdg.programming.integrationproject.model;
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;
 
 public abstract class Player {
-    private boolean hasSpecialTile;
     private int position;
     private int totalButtons;
     private int totalButtonIncome;

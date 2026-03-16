@@ -17,8 +17,8 @@ public class QuiltBoard {
                 if (shape[r][c]) {
                     int newRow = row + r;
                     int newCol = col + c;
-                    if (newRow >= SIZE || newCol >= SIZE) return false;//out of bounds
-                    if (grid[newRow][newCol]) return false;//cell is occupied
+                    if (newRow < 0 || newCol < 0 || newRow >= SIZE || newCol >= SIZE) return false;
+                    if (grid[newRow][newCol]) return false;
                 }
             }
         }
@@ -53,7 +53,7 @@ public class QuiltBoard {
         return count;
     }
 
-    //Counts the total button income of all placed patches
+    //sanity check method - should always equal player's totalButtonIncome
     public int countButtons() {
         int total = 0;
         for (Patch patch : placedPatches) {
