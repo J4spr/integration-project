@@ -28,6 +28,8 @@ public class Game {
         this.startDate = LocalDate.now();
         this.timeboard = new Timeboard();
         this.patchStack = new PatchStack();
+        player1.setTotalButtons(5);
+        player2.setTotalButtons(5);
     }
 
     //game getters & setter
@@ -123,6 +125,16 @@ public class Game {
         int leatherPatchesPassed = timeboard.countLeatherPatchesPassed(oldPosition, newPosition);
         for (int i = 0; i < leatherPatchesPassed; i++) {
             leatherPatchQueue.add(Patch.createLeatherPatch(i));
+        }
+    }
+
+    public void checkSpecialTile() {
+        if (specialTileOwner == null) {
+            if (player1.getQuiltBoard().hasSevenBySeven()) {
+                specialTileOwner = player1;
+            } else if (player2.getQuiltBoard().hasSevenBySeven()) {
+                specialTileOwner = player2;
+            }
         }
     }
 

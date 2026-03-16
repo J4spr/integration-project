@@ -61,4 +61,22 @@ public class QuiltBoard {
         }
         return total;
     }
+
+    public boolean hasSevenBySeven() {
+        for (int r = 0; r <= SIZE - 7; r++) {
+            for (int c = 0; c <= SIZE - 7; c++) {
+                if (isSevenBySevenAt(r, c)) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSevenBySevenAt(int startRow, int startCol) {
+        for (int r = startRow; r < startRow + 7; r++) {
+            for (int c = startCol; c < startCol + 7; c++) {
+                if (!grid[r][c]) return false;
+            }
+        }
+        return true;
+    }
 }
