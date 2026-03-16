@@ -1,6 +1,7 @@
 package be.kdg.programming.integrationproject.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,6 +27,10 @@ public class PatchStack {
     //Adds a patch to the list
     public void addPatch(Patch patch) {
         patches.add(patch);
+    }
+
+    public void shuffle() {
+        Collections.shuffle(patches);
     }
 
      //Removes the patch with the given patchID from the list
