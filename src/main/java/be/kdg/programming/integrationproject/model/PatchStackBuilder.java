@@ -5,6 +5,7 @@ import java.util.Collections;
 
 public class PatchStackBuilder {
     public static PatchStack build() {
+        //builds PatchStack, will have more shapes after beta
         PatchStack stack = new PatchStack();
         stack.addPatch(new Patch(1, PatchShape.L_SHAPE, 2, 2, 0));
         stack.addPatch(new Patch(2, PatchShape.T_SHAPE, 1, 3, 0));

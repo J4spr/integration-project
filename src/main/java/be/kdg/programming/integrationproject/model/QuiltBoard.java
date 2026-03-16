@@ -62,6 +62,8 @@ public class QuiltBoard {
         return total;
     }
 
+    // checks all possible 7x7 starting positions within the 9x9 grid
+    // returns true as soon as one fully occupied 7x7 area is found
     public boolean hasSevenBySeven() {
         for (int r = 0; r <= SIZE - 7; r++) {
             for (int c = 0; c <= SIZE - 7; c++) {
@@ -71,6 +73,7 @@ public class QuiltBoard {
         return false;
     }
 
+    // checks if a 7x7 area starting at (startRow, startCol) is fully occupied
     private boolean isSevenBySevenAt(int startRow, int startCol) {
         for (int r = startRow; r < startRow + 7; r++) {
             for (int c = startCol; c < startCol + 7; c++) {

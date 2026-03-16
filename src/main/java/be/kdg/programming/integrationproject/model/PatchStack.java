@@ -43,17 +43,17 @@ public class PatchStack {
         Collections.shuffle(patches);
     }
 
-     //Removes the patch with the given patchID from the list
-     //Moves the neutral token to the position of the removed patch
-     //Returns the removed patch
-     public Patch removePatch(int patchID) {
-         for (int i = 0; i < patches.size(); i++) {
-             if (patches.get(i).getPatchID() == patchID) {
-                 Patch removed = patches.remove(i);
-                 neutralTokenPosition = i % patches.size();
-                 return removed;
-             }
-         }
-         return null;
-     }
+    // removes the patch with the given patchID from the circular list
+    // moves the neutral token to the position of the removed patch
+    // using modulo to handle the case where the removed patch was the last in the list
+    public Patch removePatch(int patchID) {
+        for (int i = 0; i < patches.size(); i++) {
+            if (patches.get(i).getPatchID() == patchID) {
+                Patch removed = patches.remove(i);
+                neutralTokenPosition = i % patches.size();
+                return removed;
+            }
+        }
+        return null;
+    }
 }
