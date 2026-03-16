@@ -36,13 +36,14 @@ public class PatchStack {
      //Removes the patch with the given patchID from the list
      //Moves the neutral token to the position of the removed patch
      //Returns the removed patch
-    public Patch removePatch(int patchID) {
-        for (int i = 0; i < patches.size(); i++) {
-            if (patches.get(i).getPatchID() == patchID) {
-                neutralTokenPosition = i;
-                return patches.remove(i);
-            }
-        }
-        return null;
-    }
+     public Patch removePatch(int patchID) {
+         for (int i = 0; i < patches.size(); i++) {
+             if (patches.get(i).getPatchID() == patchID) {
+                 Patch removed = patches.remove(i);
+                 neutralTokenPosition = i % patches.size();
+                 return removed;
+             }
+         }
+         return null;
+     }
 }
