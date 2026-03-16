@@ -1,10 +1,11 @@
 package be.kdg.programming.integrationproject.model;
 
 import be.kdg.programming.integrationproject.model.Enums.GameStatus;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.LinkedList;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 
 public class Game {
@@ -18,6 +19,7 @@ public class Game {
     private Timeboard timeboard;
     private PatchStack patchStack;
     private List<Turn> turns;
+    private Queue<Patch> leatherPatchQueue = new LinkedList<>();
 
     public Game(HumanPlayer player1, Player player2, int startPlayer) {
         this.player1 = player1;
@@ -66,6 +68,10 @@ public class Game {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public Queue<Patch> getLeatherPatchQueue() {
+        return leatherPatchQueue;
     }
 
     public Timeboard getTimeboard() {
@@ -117,6 +123,9 @@ public class Game {
         currentPlayer.updatePosition(newPosition - oldPosition);
         int buttonPositionsPassed = timeboard.countButtonPositionsPassed(oldPosition, newPosition);
         collectButtonIncome(buttonPositionsPassed);
+        int leatherPatchesPassed = timeboard.countLeatherPatchesPassed(oldPosition, newPosition);
+        for (int i = 0; i < leatherPatchesPassed; i++) {
+            leatherPatchQueue.add(Patch.createLeatherPatch(i));
+        }
     }
 }
-    

@@ -17,7 +17,11 @@ public class Patch {
         this.buttonCost = buttonCost;
         this.timeCost = timeCost;
         this.buttonIncome = buttonIncome;
-        this.rotation = PatchRotation.THREESIXTY; // standaard geen rotatie
+        this.rotation = PatchRotation.NOROTATION; // standaard geen rotatie
+    }
+
+    public static Patch createLeatherPatch(int patchID) {
+        return new Patch(patchID, PatchShape.ONE_BY_ONE, 0, 0, 0);
     }
 
     public int getPatchID() {

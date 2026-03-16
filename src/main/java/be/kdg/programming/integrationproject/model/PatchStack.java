@@ -41,4 +41,3 @@ public class PatchStack {
         return null;
     }
 }
-

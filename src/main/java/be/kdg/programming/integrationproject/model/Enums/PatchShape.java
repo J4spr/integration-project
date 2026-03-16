@@ -1,6 +1,10 @@
 package be.kdg.programming.integrationproject.model.Enums;
 
 public enum PatchShape {
+    ONE_BY_ONE(new boolean[][]{
+            {true}
+    }),
+
     SMALL(new boolean[][]{
             {true, true}
     });
