@@ -2,22 +2,25 @@ package be.kdg.programming.integrationproject.model;
 
 public class Timeboard {
     private static final int SIZE = 53;
-    private boolean leatherPatch1x1;
-    private int collectableButtons;
-
-    public int updatePosition(int position) {
-        return position;
-    }
+    private static final int[] BUTTON_POSITIONS = {5, 11, 17, 23, 29, 35, 41, 47};
 
     public int getSize() {
         return SIZE;
     }
 
-    public boolean hasLeatherPatch() {
-        return leatherPatch1x1;
+    public int updatePosition(int currentPosition, int timeCost) {
+        int newPosition = currentPosition + timeCost;
+        if (newPosition >= SIZE) newPosition = SIZE - 1;
+        return newPosition;
     }
 
-    public int getCollectableButtons() {
-        return collectableButtons;
+    public int countButtonPositionsPassed(int oldPosition, int newPosition) {
+        int count = 0;
+        for (int buttonPosition : BUTTON_POSITIONS) {
+            if (buttonPosition > oldPosition && buttonPosition <= newPosition) {
+                count++;
+            }
+        }
+        return count;
     }
 }

@@ -110,5 +110,13 @@ public class Game {
         patch.setRotation(rotation);
         return currentPlayer.getQuiltBoard().placePatch(patch, row, col);
     }
+
+    public void moveToken(int timeCost) {
+        int oldPosition = currentPlayer.getPosition();
+        int newPosition = timeboard.updatePosition(oldPosition, timeCost);
+        currentPlayer.updatePosition(newPosition - oldPosition);
+        int buttonPositionsPassed = timeboard.countButtonPositionsPassed(oldPosition, newPosition);
+        collectButtonIncome(buttonPositionsPassed);
+    }
 }
     
