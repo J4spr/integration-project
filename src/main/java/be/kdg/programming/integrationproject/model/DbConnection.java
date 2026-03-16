@@ -1,8 +1,12 @@
 package be.kdg.programming.integrationproject.model;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DbConnection {
     private final String url;
@@ -10,13 +14,26 @@ public class DbConnection {
     private final String databaseName;
     private final String username;
     private final String password;
+    private final Properties p;
+    private final FileReader fr;
 
     public DbConnection() {
-        this.hostname = "10.134.177.19";
-        this.databaseName = "game";
-        this.username = "game";
-        this.password = "7sur7";
-        this.url = String.format("jdbc:postgresql://%s:5432/%s", this.hostname, this.databaseName);;
+        this.p = new Properties();
+        try {
+            this.fr = new FileReader("db.properties");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            this.p.load(fr);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.hostname = p.getProperty("hostname");
+        this.username = p.getProperty("username");
+        this.password = p.getProperty("password");
+        this.databaseName = p.getProperty("dbname");
+        this.url = String.format("jdbc:postgresql://%s:5432/%s", this.hostname, this.databaseName);
     }
 
     public Connection getConnection() throws SQLException {
