@@ -1,122 +1,135 @@
-DROP TABLE IF EXISTS "PlayerTable";
-DROP TABLE IF EXISTS "MoveTable";
-DROP TABLE IF EXISTS "TurnTable";
-DROP TABLE IF EXISTS "MoveTable";
-DROP TABLE IF EXISTS "PatchTable";
+DROP TABLE IF EXISTS "PlayerTable" CASCADE;
+DROP TABLE IF EXISTS "MoveTable" CASCADE;
+DROP TABLE IF EXISTS "TurnTable" CASCADE;
+DROP TABLE IF EXISTS "MoveTable" CASCADE;
+DROP TABLE IF EXISTS "PatchTable" CASCADE;
+DROP TABLE IF EXISTS "GameTable" CASCADE;
 
 
-CREATE TABLE "PlayerTable" (
+CREATE TABLE "PlayerTable"
+(
 
-                               "PlayerID" int PRIMARY KEY,
+    "PlayerID" SERIAL PRIMARY KEY,
 
-                               "Username" varchar NOT NULL,
+    "Username" varchar NOT NULL,
 
-                               "Email" varchar NOT NULL
-
-);
-
-
-CREATE TABLE "GameTable" (
-
-                             "GameID" int PRIMARY KEY,
-
-                             "GameType" varchar NOT NULL,
-
-                             "State" varchar NOT NULL,
-
-                             "Player1ID" int,
-
-                             "Player2ID" int,
-
-                             "StartingPlayer" int NOT NULL,
-
-                             "GameStartTime" time NOT NULL,
-
-                             "GameEndTime" time,
-
-                             "WinnerID" int,
-
-                             "7x7BonusWinner" int,
-
-                             "EmptySpacesP1" int,
-
-                             "EmptySpacesP2" int
+    "Email"    varchar NOT NULL
 
 );
 
 
-CREATE TABLE "TurnTable" (
+CREATE TABLE "GameTable"
+(
 
-                             "TurnID" int PRIMARY KEY,
+    "GameID"         SERIAL PRIMARY KEY,
 
-                             "GameID" int,
+    "GameType"       varchar NOT NULL,
 
-                             "TurnStartTime" time NOT NULL,
+    "State"          varchar NOT NULL,
 
-                             "TurnEndTime" time
+    "Player1ID"      int,
 
-);
+    "Player2ID"      int,
 
+    "StartingPlayer" int     NOT NULL,
 
-CREATE TABLE "MoveTable" (
+    "GameStartTime"  time    NOT NULL,
 
-                             "MoveID" int PRIMARY KEY,
+    "GameEndTime"    time,
 
-                             "TurnID" int,
+    "WinnerID"       int,
 
-                             "PatchID" int,
+    "7x7BonusWinner" int,
 
-                             "MoveStartTime" time NOT NULL,
+    "EmptySpacesP1"  int,
 
-                             "MoveEndTime" time,
-
-                             "SpecialPatchesCollected" int NOT NULL,
-
-                             "SpacesMoved" int,
-
-                             "Position" int,
-
-                             "RotationDegrees" int,
-
-                             "ButtonsP1" int,
-
-                             "ButtonsP2" int
+    "EmptySpacesP2"  int
 
 );
 
 
-CREATE TABLE "PatchTable" (
+CREATE TABLE "TurnTable"
+(
 
-                              "PatchID" int PRIMARY KEY,
+    "TurnID"        SERIAL PRIMARY KEY,
 
-                              "ButtonCost" int NOT NULL,
+    "GameID"        int,
 
-                              "TimeCost" int NOT NULL,
+    "TurnStartTime" time NOT NULL,
 
-                              "ButtonIncome" int NOT NULL
+    "TurnEndTime"   time
 
 );
 
 
-ALTER TABLE "GameTable" ADD FOREIGN KEY ("Player1ID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+CREATE TABLE "MoveTable"
+(
+
+    "MoveID"                  SERIAL PRIMARY KEY,
+
+    "TurnID"                  int,
+
+    "PatchID"                 int,
+
+    "MoveStartTime"           time NOT NULL,
+
+    "MoveEndTime"             time,
+
+    "SpecialPatchesCollected" int  NOT NULL,
+
+    "SpacesMoved"             int,
+
+    "Position"                int,
+
+    "RotationDegrees"         int,
+
+    "ButtonsP1"               int,
+
+    "ButtonsP2"               int
+
+);
 
 
-ALTER TABLE "GameTable" ADD FOREIGN KEY ("Player2ID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+CREATE TABLE "PatchTable"
+(
+
+    "PatchID"      SERIAL PRIMARY KEY,
+
+    "ButtonCost"   int NOT NULL,
+
+    "TimeCost"     int NOT NULL,
+
+    "ButtonIncome" int NOT NULL
+
+);
 
 
-ALTER TABLE "GameTable" ADD FOREIGN KEY ("WinnerID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "GameTable"
+    ADD FOREIGN KEY ("Player1ID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
 
 
-ALTER TABLE "GameTable" ADD FOREIGN KEY ("7x7BonusWinner") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "GameTable"
+    ADD FOREIGN KEY ("Player2ID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
 
 
-ALTER TABLE "TurnTable" ADD FOREIGN KEY ("GameID") REFERENCES "GameTable" ("GameID") DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "GameTable"
+    ADD FOREIGN KEY ("WinnerID") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
 
 
-ALTER TABLE "MoveTable" ADD FOREIGN KEY ("TurnID") REFERENCES "TurnTable" ("TurnID") DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "GameTable"
+    ADD FOREIGN KEY ("7x7BonusWinner") REFERENCES "PlayerTable" ("PlayerID") DEFERRABLE INITIALLY IMMEDIATE;
 
 
-ALTER TABLE "MoveTable" ADD FOREIGN KEY ("PatchID") REFERENCES "PatchTable" ("PatchID") DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "TurnTable"
+    ADD FOREIGN KEY ("GameID") REFERENCES "GameTable" ("GameID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "MoveTable"
+    ADD FOREIGN KEY ("TurnID") REFERENCES "TurnTable" ("TurnID") DEFERRABLE INITIALLY IMMEDIATE;
+
+
+ALTER TABLE "MoveTable"
+    ADD FOREIGN KEY ("PatchID") REFERENCES "PatchTable" ("PatchID") DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE "PlayerTable"
     ADD CONSTRAINT unique_username UNIQUE ("Username"),
