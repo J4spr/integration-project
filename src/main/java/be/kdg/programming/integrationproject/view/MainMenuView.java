@@ -10,6 +10,7 @@ public class MainMenuView {
     private Button startButton;
     private Button rulesButton;
     private Button settingsButton;
+    private Button leaderboardButton;
     private Image image;
     private BackgroundImage backgroundImage;
     private BackgroundSize backgroundSize;
@@ -20,26 +21,27 @@ public class MainMenuView {
 
 
     public MainMenuView() {
-        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        image = new Image(path);
-        backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         initialiseNodes();
         layoutNodes();
     }
 
     private void initialiseNodes() {
+        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
+        image = new Image(path);
+        backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+
         this.stPane = new StackPane();
         this.pane = new GridPane();
 
-        this.stPane.setBackground(new Background(backgroundImage));
 
         this.startButton = new Button("Start");
         this.rulesButton = new Button("Rules");
         this.settingsButton = new Button("Settings");
-
+        this.leaderboardButton = new Button("Leaderboard");
     }
 
     private void layoutNodes() {
+        this.stPane.setBackground(new Background(backgroundImage));
         this.pane.setPadding(new Insets(30));
         this.pane.setVgap(10);
         this.pane.setHgap(0);
@@ -47,7 +49,8 @@ public class MainMenuView {
 
         this.pane.add(this.startButton, 0, 0);
         this.pane.add(this.rulesButton, 0, 1);
-        this.pane.add(this.settingsButton, 0, 2);
+        this.pane.add(this.leaderboardButton, 0, 2);
+        this.pane.add(this.settingsButton, 0, 3);
 
         this.stPane.getChildren().add(pane);
     }
@@ -58,17 +61,21 @@ public class MainMenuView {
     }
 
     public Button getRulesButton() {
-        return rulesButton;
+        return this.rulesButton;
     }
 
     public Button getSettingsButton() {
-        return settingsButton;
+        return this.settingsButton;
     }
 
-
+public Button getLeaderboardButton(){
+        return this.leaderboardButton;
+}
     public Pane getPane() {
         return stPane;
     }
+
+
 
 
 }
