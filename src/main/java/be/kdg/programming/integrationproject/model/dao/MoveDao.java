@@ -19,16 +19,26 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
             stmnt.setInt(1, moveId);
             try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
+                    // You must provide ALL arguments defined in the Move constructor
                     return new Move(
                             rs.getInt("MoveID"),
+                            rs.getInt("TurnID"),
+                            rs.getInt("PatchID"),
                             rs.getTime("MoveStartTime"),
-                            rs.getInt("SpacesMoved")
+                            rs.getTime("MoveEndTime"),
+                            rs.getInt("SpecialPatchesCollected"),
+                            rs.getInt("SpacesMoved"),
+                            rs.getInt("Position"),
+                            rs.getInt("RotationDegrees"),
+                            rs.getInt("ButtonsP1"),
+                            rs.getInt("ButtonsP2")
                     );
                 }
             }
         }
         return null;
     }
+     
 
     @Override
     public List<Move> findAll() throws SQLException {
@@ -37,7 +47,7 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
         try (Statement stmnt = getConnection().createStatement();
              ResultSet rs = stmnt.executeQuery(sql)) {
             while (rs.next()) {
-                moves.add(rs.)
+//                TODO add logic here
             }
         }
         return moves;
