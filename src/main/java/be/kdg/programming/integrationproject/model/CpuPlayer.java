@@ -37,8 +37,8 @@ public class CpuPlayer extends Player {
             //try up to 20 random positions and rotations for each patch
             for (int attempt = 0; attempt < 20; attempt++) {
                 PatchRotation randomRotation = rotations[random.nextInt(rotations.length)];
-                int randomRow = random.nextInt(9);
-                int randomCol = random.nextInt(9);
+                int randomRow = random.nextInt(QuiltBoard.getSize());
+                int randomCol = random.nextInt(QuiltBoard.getSize());
 
                 //buyAndPlacePatch returns true if the move was valid and executed
                 if (game.buyAndPlacePatch(patch.getPatchID(), randomRow, randomCol, randomRotation)) return;

@@ -13,6 +13,10 @@ public class QuiltBoard {
         return grid;
     }
 
+    public static int getSize() {
+        return SIZE;
+    }
+
     //Checks if a patch can be placed at the given position without
     //going out of bounds or overlapping with existing patches.
     public boolean canPlacePatch(Patch patch, int row, int col) {
