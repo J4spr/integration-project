@@ -33,7 +33,7 @@ public class DbConnection {
         this.username = p.getProperty("username");
         this.password = p.getProperty("password");
         this.databaseName = p.getProperty("dbname");
-        this.url = String.format("jdbc:postgresql://%s:5432/%s", this.hostname, this.databaseName);
+        this.url = String.format("jdbc:postgresql://%s:5433/%s", this.hostname, this.databaseName);
     }
 
     public Connection getConnection() throws SQLException {
