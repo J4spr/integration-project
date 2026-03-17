@@ -22,29 +22,18 @@ public class SettingsPresenter {
     }
 
     private void addEventHandlers() {
-        view.getFullscreenBtn().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) view.getPane().getScene().getWindow();
-                stage.setFullScreenExitHint("");
-                stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-                stage.setFullScreen(!stage.isFullScreen());
-            }
+        view.getFullscreenBtn().setOnAction(event -> {
+            Stage stage = (Stage) view.getPane().getScene().getWindow();
+            stage.setFullScreenExitHint("");
+            stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+            stage.setFullScreen(!stage.isFullScreen());
         });
 
-        view.getBtnBack().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                view.getPane().getScene().setRoot(mainMenuView.getPane());
-            }
-        });
+        view.getBtnBack().setOnAction(event -> view.getPane().getScene().setRoot(mainMenuView.getPane()));
 
-        view.getClearLeaderBoardBtn().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                clrlb.executeClear();
-                System.out.println("Clear in progress");
-            }
+        view.getClearLeaderBoardBtn().setOnAction(event -> {
+            clrlb.executeClear();
+            System.out.println("Clear in progress");
         });
     }
 }
