@@ -9,7 +9,7 @@ public class PatchStack {
     private final LinkedList<Patch> patches = new LinkedList<>();
     private int neutralTokenPosition;
 
-    //Returns the 3 available patches to the right of the neutral token.
+    //returns the 3 available patches to the right of the neutral token.
     public List<Patch> getAvailablePatches() {
         List<Patch> available = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
@@ -19,19 +19,19 @@ public class PatchStack {
         return available;
     }
 
-     //Returns the position of the neutral token
+     //returns the position of the neutral token
     public int getNeutralToken() {
         return this.neutralTokenPosition;
     }
 
-    //Adds a patch to the list
+    //adds a patch to the list
     public void addPatch(Patch patch) {
         patches.add(patch);
     }
 
-     //Removes the patch with the given patchID from the list
-     //Moves the neutral token to the position of the removed patch
-     //Returns the removed patch
+     //removes the patch with the given patchID from the list
+     //moves the neutral token to the position of the removed patch
+     //returns the removed patch
     public Patch removePatch(int patchID) {
         for (int i = 0; i < patches.size(); i++) {
             if (patches.get(i).getPatchID() == patchID) {
@@ -43,7 +43,9 @@ public class PatchStack {
     }
 
     public Patch getPatch(int patchID) {
-        return this.patches.get(patchID);
+        return patches.stream()
+                .filter(p -> p.getPatchID() == patchID)
+                .findFirst().orElse(null);
     }
 
     public void shuffle() {
