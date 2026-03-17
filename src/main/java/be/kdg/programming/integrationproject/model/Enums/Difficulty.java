@@ -1,6 +1,7 @@
 package be.kdg.programming.integrationproject.model.Enums;
 
 public enum Difficulty {
+    RANDOM("random"),
     EASY("easy"),
     MEDIUM("medium"),
     HARD("hard");
@@ -14,5 +15,4 @@ public enum Difficulty {
     public String getDifficulty() {
         return this.difficulty;
     }
-
 }
