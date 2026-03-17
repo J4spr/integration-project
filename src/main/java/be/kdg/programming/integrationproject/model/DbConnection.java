@@ -37,6 +37,12 @@ public class DbConnection {
     }
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Could not load Database class");
+            System.exit(1);
+        }
+        return DriverManager.getConnection(this.url, this.username, this.password);
     }
 }
