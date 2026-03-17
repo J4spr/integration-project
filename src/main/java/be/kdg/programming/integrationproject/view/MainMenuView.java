@@ -28,34 +28,33 @@ public class MainMenuView {
     }
 
     private void initialiseNodes() {
-        stPane = new StackPane();
-        pane = new GridPane();
+        this.stPane = new StackPane();
+        this.pane = new GridPane();
 
-        stPane.setBackground(new Background(backgroundImage));
+        this.stPane.setBackground(new Background(backgroundImage));
 
-        startButton = new Button("Start");
-        rulesButton = new Button("Rules");
-        settingsButton = new Button("Settings");
+        this.startButton = new Button("Start");
+        this.rulesButton = new Button("Rules");
+        this.settingsButton = new Button("Settings");
 
     }
 
     private void layoutNodes() {
-        pane.setPadding(new Insets(30));
-        pane.setVgap(10);
-        pane.setHgap(0);
-        pane.setAlignment(Pos.CENTER);
+        this.pane.setPadding(new Insets(30));
+        this.pane.setVgap(10);
+        this.pane.setHgap(0);
+        this.pane.setAlignment(Pos.CENTER);
 
+        this.pane.add(this.startButton, 0, 0);
+        this.pane.add(this.rulesButton, 0, 1);
+        this.pane.add(this.settingsButton, 0, 2);
 
-        pane.add(startButton, 0, 0);
-        pane.add(rulesButton, 0, 1);
-        pane.add(settingsButton, 0, 2);
-
-        stPane.getChildren().add(pane);
+        this.stPane.getChildren().add(pane);
     }
 
 
     public Button getStartButton() {
-        return startButton;
+        return this.startButton;
     }
 
     public Button getRulesButton() {
@@ -66,8 +65,10 @@ public class MainMenuView {
         return settingsButton;
     }
 
+
     public Pane getPane() {
         return stPane;
     }
+
 
 }

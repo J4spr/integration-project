@@ -2,9 +2,9 @@
 FROM postgres:latest
 
 # Set environment variables for the default database
-ENV POSTGRES_DB=game
 ENV POSTGRES_USER=game
 ENV POSTGRES_PASSWORD=7sur7
+ENV POSTGRES_DB=game
 
 # Copy your SQL file to the special initialization folder
 # Any .sql files here are executed when the container first starts

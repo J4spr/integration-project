@@ -1,19 +1,23 @@
 package be.kdg.programming.integrationproject.presenter;
 
+import be.kdg.programming.integrationproject.model.ClearLeaderBoard;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.SettingsView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 public class SettingsPresenter {
     private SettingsView view;
     private MainMenuView mainMenuView;
+    private ClearLeaderBoard clrlb;
 
     public SettingsPresenter(SettingsView view, MainMenuView mainMenuView) {
         this.view = view;
         this.mainMenuView = mainMenuView;
+        this.clrlb = new ClearLeaderBoard();
         addEventHandlers();
     }
 
@@ -32,7 +36,14 @@ public class SettingsPresenter {
             @Override
             public void handle(ActionEvent event) {
                 view.getPane().getScene().setRoot(mainMenuView.getPane());
-//                add new comment
+            }
+        });
+
+        view.getClearLeaderBoardBtn().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                clrlb.executeClear();
+                System.out.println("Clear in progress");
             }
         });
     }
