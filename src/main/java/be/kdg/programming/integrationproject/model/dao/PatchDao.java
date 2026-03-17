@@ -1,6 +1,7 @@
 package be.kdg.programming.integrationproject.model.dao;
 
 import be.kdg.programming.integrationproject.model.DbConnection;
+import be.kdg.programming.integrationproject.model.Enums.PatchShape;
 import be.kdg.programming.integrationproject.model.Patch;
 import java.sql.*;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class PatchDao extends AbstractDao implements Dao<Patch> {
     private Patch mapResultSetToPatch(ResultSet rs) throws SQLException {
         return new Patch(
                 rs.getInt("PatchID"),
+                PatchShape.L_SHAPE, // placeholder
                 rs.getInt("ButtonCost"),
                 rs.getInt("TimeCost"),
                 rs.getInt("ButtonIncome")

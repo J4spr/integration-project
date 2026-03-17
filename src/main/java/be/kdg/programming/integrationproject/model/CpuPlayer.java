@@ -41,7 +41,7 @@ public class CpuPlayer extends Player {
                 int randomCol = random.nextInt(9);
 
                 // buyAndPlacePatch returns true if the move was valid and executed
-                if (game.buyAndPlacePatch(patch.getPatchId(), randomRow, randomCol, randomRotation)) return;
+                if (game.buyAndPlacePatch(patch.getPatchID(), randomRow, randomCol, randomRotation)) return;
             }
         }
         // no valid patch placement found, pass the turn

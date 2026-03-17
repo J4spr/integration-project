@@ -1,6 +1,7 @@
 package be.kdg.programming.integrationproject.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,6 +44,10 @@ public class PatchStack {
 
     public Patch getPatch(int patchID) {
         return this.patches.get(patchID);
+    }
+
+    public void shuffle() {
+        Collections.shuffle(patches);
     }
 }
 
