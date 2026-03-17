@@ -3,14 +3,25 @@ package be.kdg.programming.integrationproject.model;
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;
 
 public abstract class Player {
+    private int playerId;
     private int position;
     private int totalButtons;
     private int totalButtonIncome;
     private QuiltBoard quiltBoard;
     private TokenColor color;
 
+    //constructor
     public Player() {
         this.quiltBoard = new QuiltBoard();
+    }
+
+    //getters & setters
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
     public QuiltBoard getQuiltBoard() {

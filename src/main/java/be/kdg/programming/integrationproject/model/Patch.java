@@ -17,7 +17,7 @@ public class Patch {
         this.buttonCost = buttonCost;
         this.timeCost = timeCost;
         this.buttonIncome = buttonIncome;
-        this.rotation = PatchRotation.NOROTATION; // standaard geen rotatie
+        this.rotation = PatchRotation.NOROTATION; //standaard geen rotatie
     }
 
     //patch getters & setters
@@ -53,8 +53,8 @@ public class Patch {
         return new Patch(patchID, PatchShape.ONE_BY_ONE, 0, 0, 0);
     }
 
-    // returns the patch shape as a 2D boolean array rotated according to the current rotation
-// the dimensions of the array change when rotating 90 or 270 degrees (rows and cols are swapped)
+    //returns the patch shape as a 2D boolean array rotated according to the current rotation
+    //the dimensions of the array change when rotating 90 or 270 degrees (rows and cols are swapped)
     public boolean[][] getRotatedShape() {
         boolean[][] original = shape.getShape();
         int rows = original.length;
@@ -62,7 +62,7 @@ public class Patch {
 
         switch (rotation) {
             case NINETY: {
-                // rotating 90 degrees clockwise: new dimensions are [cols][rows]
+                //rotating 90 degrees clockwise: new dimensions are [cols][rows]
                 boolean[][] rotated = new boolean[cols][rows];
                 for (int r = 0; r < rows; r++)
                     for (int c = 0; c < cols; c++)
@@ -70,7 +70,7 @@ public class Patch {
                 return rotated;
             }
             case ONEEIGHTY: {
-                // rotating 180 degrees: dimensions stay the same, values are mirrored
+                //rotating 180 degrees: dimensions stay the same, values are mirrored
                 boolean[][] rotated = new boolean[rows][cols];
                 for (int r = 0; r < rows; r++)
                     for (int c = 0; c < cols; c++)
@@ -78,7 +78,7 @@ public class Patch {
                 return rotated;
             }
             case TWOSEVENTY: {
-                // rotating 270 degrees clockwise: new dimensions are [cols][rows]
+                //rotating 270 degrees clockwise: new dimensions are [cols][rows]
                 boolean[][] rotated = new boolean[cols][rows];
                 for (int r = 0; r < rows; r++)
                     for (int c = 0; c < cols; c++)
@@ -86,7 +86,7 @@ public class Patch {
                 return rotated;
             }
             default:
-                // no rotation, return original shape
+                //no rotation, return original shape
                 return original;
         }
     }
