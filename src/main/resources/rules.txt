@@ -1,6 +1,6 @@
 ===== GAME OVERVIEW =====
 Players: 2
-Goal: Earn the most buttons by the end of the game by building the most complete 9x9 quilt board.
+Goal: Earn the most totalButtons by the end of the game by building the most complete 9x9 quilt board.
 
 
 ===== COMPONENTS =====
@@ -9,7 +9,7 @@ Goal: Earn the most buttons by the end of the game by building the most complete
 - 1 neutral token (small leather piece marker)
 - 2 player tokens (placed on the time board)
 - ~33 patch tiles (each with a button cost, time cost, and button income)
-- Buttons (currency) — each player starts with 5 buttons
+- Buttons (currency) — each player starts with 5 totalButtons
 - Special 1x1 leather patches (placed on specific time board spaces)
 
 
@@ -17,7 +17,7 @@ Goal: Earn the most buttons by the end of the game by building the most complete
 1. Place all patches in a random circle around the time board.
 2. Find the smallest patch (the 2x2 patch) and place the neutral token directly to its left.
 3. Each player places their token on space 0 of the time board.
-4. Each player receives 5 buttons.
+4. Each player receives 5 totalButtons.
 5. Randomly determine the first player.
 
 
@@ -41,7 +41,7 @@ On your turn, you MUST choose one of two actions:
 ===== TIME BOARD & TURN ORDER =====
 - The player whose token is furthest back always goes next.
 - If tokens are on the same space, the player on top goes next.
-- Passing over or landing on button income spaces (marked with a button icon): receive buttons equal to your current button income (sum of button icons on all patches placed on your quilt board).
+- Passing over or landing on button income spaces (marked with a button icon): receive totalButtons equal to your current button income (sum of button icons on all patches placed on your quilt board).
 - Passing over or landing on leather patch spaces: take the 1x1 leather patch tile and place it anywhere empty on your quilt board.
 
 

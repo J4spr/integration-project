@@ -8,17 +8,26 @@ public class QuiltBoard {
     private final boolean[][] grid = new boolean[SIZE][SIZE];//true = occupied, false = empty
     private final List<Patch> placedPatches = new ArrayList<>();//list of placed patches
 
+    //getter
+    public boolean[][] getGrid() {
+        return grid;
+    }
+
+    public static int getSize() {
+        return SIZE;
+    }
+
     //Checks if a patch can be placed at the given position without
     //going out of bounds or overlapping with existing patches.
     public boolean canPlacePatch(Patch patch, int row, int col) {
-        boolean[][] shape = patch.getShape().getShape();
+        boolean[][] shape = patch.getRotatedShape();
         for (int r = 0; r < shape.length; r++) {
             for (int c = 0; c < shape[r].length; c++) {
                 if (shape[r][c]) {
                     int newRow = row + r;
                     int newCol = col + c;
-                    if (newRow >= SIZE || newCol >= SIZE) return false;//out of bounds
-                    if (grid[newRow][newCol]) return false;//cell is occupied
+                    if (newRow < 0 || newCol < 0 || newRow >= SIZE || newCol >= SIZE) return false;
+                    if (grid[newRow][newCol]) return false;
                 }
             }
         }
@@ -29,7 +38,7 @@ public class QuiltBoard {
     //Returns false if the patch cannot be placed
     public boolean placePatch(Patch patch, int row, int col) {
         if (!canPlacePatch(patch, row, col)) return false;
-        boolean[][] shape = patch.getShape().getShape();
+        boolean[][] shape = patch.getRotatedShape();
         for (int r = 0; r < shape.length; r++) {
             for (int c = 0; c < shape[r].length; c++) {
                 if (shape[r][c]) {
@@ -53,12 +62,33 @@ public class QuiltBoard {
         return count;
     }
 
-    //Counts the total button income of all placed patches
+    //sanity check method - should always equal player's totalButtonIncome
     public int countButtons() {
         int total = 0;
         for (Patch patch : placedPatches) {
             total += patch.getButtonIncome();
         }
         return total;
+    }
+
+    //checks all possible 7x7 starting positions within the 9x9 grid
+    //returns true as soon as one fully occupied 7x7 area is found
+    public boolean hasSevenBySeven() {
+        for (int r = 0; r <= SIZE - 7; r++) {
+            for (int c = 0; c <= SIZE - 7; c++) {
+                if (isSevenBySevenAt(r, c)) return true;
+            }
+        }
+        return false;
+    }
+
+    //checks if a 7x7 area starting at (startRow, startCol) is fully occupied
+    private boolean isSevenBySevenAt(int startRow, int startCol) {
+        for (int r = startRow; r < startRow + 7; r++) {
+            for (int c = startCol; c < startCol + 7; c++) {
+                if (!grid[r][c]) return false;
+            }
+        }
+        return true;
     }
 }
