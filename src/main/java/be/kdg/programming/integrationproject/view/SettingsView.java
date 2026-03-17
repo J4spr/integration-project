@@ -15,6 +15,7 @@ public class SettingsView {
     private BackgroundImage backgroundImage;
     private BackgroundSize backgroundSize;
     private Button btnBack;
+    private Button clearLeaderBoardBtn;
     private StackPane sp;
     private Slider musicSlider;
     private Label musicSliderLabel;
@@ -31,9 +32,11 @@ public class SettingsView {
         this.sp = new StackPane();
         this.pane = new VBox();
         this.musicSlider = new Slider(0, 100, 50);
+
         this.musicSliderLabel = new Label("Music controls");
         this.btnBack = new Button("Go back");
         this.fullscreenBtn = new Button("Toggle Fullscreen");
+        this.clearLeaderBoardBtn = new Button("Clear leaderboard");
 
 
         sp.setBackground(new Background(backgroundImage));
@@ -52,6 +55,8 @@ public class SettingsView {
         pane.setPadding(new Insets(20));
         pane.setSpacing(20);
         musicSlider.adjustValue(100);
+        this.sp.getChildren().add(this.clearLeaderBoardBtn);
+
 
     }
 
@@ -74,5 +79,9 @@ public class SettingsView {
 
     public Label getMusicSliderLabel() {
         return musicSliderLabel;
+    }
+
+    public Button getClearLeaderBoardBtn() {
+        return this.clearLeaderBoardBtn;
     }
 }

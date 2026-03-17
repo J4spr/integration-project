@@ -12,8 +12,7 @@ public class PatchStack {
     //Returns the 3 available patches to the right of the neutral token.
     public List<Patch> getAvailablePatches() {
         List<Patch> available = new ArrayList<>();
-        int count = Math.min(3, patches.size());
-        for (int i = 1; i <= count; i++) {
+        for (int i = 1; i <= 3; i++) {
             int index = (neutralTokenPosition + i) % patches.size();
             available.add(patches.get(index));
         }
@@ -25,35 +24,30 @@ public class PatchStack {
         return this.neutralTokenPosition;
     }
 
-    public Patch getPatch(int patchID) {
-        for (Patch patch : patches) {
-            if (patch.getPatchID() == patchID) {
-                return patch;
-            }
-        }
-        return null;
-    }
-
     //Adds a patch to the list
     public void addPatch(Patch patch) {
         patches.add(patch);
     }
 
-    public void shuffle() {
-        Collections.shuffle(patches);
-    }
-
-    // removes the patch with the given patchID from the circular list
-    // moves the neutral token to the position of the removed patch
-    // using modulo to handle the case where the removed patch was the last in the list
+     //Removes the patch with the given patchID from the list
+     //Moves the neutral token to the position of the removed patch
+     //Returns the removed patch
     public Patch removePatch(int patchID) {
         for (int i = 0; i < patches.size(); i++) {
             if (patches.get(i).getPatchID() == patchID) {
-                Patch removed = patches.remove(i);
-                neutralTokenPosition = i % patches.size();
-                return removed;
+                neutralTokenPosition = i;
+                return patches.remove(i);
             }
         }
         return null;
     }
+
+    public Patch getPatch(int patchID) {
+        return this.patches.get(patchID);
+    }
+
+    public void shuffle() {
+        Collections.shuffle(patches);
+    }
 }
+
