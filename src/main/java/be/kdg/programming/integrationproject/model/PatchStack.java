@@ -33,12 +33,16 @@ public class PatchStack {
      //Returns the removed patch
     public Patch removePatch(int patchID) {
         for (int i = 0; i < patches.size(); i++) {
-            if (patches.get(i).getPatchId() == patchID) {
+            if (patches.get(i).getPatchID() == patchID) {
                 neutralTokenPosition = i;
                 return patches.remove(i);
             }
         }
         return null;
+    }
+
+    public Patch getPatch(int patchID) {
+        return this.patches.get(patchID);
     }
 }
 
