@@ -5,10 +5,23 @@ import be.kdg.programming.integrationproject.view.MainMenuView;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        try (Connection conn = DatabaseManager.connect()) {
+            DatabaseInitializer.createTables(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        
         MainMenuView view = new MainMenuView();
         new MainMenuPresenter(view);
 
@@ -20,7 +33,5 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) { launch(args);}
 }

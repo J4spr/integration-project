@@ -11,6 +11,9 @@ public class DatabaseManager {
     private static final String PASSWORD = "password";
 
     public static Connection connect() throws SQLException {
+        // Methode om een verbinding te maken met de database
         return DriverManager.getConnection(URL, USER, PASSWORD);
+        // Maakt en retourneert een nieuwe Connection met opgegeven URL, gebruiker en wachtwoord
+
     }
 }
