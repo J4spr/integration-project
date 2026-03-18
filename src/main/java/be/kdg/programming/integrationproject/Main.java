@@ -14,14 +14,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
-        try (Connection conn = DatabaseManager.connect()) {
-            DatabaseInitializer.createTables(conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        
         MainMenuView view = new MainMenuView();
         new MainMenuPresenter(view);
 
