@@ -6,9 +6,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class StartMenuView {
+
+    private VBox root;
+
     private Label title;
     private Label info;
-    private VBox pane;
 
     private Button btnStartGame;
     private Button btnBack;
@@ -19,28 +21,30 @@ public class StartMenuView {
     }
 
     private void initialiseNodes() {
-        pane = new VBox();
-        title = new Label("Start Menu");
-        info = new Label("Press start to begin.");
+
+        root = new VBox(20);
+        root.setPadding(new Insets(30));
+
+        title = new Label("Start Patchwork");
+        info = new Label("Start a new game against CPU.");
+
         btnStartGame = new Button("Start Game");
         btnBack = new Button("Back");
     }
 
     private void layoutNodes() {
-        pane.setPadding(new Insets(30));
-        pane.setSpacing(15);
-        pane.getChildren().addAll(title, info, btnStartGame, btnBack);
+
+        root.getChildren().addAll(
+                title,
+                info,
+                btnStartGame,
+                btnBack
+        );
     }
 
-    public VBox getPane() {
-        return pane;
-    }
+    public VBox getPane() { return root; }
 
-    public Button getBtnStartGame() {
-        return btnStartGame;
-    }
+    public Button getBtnStartGame() { return btnStartGame; }
 
-    public Button getBtnBack() {
-        return btnBack;
-    }
+    public Button getBtnBack() { return btnBack; }
 }

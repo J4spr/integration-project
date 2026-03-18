@@ -1,112 +1,149 @@
 package be.kdg.programming.integrationproject.presenter;
 
+import be.kdg.programming.integrationproject.model.*;
+import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 import be.kdg.programming.integrationproject.view.GameView;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
+import java.util.List;
+
 public class GamePresenter {
 
+    private final Game game;
     private final GameView view;
     private final MainMenuView mainMenuView;
 
-    private int currentPlayer = 1;
+    private int selectedPatchId = -1;
+    private PatchRotation selectedRotation = PatchRotation.NOROTATION;
 
-    private int[][] selectedPatch = null;
+    public GamePresenter(Game game, GameView view, MainMenuView mainMenuView) {
 
-    private int[][] boardState = new int[9][9];
-
-    public GamePresenter(GameView view, MainMenuView mainMenuView) {
-
+        this.game = game;
         this.view = view;
         this.mainMenuView = mainMenuView;
 
-        createPatchStore();
+        renderAll();
         addBoardHandlers();
         addEventHandlers();
     }
-    private void showPlacementError() {
 
-        Stage popup = new Stage();
-
-        VBox box = new VBox(10);
-        box.setStyle("-fx-background-color: #ffdddd; -fx-padding: 15;");
-        box.setPrefWidth(220);
-
-        Label msg = new Label("Invalid patch placement!");
-        Button close = new Button("X");
-
-        close.setOnAction(e -> popup.close());
-
-        box.getChildren().addAll(close, msg);
-
-        Scene scene = new Scene(box);
-        popup.setScene(scene);
-        popup.setAlwaysOnTop(true);
-        popup.show();
-
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
-        delay.setOnFinished(e -> popup.close());
-        delay.play();
-    }
-    private void createPatchStore() {
-
-        int[][] patch1 = {
-                {1,1},
-                {1,0}
-        };
-
-        int[][] patch2 = {
-                {1,1,1}
-        };
-
-        int[][] patch3 = {
-                {1},
-                {1},
-                {1}
-        };
-
-        addPatchButton(patch1);
-        addPatchButton(patch2);
-        addPatchButton(patch3);
+    private void renderAll() {
+        renderBoards();
+        renderPatchStore();
+        renderInfo();
+        renderTimeTrack();
     }
 
-    private void addPatchButton(int[][] shape) {
+    private void renderBoards() {
 
-        GridPane patchVisual = new GridPane();
+        boolean[][] gridP1 =
+                game.getPlayer1().getQuiltBoard().getGrid();
 
-        for (int r = 0; r < shape.length; r++) {
-            for (int c = 0; c < shape[r].length; c++) {
+        boolean[][] gridP2 =
+                game.getPlayer2().getQuiltBoard().getGrid();
 
-                if (shape[r][c] == 1) {
+        Button[][] cellsP1 = view.getCellsP1();
+        Button[][] cellsP2 = view.getCellsP2();
 
-                    Button part = new Button();
-                    part.setPrefSize(20, 20);
-                    part.setStyle("-fx-background-color: orange;");
-                    part.setMouseTransparent(true);
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
 
-                    patchVisual.add(part, c, r);
-                }
+                cellsP1[r][c].setStyle(
+                        gridP1[r][c] ?
+                                "-fx-background-color: lightblue;" :
+                                "-fx-background-color: beige;"
+                );
+
+                cellsP2[r][c].setStyle(
+                        gridP2[r][c] ?
+                                "-fx-background-color: lightgreen;" :
+                                "-fx-background-color: beige;"
+                );
             }
         }
+    }
 
-        patchVisual.setOnMouseClicked(e -> {
-            selectedPatch = shape;
-            System.out.println("Patch selected");
-        });
+    private void renderPatchStore() {
 
-        view.getPatchStore().getChildren().add(patchVisual);
+        view.getPatchStore().getChildren().clear();
+
+        List<Patch> patches =
+                game.getPatchStack().getAvailablePatches();
+
+        for (Patch patch : patches) {
+
+            GridPane visual = new GridPane();
+
+            boolean[][] shape = patch.getRotatedShape();
+
+            for (int r = 0; r < shape.length; r++) {
+                for (int c = 0; c < shape[r].length; c++) {
+
+                    if (shape[r][c]) {
+                        Button part = new Button();
+                        part.setPrefSize(18,18);
+                        part.setMouseTransparent(true);
+                        visual.add(part,c,r);
+                    }
+                }
+            }
+
+            visual.setOnMouseClicked(e ->
+                    selectedPatchId = patch.getPatchID()
+            );
+
+            view.getPatchStore().getChildren().add(visual);
+        }
+    }
+
+    private void renderInfo() {
+
+        Player current = game.getCurrentPlayer();
+
+        view.setTurnText("Turn: Player " + current.getPlayerId());
+
+        view.setButtonsP1(game.getPlayer1().getTotalButtons());
+        view.setButtonsP2(game.getPlayer2().getTotalButtons());
+
+        view.setLeather(game.getLeatherPatchQueue().size());
+    }
+
+    private void renderTimeTrack() {
+
+        HBox track = view.getTimeTrack();
+
+        int p1 = game.getPlayer1().getPosition();
+        int p2 = game.getPlayer2().getPosition();
+
+        for (int i = 0; i < track.getChildren().size(); i++) {
+
+            Label cell = (Label) track.getChildren().get(i);
+
+            cell.setText("");
+
+            if (i == p1 && i == p2) {
+                cell.setText("B");
+            } else if (i == p1) {
+                cell.setText("1");
+            } else if (i == p2) {
+                cell.setText("2");
+            }
+        }
     }
 
     private void addBoardHandlers() {
 
-        Button[][] cells = view.getCells();
+        Button[][] cellsP1 = view.getCellsP1();
+        Button[][] cellsP2 = view.getCellsP2();
 
         for (int r = 0; r < 9; r++) {
             for (int c = 0; c < 9; c++) {
@@ -114,77 +151,118 @@ public class GamePresenter {
                 int row = r;
                 int col = c;
 
-                cells[r][c].setOnAction(e -> tryPlacePatch(row, col));
+                cellsP1[r][c].setOnAction(e -> {
+                    if (game.getCurrentPlayer() == game.getPlayer1())
+                        handleBoardClick(row,col);
+                });
+
+                cellsP2[r][c].setOnAction(e -> {
+                    if (game.getCurrentPlayer() == game.getPlayer2())
+                        handleBoardClick(row,col);
+                });
             }
         }
     }
 
-    private void tryPlacePatch(int startRow, int startCol) {
+    private void handleBoardClick(int row, int col) {
 
-        if (selectedPatch == null) return;
+        if (selectedPatchId == -1) return;
 
-        if (!isValidPlacement(startRow, startCol)) {
-            showPlacementError();
+        boolean success =
+                game.buyAndPlacePatch(
+                        selectedPatchId,
+                        row,
+                        col,
+                        selectedRotation
+                );
+
+        if (!success) {
+            showError();
             return;
         }
 
-        placePatch(startRow, startCol);
+        selectedPatchId = -1;
 
-        switchTurn();
+        cpuTurnIfNeeded();
+
+        renderAll();
+
+        checkGameEnd();
     }
 
-    private boolean isValidPlacement(int startRow, int startCol) {
+    private void cpuTurnIfNeeded() {
 
-        for (int r = 0; r < selectedPatch.length; r++) {
-            for (int c = 0; c < selectedPatch[r].length; c++) {
+        if (game.getCurrentPlayer() instanceof CpuPlayer cpu) {
 
-                if (selectedPatch[r][c] == 1) {
+            cpu.decideTurn(game);
 
-                    int boardR = startRow + r;
-                    int boardC = startCol + c;
+            renderAll();
 
-                    if (boardR >= 9 || boardC >= 9) return false;
-
-                    if (boardState[boardR][boardC] != 0) return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private void placePatch(int startRow, int startCol) {
-
-        for (int r = 0; r < selectedPatch.length; r++) {
-            for (int c = 0; c < selectedPatch[r].length; c++) {
-
-                if (selectedPatch[r][c] == 1) {
-
-                    int boardR = startRow + r;
-                    int boardC = startCol + c;
-
-                    boardState[boardR][boardC] = currentPlayer;
-
-                    view.colorCell(boardR, boardC, currentPlayer);
-                }
-            }
+            checkGameEnd();
         }
     }
 
-    private void switchTurn() {
+    private void checkGameEnd() {
 
-        currentPlayer = (currentPlayer == 1) ? 2 : 1;
+        if (game.getStatus() == be.kdg.programming.integrationproject.model.Enums.GameStatus.FINISHED) {
 
-        view.setTurnText("Turn: Player " + currentPlayer);
+            Stage popup = new Stage();
 
-        selectedPatch = null;
+            VBox box = new VBox(10);
+
+            Label msg = new Label(
+                    "Winner: Player " +
+                            game.getWinner().getPlayerId()
+            );
+
+            box.getChildren().add(msg);
+
+            popup.setScene(new Scene(box,200,100));
+            popup.show();
+        }
+    }
+
+    private void showError() {
+
+        Stage popup = new Stage();
+
+        VBox box = new VBox(10);
+        Label msg = new Label("Invalid move");
+
+        box.getChildren().add(msg);
+
+        popup.setScene(new Scene(box,150,80));
+        popup.show();
+
+        PauseTransition delay =
+                new PauseTransition(Duration.seconds(2));
+
+        delay.setOnFinished(e -> popup.close());
+        delay.play();
     }
 
     private void addEventHandlers() {
 
         view.getBtnBack().setOnAction(e ->
-                view.getPane().getScene().setRoot(mainMenuView.getPane())
+                view.getPane().getScene()
+                        .setRoot(mainMenuView.getPane())
         );
 
+        view.getBtnPass().setOnAction(e -> {
+            game.pass();
+            cpuTurnIfNeeded();
+            renderAll();
+            checkGameEnd();
+        });
+
+        view.getBtnRotate().setOnAction(e -> {
+
+            switch (selectedRotation) {
+                case NOROTATION -> selectedRotation = PatchRotation.NINETY;
+                case NINETY -> selectedRotation = PatchRotation.ONEEIGHTY;
+                case ONEEIGHTY -> selectedRotation = PatchRotation.TWOSEVENTY;
+                case TWOSEVENTY -> selectedRotation = PatchRotation.NOROTATION;
+            }
+        });
     }
 }
