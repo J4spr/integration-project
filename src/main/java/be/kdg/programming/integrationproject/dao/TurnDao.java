@@ -1,4 +1,4 @@
-package be.kdg.programming.integrationproject.model.dao;
+package be.kdg.programming.integrationproject.dao;
 
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Turn;
