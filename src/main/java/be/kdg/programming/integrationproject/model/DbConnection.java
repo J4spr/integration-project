@@ -14,6 +14,7 @@ public class DbConnection {
     private final String databaseName;
     private final String username;
     private final String password;
+    private final String portNumber;
     private final Properties p;
     private final FileReader fr;
 
@@ -33,7 +34,8 @@ public class DbConnection {
         this.username = p.getProperty("username");
         this.password = p.getProperty("password");
         this.databaseName = p.getProperty("dbname");
-        this.url = String.format("jdbc:postgresql://%s:5433/%s", this.hostname, this.databaseName);
+        this.portNumber = p.getProperty("port");
+        this.url = String.format("jdbc:postgresql://%s:%s/%s", this.hostname,this.portNumber, this.databaseName);
     }
 
     public Connection getConnection() throws SQLException {
