@@ -7,12 +7,12 @@ public abstract class Player {
     private int position;
     private int totalButtons;
     private int totalButtonIncome;
-    private QuiltBoard quiltBoard;
+    private Quiltboard quiltBoard;
     private TokenColor color;
 
     //constructor
     public Player() {
-        this.quiltBoard = new QuiltBoard();
+        this.quiltBoard = new Quiltboard();
     }
 
     //getters & setters
@@ -24,7 +24,7 @@ public abstract class Player {
         this.playerId = playerId;
     }
 
-    public QuiltBoard getQuiltBoard() {
+    public Quiltboard getQuiltBoard() {
         return quiltBoard;
     }
 

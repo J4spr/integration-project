@@ -23,7 +23,6 @@ public class PatchStack {
     public int getNeutralToken() {
         return this.neutralTokenPosition;
     }
-
     //adds a patch to the list
     public void addPatch(Patch patch) {
         patches.add(patch);
