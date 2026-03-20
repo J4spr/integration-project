@@ -7,11 +7,32 @@ public enum PatchRotation {
     TWOSEVENTY(270);
 
     private int rotation;
-    private PatchRotation(int rotation){
+
+    PatchRotation(int rotation) {
         this.rotation = rotation;
     }
 
     public int getRotation() {
         return this.rotation;
+    }
+
+    public PatchRotation next() {
+        int rotation = this.getRotation();
+        PatchRotation nextRotation = NOROTATION;
+        switch (rotation) {
+            case 0 -> {
+                nextRotation = NINETY;
+            }
+            case 90 -> {
+                nextRotation = ONEEIGHTY;
+            }
+            case 180 -> {
+                nextRotation = TWOSEVENTY;
+            }
+            case 270 -> {
+                nextRotation = NOROTATION;
+            }
+        }
+            return nextRotation;
     }
 }
