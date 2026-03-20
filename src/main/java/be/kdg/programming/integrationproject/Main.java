@@ -4,6 +4,7 @@ import be.kdg.programming.integrationproject.presenter.MainMenuPresenter;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -18,6 +19,8 @@ public class Main extends Application {
         stage.setScene(scene);
         //start the application in fullscreen mode, ESC exits fullscreen by default
         stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.show();
     }
 
