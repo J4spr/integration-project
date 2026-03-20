@@ -33,6 +33,11 @@ public class MainMenuPresenter {
             view.getPane().getScene().setRoot(settingsView.getPane());
         });
         //exit the application completely
-        view.getBtnExit().setOnAction(e -> Platform.exit());
+        view.getBtnExit().setOnAction(e -> {
+            view.showConfirmationOverlay(
+                    "Are you sure you want to exit to desktop?",
+                    () -> Platform.exit()
+            );
+        });
     }
 }

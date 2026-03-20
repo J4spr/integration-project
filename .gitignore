@@ -13,6 +13,7 @@ target/
 *.iml
 *.ipr
 *.idea/*
+src/main/resources/META-INF/MANIFEST*.MF
 
 ### Eclipse ###
 .apt_generated
