@@ -4,44 +4,35 @@ import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.RulesView;
 import be.kdg.programming.integrationproject.view.SettingsView;
 import be.kdg.programming.integrationproject.view.StartMenuView;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 
 public class MainMenuPresenter {
-    private final MainMenuView mmv;
-    private RulesView rv;
-    private SettingsView sv;
-    private StartMenuView smv;
+    private final MainMenuView view;
 
     public MainMenuPresenter(MainMenuView view) {
-        smv = new StartMenuView();
-        rv = new RulesView();
-        this.mmv = view;
-        sv = new SettingsView();
+        this.view = view;
         addEventHandlers();
     }
 
     private void addEventHandlers() {
-        mmv.getStartButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                new StartMenuPresenter(smv, mmv);
+        view.getStartButton().setOnAction(e -> {
+            StartMenuView startMenuView = new StartMenuView();
+            new StartMenuPresenter(startMenuView, view);
+            view.getPane().getScene().setRoot(startMenuView.getPane());
+        });
 
-                mmv.getPane().getScene().setRoot(smv.getPane());
-            }
+        view.getRulesButton().setOnAction(e -> {
+            RulesView rulesView = new RulesView();
+            new RulesPresenter(rulesView, view);
+            view.getPane().getScene().setRoot(rulesView.getPane());
         });
-        mmv.getRulesButton().setOnAction(event -> {
-            new RulesPresenter(rv, mmv);
 
-            mmv.getPane().getScene().setRoot(rv.getPane());
+        view.getSettingsButton().setOnAction(e -> {
+            SettingsView settingsView = new SettingsView();
+            new SettingsPresenter(settingsView, view);
+            view.getPane().getScene().setRoot(settingsView.getPane());
         });
-        mmv.getSettingsButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                new SettingsPresenter(sv, mmv);
-                System.out.println("Settings pressed");
-                mmv.getPane().getScene().setRoot(sv.getPane());
-            }
-        });
+        //exit the application completely
+        view.getBtnExit().setOnAction(e -> Platform.exit());
     }
 }

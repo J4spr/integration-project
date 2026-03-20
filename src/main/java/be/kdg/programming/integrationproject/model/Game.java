@@ -123,7 +123,7 @@ public class Game {
     //public method to be used by presenter - handles buying and placing a patch safely
     //checks all conditions before modifying any state to prevent inconsistent game state
     // public method to be used by presenter - handles buying and placing a patch safely
-// checks all conditions before modifying any state to prevent inconsistent game state
+    // checks all conditions before modifying any state to prevent inconsistent game state
     public boolean buyAndPlacePatch(int patchID, int row, int col, PatchRotation rotation) {
         Patch patch = patchStack.getPatch(patchID);
         if (patch == null) return false;
@@ -215,7 +215,7 @@ public class Game {
 
     //calculates the final score for a player
     //buttons - (empty spaces * 2) + 7 if the player owns the special tile
-    private int calculateScore(Player player) {
+    public int calculateScore(Player player) {
         int score = player.getTotalButtons();
         score -= player.getQuiltBoard().countEmptySpaces() * 2;
         if (specialTileOwner == player) score += 7;
