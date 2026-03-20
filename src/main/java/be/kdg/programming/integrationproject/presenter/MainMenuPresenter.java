@@ -1,9 +1,14 @@
 package be.kdg.programming.integrationproject.presenter;
 
+import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.RulesView;
 import be.kdg.programming.integrationproject.view.SettingsView;
 import be.kdg.programming.integrationproject.view.StartMenuView;
+import be.kdg.programming.integrationproject.view.LeaderboardView;
+import be.kdg.programming.integrationproject.model.DbConnection;
+import be.kdg.programming.integrationproject.view.LeaderboardView;
+import be.kdg.programming.integrationproject.presenter.LeaderboardPresenter;
 import javafx.application.Platform;
 
 public class MainMenuPresenter {
@@ -32,7 +37,16 @@ public class MainMenuPresenter {
             new SettingsPresenter(settingsView, view);
             view.getPane().getScene().setRoot(settingsView.getPane());
         });
+
+        view.getLeaderboardButton().setOnAction(e -> {
+            LeaderboardView leaderboardView = new LeaderboardView();
+            DbConnection dbConnection = new DbConnection();
+            new LeaderboardPresenter(leaderboardView, view, dbConnection);
+            view.getPane().getScene().setRoot(leaderboardView.getPane());
+        });
+
         //exit the application completely
         view.getBtnExit().setOnAction(e -> Platform.exit());
+
     }
 }

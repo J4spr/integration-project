@@ -12,6 +12,7 @@ public class MainMenuView {
     private Button btnStart;
     private Button btnRules;
     private Button btnSettings;
+    private Button btnLeaderBoard;
     private Button btnExit;
 
     public MainMenuView() {
@@ -45,6 +46,10 @@ public class MainMenuView {
         btnSettings.setPrefWidth(150);
         btnSettings.setPrefHeight(35);
 
+        btnLeaderBoard = new Button("Leaderboard");
+        btnLeaderBoard.setPrefWidth(150);
+        btnLeaderBoard.setPrefHeight(35);
+
         btnExit = new Button("Exit to Desktop");
         btnExit.setPrefWidth(150);
         btnExit.setPrefHeight(35);
@@ -52,7 +57,7 @@ public class MainMenuView {
 
     private void layoutNodes() {
         //content box with all buttons centered inside a styled box
-        VBox contentBox = new VBox(15, btnStart, btnRules, btnSettings, btnExit);
+        VBox contentBox = new VBox(15, btnStart, btnRules, btnSettings, btnLeaderBoard, btnExit);
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setPadding(new Insets(30));
         contentBox.setMaxWidth(250);
@@ -79,6 +84,8 @@ public class MainMenuView {
     public Button getSettingsButton() {
         return btnSettings;
     }
+
+    public Button getLeaderboardButton(){return  btnLeaderBoard;}
 
     public Button getBtnExit() {
         return btnExit;
