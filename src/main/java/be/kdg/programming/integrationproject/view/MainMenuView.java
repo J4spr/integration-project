@@ -13,6 +13,7 @@ public class MainMenuView {
     private Button btnStart;
     private Button btnRules;
     private Button btnSettings;
+    private Button btnLeaderBoard;
     private Button btnExit;
 
     private VBox contentBox;
@@ -47,6 +48,10 @@ public class MainMenuView {
         btnSettings = new Button("Settings");
         btnSettings.setPrefWidth(150);
         btnSettings.setPrefHeight(35);
+
+        btnLeaderBoard = new Button("Leaderboard");
+        btnLeaderBoard.setPrefWidth(150);
+        btnLeaderBoard.setPrefHeight(35);
 
         btnExit = new Button("Exit to Desktop");
         btnExit.setPrefWidth(150);
@@ -110,6 +115,8 @@ public class MainMenuView {
     public Button getSettingsButton() {
         return btnSettings;
     }
+
+    public Button getLeaderboardButton(){return  btnLeaderBoard;}
 
     public Button getBtnExit() {
         return btnExit;
