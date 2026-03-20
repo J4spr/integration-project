@@ -1,4 +1,4 @@
-package be.kdg.programming.integrationproject.model.dao;
+package be.kdg.programming.integrationproject.dao;
 
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Enums.PatchShape;
@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatchDao extends AbstractDao implements Dao<Patch> {
-
     public PatchDao(DbConnection conn) {
         super(conn);
     }
@@ -54,7 +53,7 @@ public class PatchDao extends AbstractDao implements Dao<Patch> {
     private Patch mapResultSetToPatch(ResultSet rs) throws SQLException {
         return new Patch(
                 rs.getInt("PatchID"),
-                PatchShape.L_SHAPE, // placeholder
+                PatchShape.BIG_L, // placeholder
                 rs.getInt("ButtonCost"),
                 rs.getInt("TimeCost"),
                 rs.getInt("ButtonIncome")

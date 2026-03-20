@@ -1,4 +1,4 @@
-package be.kdg.programming.integrationproject.model.dao;
+package be.kdg.programming.integrationproject.dao;
 
 import java.sql.SQLException;
 import java.util.List;

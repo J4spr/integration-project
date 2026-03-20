@@ -3,7 +3,7 @@ package be.kdg.programming.integrationproject.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuiltBoard {
+public class Quiltboard {
     private static final int SIZE = 9;//board is a 9x9 grid
     private final boolean[][] grid = new boolean[SIZE][SIZE];//true = occupied, false = empty
     private final List<Patch> placedPatches = new ArrayList<>();//list of placed patches

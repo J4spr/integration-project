@@ -17,10 +17,9 @@ public class Patch {
         this.buttonCost = buttonCost;
         this.timeCost = timeCost;
         this.buttonIncome = buttonIncome;
-        this.rotation = PatchRotation.NOROTATION; //standaard geen rotatie
+        this.rotation = PatchRotation.NOROTATION;
     }
 
-    //patch getters & setters
     public int getPatchID() {
         return this.patchID;
     }
@@ -50,17 +49,28 @@ public class Patch {
     }
 
     public static Patch createLeatherPatch(int patchID) {
-        return new Patch(patchID, PatchShape.ONE_BY_ONE, 0, 0, 0);
+        return new Patch(patchID, PatchShape.LEATHER_PATCH, 0, 0, 0);
     }
 
     //returns the patch shape as a 2D boolean array rotated according to the current rotation
     //the dimensions of the array change when rotating 90 or 270 degrees (rows and cols are swapped)
     public boolean[][] getRotatedShape() {
+        return rotateShape(this.rotation);
+    }
+
+    //returns the rotated shape for a given rotation without modifying the patch's own rotation
+    //used by the presenter for preview purposes only
+    public boolean[][] getRotatedShapeFor(PatchRotation targetRotation) {
+        return rotateShape(targetRotation);
+    }
+
+    //core rotation logic extracted so both getRotatedShape and getRotatedShapeFor can use it
+    private boolean[][] rotateShape(PatchRotation targetRotation) {
         boolean[][] original = shape.getShape();
         int rows = original.length;
         int cols = original[0].length;
 
-        switch (rotation) {
+        switch (targetRotation) {
             case NINETY: {
                 //rotating 90 degrees clockwise: new dimensions are [cols][rows]
                 boolean[][] rotated = new boolean[cols][rows];
