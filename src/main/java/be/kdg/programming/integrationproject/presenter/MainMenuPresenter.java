@@ -1,14 +1,7 @@
 package be.kdg.programming.integrationproject.presenter;
 
-<<<<<<< Updated upstream
+
 import be.kdg.programming.integrationproject.view.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-=======
-import be.kdg.programming.integrationproject.model.DbConnection;
-import be.kdg.programming.integrationproject.view.*;
-import javafx.application.Platform;
->>>>>>> Stashed changes
 
 public class MainMenuPresenter {
     private final MainMenuView mmv;
