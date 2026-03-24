@@ -25,10 +25,11 @@ public class MainMenuPresenter {
 
             mmv.getPane().getScene().setRoot(smv.getPane());
         });
-        mmv.getRulesButton().setOnAction(event -> {
-            new RulesPresenter(rv, mmv);
 
-            mmv.getPane().getScene().setRoot(rv.getPane());
+        view.getRulesButton().setOnAction(e -> {
+            RulesView rulesView = new RulesView();
+            new RulesPresenter(rulesView, view);
+            view.getPane().getScene().setRoot(rulesView.getPane());
         });
         mmv.getSettingsButton().setOnAction(event -> {
             new SettingsPresenter(sv, mmv);
