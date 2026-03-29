@@ -2,7 +2,7 @@ package be.kdg.programming.integrationproject.presenter;
 
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Move;
-import be.kdg.programming.integrationproject.model.dao.MoveDao;
+import be.kdg.programming.integrationproject.dao.MoveDao;
 import be.kdg.programming.integrationproject.view.LeaderBoardView;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 
@@ -17,6 +17,9 @@ public class LeaderBoardPresenter {
         this.view = view;
         this.mmv = mainMenuView;
         this.moveDao = new MoveDao(new DbConnection());
+
+        refreshLeaderboard();
+        addHandlers();
     }
 
     public void refreshLeaderboard() {
@@ -25,6 +28,17 @@ public class LeaderBoardPresenter {
             view.setTableData(moves);
         } catch (SQLException e) {
             view.showError("Database error: " + e.getMessage());
+        }
+    }
+
+    private void addHandlers() {
+        if (view.getBtnBack() != null) {
+            view.getBtnBack().setOnAction(event -> {
+                if (view.getBtnBack().getScene() != null) {
+                    view.getBtnBack().getScene().setRoot(mmv.getPane());
+                    mmv.getPane().requestLayout();
+                }
+            });
         }
     }
 }
