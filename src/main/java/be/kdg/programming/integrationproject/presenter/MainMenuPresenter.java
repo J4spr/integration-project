@@ -1,29 +1,29 @@
 package be.kdg.programming.integrationproject.presenter;
 
-import be.kdg.programming.integrationproject.model.DbConnection;
-import be.kdg.programming.integrationproject.view.MainMenuView;
-import be.kdg.programming.integrationproject.view.RulesView;
-import be.kdg.programming.integrationproject.view.SettingsView;
-import be.kdg.programming.integrationproject.view.StartMenuView;
-import be.kdg.programming.integrationproject.view.LeaderboardView;
-import be.kdg.programming.integrationproject.model.DbConnection;
-import be.kdg.programming.integrationproject.view.LeaderboardView;
-import be.kdg.programming.integrationproject.presenter.LeaderboardPresenter;
-import javafx.application.Platform;
+
+import be.kdg.programming.integrationproject.view.*;
 
 public class MainMenuPresenter {
-    private final MainMenuView view;
+    private final MainMenuView mmv;
+    private RulesView rv;
+    private SettingsView sv;
+    private StartMenuView smv;
+    private LeaderBoardView lbv;
 
     public MainMenuPresenter(MainMenuView view) {
-        this.view = view;
+        this.smv = new StartMenuView();
+        this.rv = new RulesView();
+        this.mmv = view;
+        this.sv = new SettingsView();
+        this.lbv = new LeaderBoardView();
         addEventHandlers();
     }
 
     private void addEventHandlers() {
-        view.getStartButton().setOnAction(e -> {
-            StartMenuView startMenuView = new StartMenuView();
-            new StartMenuPresenter(startMenuView, view);
-            view.getPane().getScene().setRoot(startMenuView.getPane());
+        mmv.getStartButton().setOnAction(event -> {
+            new StartMenuPresenter(smv, mmv);
+
+            mmv.getPane().getScene().setRoot(smv.getPane());
         });
 
         view.getRulesButton().setOnAction(e -> {
@@ -31,26 +31,15 @@ public class MainMenuPresenter {
             new RulesPresenter(rulesView, view);
             view.getPane().getScene().setRoot(rulesView.getPane());
         });
-
-        view.getSettingsButton().setOnAction(e -> {
-            SettingsView settingsView = new SettingsView();
-            new SettingsPresenter(settingsView, view);
-            view.getPane().getScene().setRoot(settingsView.getPane());
+        mmv.getSettingsButton().setOnAction(event -> {
+            new SettingsPresenter(sv, mmv);
+            System.out.println("Settings pressed");
+            mmv.getPane().getScene().setRoot(sv.getPane());
         });
-
-        view.getLeaderboardButton().setOnAction(e -> {
-            LeaderboardView leaderboardView = new LeaderboardView();
-            DbConnection dbConnection = new DbConnection();
-            new LeaderboardPresenter(leaderboardView, view, dbConnection);
-            view.getPane().getScene().setRoot(leaderboardView.getPane());
-        });
-
-        //exit the application completely
-        view.getBtnExit().setOnAction(e -> {
-            view.showConfirmationOverlay(
-                    "Are you sure you want to exit to desktop?",
-                    () -> Platform.exit()
-            );
+        mmv.getLeaderboardButton().setOnAction(event -> {
+            new LeaderBoardPresenter(lbv, mmv);
+            System.out.println("Leaderboard pressed");
+            mmv.getPane().getScene().setRoot(lbv.getPane());
         });
     }
 }

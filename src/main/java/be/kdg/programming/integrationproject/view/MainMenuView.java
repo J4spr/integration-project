@@ -8,7 +8,16 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
 public class MainMenuView {
-    private StackPane root;
+    private Button startButton;
+    private Button rulesButton;
+    private Button settingsButton;
+    private Button leaderboardButton;
+    private Image image;
+    private BackgroundImage backgroundImage;
+    private BackgroundSize backgroundSize;
+
+    private GridPane pane;
+    private StackPane stPane;
 
     private Button btnStart;
     private Button btnRules;

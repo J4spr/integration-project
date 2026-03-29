@@ -29,12 +29,7 @@ public class RulesPresenter {
     }
 
     private void addEventHandlers() {
-        view.getBtnBack().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                view.getPane().getScene().setRoot(mainMenuView.getPane());
-            }
-        });
+        view.getBtnBack().setOnAction(event -> view.getPane().getScene().setRoot(mainMenuView.getPane()));
     }
 
     private void loadRules() {
