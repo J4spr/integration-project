@@ -1,107 +1,90 @@
 package be.kdg.programming.integrationproject.view;
 
+import be.kdg.programming.integrationproject.model.Move;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
-public class LeaderboardView {
+import java.util.List;
 
-    private VBox root;
-    private HBox stats;
-
-    private Label lblTitle;
-    private Label lblTotalGames;
-    private Label lblAvgDuration;
-    private Label lblTopScore;
-    private Label lblActivePlayers;
-
-    private TableView<String[]> table;
-
+public class LeaderBoardView extends VBox {
+    private TableView<Move> table;
+    private TableColumn<Move, Integer> p1ScoreCol;
+    private TableColumn<Move, Integer> p2ScoreCol;
+    private StackPane pane;
     private Button btnBack;
 
-    public LeaderboardView() {
+    private Image image;
+    private BackgroundImage backgroundImage;
+    private BackgroundSize backgroundSize;
+
+
+    public LeaderBoardView() {
         initialiseNodes();
         layoutNodes();
     }
 
     private void initialiseNodes() {
-        this.root = new VBox(15);
-        this.stats = new HBox(20);
-
-        this.lblTitle = new Label("Leaderboard");
-        this.lblTotalGames = new Label("Total Games: -");
-        this.lblAvgDuration = new Label("Avg Duration: -");
-        this.lblTopScore = new Label("Top Score: -");
-        this.lblActivePlayers = new Label("Active Players: -");
-
-        this.table = new TableView<>();
-
-        String[] headers = {
-                "Rank", "Player", "Score", "Win %", "Wins", "Avg Turns", "Playtime"
-        };
-
-        for (int i = 0; i < headers.length; i++) {
-            final int colIndex = i;
-            TableColumn<String[], String> col = new TableColumn<>(headers[i]);
-
-            col.setCellValueFactory(data ->
-                    new javafx.beans.property.SimpleStringProperty(
-                            data.getValue()[colIndex]
-                    )
-            );
-
-            this.table.getColumns().add(col);
-        }
+        this.pane = new StackPane();
+        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
+        image = new Image(path);
+        backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        this.pane.setBackground(new Background(backgroundImage));
 
         this.btnBack = new Button("Back");
+        this.btnBack.setPrefWidth(80);
+
+        this.p1ScoreCol = new TableColumn<>("P1 Buttons");
+        this.p2ScoreCol = new TableColumn<>("P2 Buttons");
+        this.table = new TableView<>();
     }
 
     private void layoutNodes() {
-        // Configure Container Padding
-        this.root.setPadding(new Insets(20));
+        // 1. Setup Table Columns
+        p1ScoreCol.setCellValueFactory(new PropertyValueFactory<>("buttonsP1"));
+        p2ScoreCol.setCellValueFactory(new PropertyValueFactory<>("buttonsP2"));
+        this.table.getColumns().setAll(p1ScoreCol, p2ScoreCol);
 
-        // Arrange Stats Row
-        this.stats.getChildren().addAll(
-                lblTotalGames,
-                lblAvgDuration,
-                lblTopScore,
-                lblActivePlayers
-        );
+        // 2. Setup Button Container
+        HBox buttonContainer = new HBox(btnBack);
+        buttonContainer.setPadding(new Insets(10));
+        buttonContainer.setAlignment(Pos.TOP_LEFT);
 
-        // Populate Main Root
-        this.root.getChildren().addAll(
-                lblTitle,
-                stats,
-                table,
-                btnBack
-        );
+        // 3. Clear existing children ONCE to ensure a fresh start
+        this.pane.getChildren().clear();
+        this.getChildren().clear();
+
+        // 4. Build the hierarchy
+        // Add table and button to the StackPane (Background layer)
+        this.pane.getChildren().addAll(table, buttonContainer);
+
+        // Add the StackPane to the VBox (This view)
+        this.getChildren().add(pane);
     }
 
-    public VBox getPane() {
-        return root;
+    public void setTableData(List<Move> moves) {
+        table.setItems(FXCollections.observableArrayList(moves));
     }
 
-    public TableView<String[]> getTable() {
-        return table;
+    public void showError(String message) {
+        System.err.println(message);
+    }
+
+    public TableView<Move> getTable(){
+        return this.table;
+    }
+
+    public StackPane getPane(){
+        return this.pane;
     }
 
     public Button getBtnBack() {
         return btnBack;
-    }
-
-    public void setTotalGames(String v) {
-        lblTotalGames.setText(v);
-    }
-
-    public void setAvgDuration(String v) {
-        lblAvgDuration.setText(v);
-    }
-
-    public void setTopScore(String v) {
-        lblTopScore.setText(v);
-    }
-
-    public void setActivePlayers(String v) {
-        lblActivePlayers.setText(v);
     }
 }

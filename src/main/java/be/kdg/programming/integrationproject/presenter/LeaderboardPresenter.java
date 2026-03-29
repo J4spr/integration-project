@@ -1,61 +1,44 @@
 package be.kdg.programming.integrationproject.presenter;
 
-import be.kdg.programming.integrationproject.dao.GameDao;
-import be.kdg.programming.integrationproject.dao.PlayerDao;
 import be.kdg.programming.integrationproject.model.DbConnection;
-import be.kdg.programming.integrationproject.view.LeaderboardView;
+import be.kdg.programming.integrationproject.model.Move;
+import be.kdg.programming.integrationproject.dao.MoveDao;
+import be.kdg.programming.integrationproject.view.LeaderBoardView;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class LeaderboardPresenter {
-
-    private final LeaderboardView view;
-    private final MainMenuView mainMenuView;
-    private final DbConnection conn;
-    private final PlayerDao playerDao;
-    private final GameDao gameDao;
-
-    public LeaderboardPresenter(
-            LeaderboardView view,
-            MainMenuView mainMenuView,
-            DbConnection conn
-    ) {
+public class LeaderBoardPresenter {
+    private final LeaderBoardView view;
+    private final MoveDao moveDao;
+    private final MainMenuView mmv;
+    public LeaderBoardPresenter(LeaderBoardView view, MainMenuView mainMenuView) {
         this.view = view;
-        this.mainMenuView = mainMenuView;
-        this.conn = conn;
-        this.playerDao = new PlayerDao(conn);
-        this.gameDao = new GameDao(conn);
+        this.mmv = mainMenuView;
+        this.moveDao = new MoveDao(new DbConnection());
 
-
-        loadStats();
-        loadTable();
+        refreshLeaderboard();
         addHandlers();
     }
 
-    private void loadStats() {
+    public void refreshLeaderboard() {
         try {
-            view.setTotalGames("Total Games: " + gameDao.getTotalGamesCount());
-            view.setAvgDuration("Avg Duration: " + gameDao.getAverageDuration());
-            view.setTopScore("Top Score: " + gameDao.getTopScore());
-            view.setActivePlayers("Players: " + playerDao.getActivePlayerCount());
+            List<Move> moves = moveDao.findAll();
+            view.setTableData(moves);
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadTable() {
-        try {
-            view.getTable().getItems().setAll(playerDao.getLeaderboardData());
-        } catch (SQLException e) {
-            e.printStackTrace();
+            view.showError("Database error: " + e.getMessage());
         }
     }
 
     private void addHandlers() {
-        view.getBtnBack().setOnAction(e ->
-                view.getPane().getScene().setRoot(mainMenuView.getPane())
-        );
+        if (view.getBtnBack() != null) {
+            view.getBtnBack().setOnAction(event -> {
+                if (view.getBtnBack().getScene() != null) {
+                    view.getBtnBack().getScene().setRoot(mmv.getPane());
+                    mmv.getPane().requestLayout();
+                }
+            });
+        }
     }
 }

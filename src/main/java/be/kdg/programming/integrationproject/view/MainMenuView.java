@@ -33,7 +33,7 @@ public class MainMenuView {
     }
 
     private void initialiseNodes() {
-        root = new StackPane();
+        stPane = new StackPane();
 
         // Load the shared background image
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
@@ -45,7 +45,7 @@ public class MainMenuView {
                 BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT
         );
-        this.root.setBackground(new Background(background));
+        this.stPane.setBackground(new Background(background));
 
         this.btnStart = new Button("Start");
         this.btnStart.setPrefWidth(150);
@@ -74,6 +74,8 @@ public class MainMenuView {
     private void layoutNodes() {
         // Style the content box (the white menu container)
         this.contentBox.setAlignment(Pos.CENTER);
+        StackPane.setAlignment(this.contentBox, Pos.CENTER);
+        this.stPane.setAlignment(Pos.CENTER);
         this.contentBox.setPadding(new Insets(30));
         this.contentBox.setMaxWidth(250);
         // Increased height to 320 to fit the extra Leaderboard button comfortably
@@ -81,11 +83,11 @@ public class MainMenuView {
         this.contentBox.setStyle("-fx-border-color: #aaaaaa; -fx-border-radius: 8; -fx-background-color: white; -fx-background-radius: 8;");
 
         // Configure the root StackPane
-        this.root.setAlignment(Pos.CENTER);
-        this.root.setPadding(new Insets(40));
+        this.stPane.setAlignment(Pos.CENTER);
+        this.stPane.setPadding(new Insets(40));
 
         // Use setAll to prevent duplicate children errors if this method is called again
-        this.root.getChildren().setAll(contentBox);
+        this.stPane.getChildren().setAll(contentBox);
     }
 
     public void showConfirmationOverlay(String message, Runnable onConfirm) {
@@ -107,17 +109,17 @@ public class MainMenuView {
         Button btnNo = new Button("Cancel");
 
         btnYes.setOnAction(e -> onConfirm.run());
-        btnNo.setOnAction(e -> root.getChildren().remove(overlay));
+        btnNo.setOnAction(e -> stPane.getChildren().remove(overlay));
 
         buttons.getChildren().addAll(btnYes, btnNo);
         dialog.getChildren().addAll(label, buttons);
         overlay.getChildren().add(dialog);
 
-        this.root.getChildren().add(overlay);
+        this.stPane.getChildren().add(overlay);
     }
 
     public StackPane getPane() {
-        return this.root;
+        return this.stPane;
     }
 
     public Button getStartButton() {

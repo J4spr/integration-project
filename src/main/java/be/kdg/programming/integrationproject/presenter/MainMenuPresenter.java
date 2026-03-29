@@ -2,6 +2,7 @@ package be.kdg.programming.integrationproject.presenter;
 
 
 import be.kdg.programming.integrationproject.view.*;
+import javafx.application.Platform;
 
 public class MainMenuPresenter {
     private final MainMenuView mmv;
@@ -26,10 +27,10 @@ public class MainMenuPresenter {
             mmv.getPane().getScene().setRoot(smv.getPane());
         });
 
-        view.getRulesButton().setOnAction(e -> {
+        mmv.getRulesButton().setOnAction(e -> {
             RulesView rulesView = new RulesView();
-            new RulesPresenter(rulesView, view);
-            view.getPane().getScene().setRoot(rulesView.getPane());
+            new RulesPresenter(rulesView, mmv);
+            mmv.getPane().getScene().setRoot(rulesView.getPane());
         });
         mmv.getSettingsButton().setOnAction(event -> {
             new SettingsPresenter(sv, mmv);
@@ -37,9 +38,17 @@ public class MainMenuPresenter {
             mmv.getPane().getScene().setRoot(sv.getPane());
         });
         mmv.getLeaderboardButton().setOnAction(event -> {
+            this.lbv = new LeaderBoardView();
             new LeaderBoardPresenter(lbv, mmv);
-            System.out.println("Leaderboard pressed");
-            mmv.getPane().getScene().setRoot(lbv.getPane());
+
+            mmv.getPane().getScene().setRoot(lbv);
         });
+        mmv.getBtnExit().setOnAction(e -> {
+            mmv.showConfirmationOverlay(
+                    "Are you sure you want to exit to desktop?",
+                    () -> Platform.exit()
+            );
+        });
+
     }
 }
