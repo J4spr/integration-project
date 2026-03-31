@@ -1,22 +1,19 @@
 package be.kdg.programming.integrationproject.view;
 
-import be.kdg.programming.integrationproject.model.Move;
+import be.kdg.programming.integrationproject.model.Player;
+import be.kdg.programming.integrationproject.model.PlayerStats;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
 import java.util.List;
 
 public class LeaderBoardView extends VBox {
-    private TableView<Move> table;
-    private TableColumn<Move, Integer> p1ScoreCol;
-    private TableColumn<Move, Integer> p2ScoreCol;
+    private ListView<PlayerStats> listView;
     private StackPane pane;
     private Button btnBack;
 
@@ -39,52 +36,60 @@ public class LeaderBoardView extends VBox {
 
         this.btnBack = new Button("Back");
         this.btnBack.setPrefWidth(80);
+        this.listView = new ListView<>();
 
-        this.p1ScoreCol = new TableColumn<>("P1 Buttons");
-        this.p2ScoreCol = new TableColumn<>("P2 Buttons");
-        this.table = new TableView<>();
     }
 
     private void layoutNodes() {
-        // 1. Setup Table Columns
-        p1ScoreCol.setCellValueFactory(new PropertyValueFactory<>("buttonsP1"));
-        p2ScoreCol.setCellValueFactory(new PropertyValueFactory<>("buttonsP2"));
-        this.table.getColumns().setAll(p1ScoreCol, p2ScoreCol);
+        // Define how to display the Move object in the list
+        listView.setCellFactory(lv -> new ListCell<PlayerStats>() {
+            @Override
+            protected void updateItem(PlayerStats item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    // Using String.format to create a "Table" look inside the List
+                    setText(String.format("%-15s | Wins: %d | Games: %d | Win%%: %.1f%% | Spent: %d",
+                            item.getUsername(), item.getWins(), item.getGamesPlayed(),
+                            item.getWinPercentage(), item.getTotalButtonsSpent()));
+                }
+            }
+        });
 
-        // 2. Setup Button Container
         HBox buttonContainer = new HBox(btnBack);
-        buttonContainer.setPadding(new Insets(10));
-        buttonContainer.setAlignment(Pos.TOP_LEFT);
+        buttonContainer.setPadding(new Insets(15));
 
-        // 3. Clear existing children ONCE to ensure a fresh start
-        this.pane.getChildren().clear();
-        this.getChildren().clear();
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setTop(buttonContainer);
+        mainLayout.setCenter(listView); // Add the list here
 
-        // 4. Build the hierarchy
-        // Add table and button to the StackPane (Background layer)
-        this.pane.getChildren().addAll(table, buttonContainer);
+        BorderPane.setMargin(listView, new Insets(0, 20, 20, 20));
 
-        // Add the StackPane to the VBox (This view)
-        this.getChildren().add(pane);
+        this.pane.getChildren().setAll(mainLayout);
+        this.getChildren().setAll(pane);
+
+        VBox.setVgrow(pane, Priority.ALWAYS);
     }
 
-    public void setTableData(List<Move> moves) {
-        table.setItems(FXCollections.observableArrayList(moves));
-    }
 
     public void showError(String message) {
         System.err.println(message);
     }
 
-    public TableView<Move> getTable(){
-        return this.table;
+    public ListView<PlayerStats> getTable() {
+        return this.listView;
     }
 
-    public StackPane getPane(){
+    public StackPane getPane() {
         return this.pane;
     }
 
     public Button getBtnBack() {
         return btnBack;
+    }
+
+    public void setStatsData(List<PlayerStats> stats) {
+        listView.setItems(FXCollections.observableArrayList(stats));
     }
 }

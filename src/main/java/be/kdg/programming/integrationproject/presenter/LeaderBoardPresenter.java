@@ -1,8 +1,11 @@
 package be.kdg.programming.integrationproject.presenter;
 
+import be.kdg.programming.integrationproject.dao.PlayerDao;
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Move;
 import be.kdg.programming.integrationproject.dao.MoveDao;
+import be.kdg.programming.integrationproject.model.Player;
+import be.kdg.programming.integrationproject.model.PlayerStats;
 import be.kdg.programming.integrationproject.view.LeaderBoardView;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 
@@ -11,12 +14,12 @@ import java.util.List;
 
 public class LeaderBoardPresenter {
     private final LeaderBoardView view;
-    private final MoveDao moveDao;
+    private final PlayerDao playerDao;
     private final MainMenuView mmv;
     public LeaderBoardPresenter(LeaderBoardView view, MainMenuView mainMenuView) {
         this.view = view;
         this.mmv = mainMenuView;
-        this.moveDao = new MoveDao(new DbConnection());
+        this.playerDao = new PlayerDao(new DbConnection());
 
         refreshLeaderboard();
         addHandlers();
@@ -24,8 +27,9 @@ public class LeaderBoardPresenter {
 
     public void refreshLeaderboard() {
         try {
-            List<Move> moves = moveDao.findAll();
-            view.setTableData(moves);
+            // Correctly fetch the List of DTOs
+            List<PlayerStats> stats = playerDao.getDetailedLeaderboard();
+            view.setStatsData(stats);
         } catch (SQLException e) {
             view.showError("Database error: " + e.getMessage());
         }
