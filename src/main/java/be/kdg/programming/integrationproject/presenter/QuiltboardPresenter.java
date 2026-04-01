@@ -128,23 +128,25 @@ public class QuiltboardPresenter {
     }
 
     private void handleBoardClick(int row, int col) {
-        //if there are leather patches in the queue, the player must place one first
-        if (!game.getLeatherPatchQueue().isEmpty()) {
-            boolean placed = game.placeLeatherPatch(row, col);
+        Player human = game.getPlayer1();
+
+        //if the human has leather patches to place, handle those first
+        if (!game.getLeatherPatchQueue(human).isEmpty()) {
+            boolean placed = game.placeLeatherPatch(human, row, col);
             if (!placed) {
                 gamePresenter.showWarningBanner("Invalid placement. Try a different position.");
                 return;
             }
             gamePresenter.initializeView();
-            //if the queue is now empty, continue with the normal game flow
-            if (game.getLeatherPatchQueue().isEmpty()) {
+            //only switch turns once all leather patches are placed
+            if (game.getLeatherPatchQueue(human).isEmpty()) {
+                game.updateCurrentPlayer();
                 gamePresenter.handleCpuTurn();
                 gamePresenter.checkGameEnd();
             }
             return;
         }
 
-        //no patch selected, do nothing
         if (gamePresenter.getSelectedPatchId() == -1) {
             gamePresenter.showWarningBanner("Select a patch first.");
             return;
@@ -163,9 +165,14 @@ public class QuiltboardPresenter {
         }
 
         gamePresenter.resetSelection();
+        gamePresenter.notifyLeatherPatchIfNeeded();
         gamePresenter.initializeView();
-        gamePresenter.handleCpuTurn();
-        gamePresenter.checkGameEnd();
+        //if leather patches need to be placed, keep currentPlayer as-is so the human keeps control
+        if (game.getLeatherPatchQueue(human).isEmpty()) {
+            game.updateCurrentPlayer();
+            gamePresenter.handleCpuTurn();
+            gamePresenter.checkGameEnd();
+        }
     }
 
     //initializes both quiltboard views based on the current game state

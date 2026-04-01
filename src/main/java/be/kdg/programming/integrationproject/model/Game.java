@@ -23,6 +23,9 @@ public class Game {
     private int startPlayer;
     private Timeboard timeboard;
     private PatchStack patchStack;
+    //separated leather patch queues per player so there is no ambiguity about who places what
+    private Queue<Patch> leatherPatchQueueP1 = new LinkedList<>();
+    private Queue<Patch> leatherPatchQueueP2 = new LinkedList<>();
     //counter to ensure each leather patch gets a unique ID
     private int leatherPatchCounter = 0;
     //queue of leather patches the current player still needs to place
@@ -88,6 +91,10 @@ public class Game {
         return currentPlayer;
     }
 
+    public Queue<Patch> getLeatherPatchQueue(Player player) {
+        return player == player1 ? leatherPatchQueueP1 : leatherPatchQueueP2;
+    }
+
     public Queue<Patch> getLeatherPatchQueue() {
         return leatherPatchQueue;
     }
@@ -98,6 +105,11 @@ public class Game {
 
     public PatchStack getPatchStack() {
         return patchStack;
+    }
+
+    //convenience method for the presenter to check the current player's queue
+    public Queue<Patch> getCurrentLeatherPatchQueue() {
+        return getLeatherPatchQueue(currentPlayer);
     }
 
     //internal method, only used by buyAndPlacePatch and CPU logic
@@ -138,7 +150,6 @@ public class Game {
         moveToken(patch.getTimeCost());
         checkSpecialTile();    // check if the current player completed a 7x7 area
         checkGameEnd();        // check if both players have reached the end of the timeboard
-        updateCurrentPlayer();
         return true;
     }
 
@@ -165,16 +176,16 @@ public class Game {
         int oldPosition = currentPlayer.getPosition();
         int newPosition = timeboard.updatePosition(oldPosition, timeCost);
         currentPlayer.updatePosition(newPosition - oldPosition);
-        // track who reached the end first for tiebreaker
         if (newPosition >= timeboard.getSize() - 1 && firstToFinish == null) {
             firstToFinish = currentPlayer;
         }
         int buttonPositionsPassed = timeboard.countButtonPositionsPassed(oldPosition, newPosition);
         collectButtonIncome(buttonPositionsPassed);
         int leatherPatchesPassed = timeboard.countLeatherPatchesPassed(oldPosition, newPosition);
-        //add a leather patch to the queue for each leather patch position passed
+        //add leather patches to the queue of the player who collected them, not a shared queue
+        Queue<Patch> myQueue = getLeatherPatchQueue(currentPlayer);
         for (int i = 0; i < leatherPatchesPassed; i++) {
-            leatherPatchQueue.add(Patch.createLeatherPatch(leatherPatchCounter++));
+            myQueue.add(Patch.createLeatherPatch(leatherPatchCounter++));
         }
     }
 
@@ -190,12 +201,13 @@ public class Game {
         }
     }
 
-    //places the next leather patch from the queue on the current player's quiltboard
     //the player chooses the row and col via the view
-    public boolean placeLeatherPatch(int row, int col) {
-        Patch leatherPatch = leatherPatchQueue.poll();
+    //places the next leather patch from the given player's queue on that player's quiltboard
+    public boolean placeLeatherPatch(Player player, int row, int col) {
+        Queue<Patch> queue = getLeatherPatchQueue(player);
+        Patch leatherPatch = queue.poll();
         if (leatherPatch == null) return false;
-        return currentPlayer.getQuiltBoard().placePatch(leatherPatch, row, col);
+        return player.getQuiltBoard().placePatch(leatherPatch, row, col);
     }
 
     //the current player passes their turn by moving their token just past the other player
@@ -210,7 +222,6 @@ public class Game {
         moveToken(steps);
         checkSpecialTile();    // check if the current player completed a 7x7 area
         checkGameEnd();        // check if both players have reached the end of the timeboard
-        updateCurrentPlayer();
     }
 
     //calculates the final score for a player

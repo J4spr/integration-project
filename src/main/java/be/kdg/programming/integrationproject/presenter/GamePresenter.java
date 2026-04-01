@@ -43,15 +43,19 @@ public class GamePresenter {
 
     private void addEventHandlers() {
         this.view.getBtnPass().setOnAction(e -> {
-            if (!this.game.getLeatherPatchQueue().isEmpty()) {
+            if (!this.game.getCurrentLeatherPatchQueue().isEmpty()) {
                 this.view.showWarningBanner("Place your leather patch first before passing.");
                 return;
             }
             this.game.pass();
             this.resetSelection();
-            this.handleCpuTurn();
+            this.notifyLeatherPatchIfNeeded();
             this.initializeView();
-            this.checkGameEnd();
+            if (this.game.getCurrentLeatherPatchQueue().isEmpty()) {
+                this.game.updateCurrentPlayer();
+                this.handleCpuTurn();
+                this.checkGameEnd();
+            }
         });
 
         this.view.getBtnRotate().setOnAction(e -> {
@@ -74,26 +78,41 @@ public class GamePresenter {
 
     public void handleCpuTurn() {
         while (this.game.getCurrentPlayer() instanceof CpuPlayer cpu) {
-            if (!this.game.getLeatherPatchQueue().isEmpty()) {
+            if (!this.game.getLeatherPatchQueue(cpu).isEmpty()) {
                 this.placeCpuLeatherPatches();
             }
             if (this.game.getStatus() == GameStatus.FINISHED) break;
             cpu.decideTurn(this.game);
             if (this.game.getStatus() == GameStatus.FINISHED) break;
+            this.game.updateCurrentPlayer();
         }
         this.initializeView();
     }
 
     private void placeCpuLeatherPatches() {
         Random random = new Random();
-        while (!this.game.getLeatherPatchQueue().isEmpty()) {
+        Player cpu = this.game.getCurrentPlayer();
+        //use the cpu's own queue so human leather patches are never touched
+        while (!this.game.getLeatherPatchQueue(cpu).isEmpty()) {
             boolean placed = false;
             for (int attempt = 0; attempt < 100 && !placed; attempt++) {
                 int row = random.nextInt(9);
                 int col = random.nextInt(9);
-                placed = this.game.placeLeatherPatch(row, col);
+                placed = this.game.placeLeatherPatch(cpu, row, col);
             }
             if (!placed) break;
+        }
+    }
+
+    //checks if the leather patch queue is non-empty after a move and shows the appropriate notification
+    //handles the case where multiple leather patches are collected in a single move (e.g. passing multiple positions)
+    public void notifyLeatherPatchIfNeeded() {
+        if (!this.game.getCurrentLeatherPatchQueue().isEmpty()) {
+            int count = this.game.getCurrentLeatherPatchQueue().size();
+            String msg = count == 1
+                    ? "You collected a leather patch! Place it on your quiltboard."
+                    : "You collected " + count + " leather patches! Place them on your quiltboard.";
+            this.view.showInfoBanner(msg);
         }
     }
 
@@ -126,4 +145,5 @@ public class GamePresenter {
     public PatchRotation getSelectedRotation() { return this.selectedRotation; }
     public void setSelectedRotation(PatchRotation selectedRotation) { this.selectedRotation = selectedRotation; }
     public void showWarningBanner(String message) { this.view.showWarningBanner(message); }
+    public void showInfoBanner(String message) { this.view.showInfoBanner(message); }
 }

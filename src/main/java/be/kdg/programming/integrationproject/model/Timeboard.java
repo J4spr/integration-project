@@ -7,6 +7,8 @@ public class Timeboard {
     private static final int[] BUTTON_POSITIONS = {5, 11, 17, 23, 29, 35, 41, 47};
     //positions on the timeboard where players receive a free 1x1 leather patch
     private static final int[] LEATHER_PATCH_POSITIONS = {26, 32, 38, 44, 50};
+    //tracks which leather patch positions have already been claimed by a player
+    private final boolean[] claimedLeatherPatches = new boolean[SIZE];
 
     public int getSize() {
         return SIZE;
@@ -32,12 +34,14 @@ public class Timeboard {
         return count;
     }
 
-    //counts how many leather patch positions the player passed
-    //between oldPosition and newPosition
+    //counts how many unclaimed leather patch positions the player passed
+    //marks each collected position as claimed so the other player can no longer pick it up
     public int countLeatherPatchesPassed(int oldPosition, int newPosition) {
         int count = 0;
         for (int leatherPosition : LEATHER_PATCH_POSITIONS) {
-            if (leatherPosition > oldPosition && leatherPosition <= newPosition) {
+            if (leatherPosition > oldPosition && leatherPosition <= newPosition
+                    && !claimedLeatherPatches[leatherPosition]) {
+                claimedLeatherPatches[leatherPosition] = true;
                 count++;
             }
         }

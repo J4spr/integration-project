@@ -168,6 +168,20 @@ public class GameView {
         pause.play();
     }
 
+    //shows a green info banner at the top of the screen for positive notifications like collecting a leather patch
+    //auto-dismisses after 4 seconds, slightly longer than the warning banner to give the player time to read it
+    public void showInfoBanner(String message) {
+        Label banner = new Label(message);
+        banner.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 12 24 12 24; -fx-background-radius: 8;");
+        StackPane.setAlignment(banner, Pos.TOP_CENTER);
+        StackPane.setMargin(banner, new Insets(20, 0, 0, 0));
+        this.root.getChildren().add(banner);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(4));
+        pause.setOnFinished(e -> this.root.getChildren().remove(banner));
+        pause.play();
+    }
+
     public void showConfirmationOverlay(String message, Runnable onConfirm) {
         this.lblConfirmationMessage.setText(message);
         this.lblConfirmationMessage.setStyle("-fx-font-size: 15; -fx-text-fill: black; -fx-text-alignment: center;");
