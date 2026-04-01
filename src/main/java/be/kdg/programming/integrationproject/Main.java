@@ -14,7 +14,7 @@ public class Main extends Application {
         new MainMenuPresenter(view);
 
         Scene scene = new Scene(view.getPane(), 400, 300);
-
+    
         stage.setTitle("Patchwork");
         stage.setScene(scene);
         //start the application in fullscreen mode, ESC exits fullscreen by default
