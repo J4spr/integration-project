@@ -65,32 +65,24 @@ public class QuiltboardPresenter {
     }
 
     //shows a preview of the selected patch on the quiltboard at the given position
-//also handles the leather patch queue case, showing a 1x1 preview when the player must place a leather patch
     private void showHoverPreview(int row, int col, boolean isP1) {
-        boolean[][] shape;
-        Patch previewPatch;
-        Player human = game.getPlayer1();
+        //no patch selected, nothing to preview
+        if (gamePresenter.getSelectedPatchId() == -1) return;
 
-        //if a leather patch is waiting to be placed, preview it as a 1x1 tile instead of the selected patch
-        if (!game.getLeatherPatchQueue(human).isEmpty()) {
-            previewPatch = game.getLeatherPatchQueue(human).peek();
-            if (previewPatch == null) return;
-            //leather patch is always 1x1 so no rotation needed
-            shape = previewPatch.getRotatedShape();
-        } else {
-            //no patch selected, nothing to preview
-            if (gamePresenter.getSelectedPatchId() == -1) return;
-            previewPatch = game.getPatchStack().getPatch(gamePresenter.getSelectedPatchId());
-            if (previewPatch == null) return;
-            //apply the current rotation for the preview without permanently changing the patch's state
-            previewPatch.setRotation(gamePresenter.getSelectedRotation());
-            shape = previewPatch.getRotatedShape();
-        }
+        Patch patch = game.getPatchStack().getPatch(gamePresenter.getSelectedPatchId());
+        if (patch == null) return;
 
-        //check if the placement at this position would be valid to decide preview color
+        //apply the current rotation for the preview
+        patch.setRotation(gamePresenter.getSelectedRotation());
+        boolean[][] shape = patch.getRotatedShape();
+        boolean[][] grid = isP1
+                ? game.getPlayer1().getQuiltBoard().getGrid()
+                : game.getPlayer2().getQuiltBoard().getGrid();
+
+        //check if placement is valid to show green or red preview
         boolean canPlace = isP1
-                ? game.getPlayer1().getQuiltBoard().canPlacePatch(previewPatch, row, col)
-                : game.getPlayer2().getQuiltBoard().canPlacePatch(previewPatch, row, col);
+                ? game.getPlayer1().getQuiltBoard().canPlacePatch(patch, row, col)
+                : game.getPlayer2().getQuiltBoard().canPlacePatch(patch, row, col);
 
         //green if valid placement, red if invalid
         String previewColor = canPlace ? "#a5d6a7" : "#ef9a9a";
@@ -100,7 +92,7 @@ public class QuiltboardPresenter {
                 if (shape[r][c]) {
                     int targetRow = row + r;
                     int targetCol = col + c;
-                    //only color cells that are within the board bounds
+                    //only color cells within bounds
                     if (targetRow >= 0 && targetRow < 9 && targetCol >= 0 && targetCol < 9) {
                         String cellStyle = "-fx-background-color: " + previewColor + "; -fx-border-color: #cccccc;";
                         if (isP1) {
