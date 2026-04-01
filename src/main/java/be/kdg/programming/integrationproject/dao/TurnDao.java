@@ -3,10 +3,7 @@ package be.kdg.programming.integrationproject.dao;
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Turn;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +61,20 @@ public class TurnDao extends AbstractDao implements Dao<Turn> {
     }
 
     @Override
-    public void update(Turn turn) { /* Implementation here */ }
+    public void update(Turn turn) throws SQLException {
+        String sql = "UPDATE \"TurnTable\" SET \"TurnEndTime\" = ? WHERE \"TurnID\" = ?";
+        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setTime(1, turn.getTurnEndTime());
+            ps.setInt(2, turn.getTurnId());
+            ps.executeUpdate();
+        }
+    }
 
     @Override
-    public void delete(int id) { /* Implementation here */ }
+    public void delete(int id) throws SQLException {
+        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement("DELETE FROM \"TurnTable\" WHERE \"TurnID\" = ?")) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
 }
