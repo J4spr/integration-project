@@ -1,9 +1,12 @@
 package be.kdg.programming.integrationproject.model;
 
+import be.kdg.programming.integrationproject.dao.PlayerDao;
 import be.kdg.programming.integrationproject.model.Enums.GameStatus;
-import java.util.Queue;
-import java.util.LinkedList;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
+
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Game {
     private int gameId;
@@ -27,6 +30,9 @@ public class Game {
     private int leatherPatchCounter = 0;
     //queue of leather patches the current player still needs to place
     private Queue<Patch> leatherPatchQueue = new LinkedList<>();
+    // db stuff
+    private PlayerDao playerDao;
+    private DbConnection conn;
 
     public Game(HumanPlayer player1, Player player2, int startPlayer) {
         this.player1 = player1;
@@ -41,6 +47,10 @@ public class Game {
         //each player starts with 5 buttons according to the rules
         player1.setTotalButtons(5);
         player2.setTotalButtons(5);
+        // init db connection
+        this.conn = new DbConnection();
+        // initialise the playerDao to put new players in db
+        this.playerDao = new PlayerDao(this.conn);
     }
 
     //getters & setters
@@ -64,12 +74,12 @@ public class Game {
         return specialTileOwner;
     }
 
-    public Player getWinner() {
-        return winner;
-    }
-
     public void setSpecialTileOwner(Player specialTileOwner) {
         this.specialTileOwner = specialTileOwner;
+    }
+
+    public Player getWinner() {
+        return winner;
     }
 
     public GameStatus getStatus() {
@@ -237,5 +247,18 @@ public class Game {
             return true;
         }
         return false;
+    }
+
+    private boolean checkIfPlayerExistsInDb(Player player)  {
+        if (!(player instanceof HumanPlayer)) {
+            return false;
+        }
+
+        try{
+            this.playerDao.findByUsername(((HumanPlayer) player).getName());
+        } catch (SQLException e) {
+            System.err.printf("db returned this message: %s with exit code %d", e.getMessage(), e.getErrorCode());
+        }
+        return true;
     }
 }

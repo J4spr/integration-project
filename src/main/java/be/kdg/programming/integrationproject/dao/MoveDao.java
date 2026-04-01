@@ -41,11 +41,20 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
 
     @Override
     public void insert(Move move) throws SQLException {
-        String sql = "INSERT INTO \"MoveTable\" (\"TurnID\", \"PatchID\", \"MoveStartTime\", \"MoveEndTime\", \"SpecialPatchesCollected\", \"SpacesMoved\", \"Position\", \"RotationDegrees\", \"ButtonsP1\", \"ButtonsP2\") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        //RETURN_GENERATED_KEYS ensures the DB-generated MoveID is accessible after insert
+        String sql = """
+        INSERT INTO "MoveTable" 
+        ("TurnID", "PatchID", "MoveStartTime", "MoveEndTime", "SpecialPatchesCollected", "SpacesMoved", "Position", "RotationDegrees", "ButtonsP1", "ButtonsP2") 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    """;
         try (PreparedStatement stmnt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmnt.setInt(1, move.getTurnId());
-            stmnt.setInt(2, move.getPatchId());
+
+            if (move.getPatchId() > 0) {
+                stmnt.setInt(2, move.getPatchId());
+            } else {
+                stmnt.setNull(2, java.sql.Types.INTEGER);
+            }
+
             stmnt.setTime(3, move.getMoveStartTime());
             stmnt.setTime(4, move.getMoveEndTime());
             stmnt.setInt(5, move.getSpecialPatchesCollected());
@@ -54,8 +63,8 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
             stmnt.setInt(8, move.getRotationDegrees());
             stmnt.setInt(9, move.getButtonsP1());
             stmnt.setInt(10, move.getButtonsP2());
+
             stmnt.executeUpdate();
-            //read back the generated ID and set it on the move object
             ResultSet keys = stmnt.getGeneratedKeys();
             if (keys.next()) {
                 move.setMoveId(keys.getInt(1));
