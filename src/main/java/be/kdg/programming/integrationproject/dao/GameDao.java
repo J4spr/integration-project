@@ -14,6 +14,22 @@ public class GameDao extends AbstractDao implements Dao<Game> {
         super(dbConnection);
     }
 
+    public void updateGameStatus(){
+        String sql = """
+                UPDATE "GameTable" SET "State" = ? WHERE "State" = 'ACTIVE';
+                """;
+        try {
+            Connection c = getConnection();
+            PreparedStatement ps = c.prepareStatement(sql);
+            String gameStatus = GameStatus.FINISHED.getStatus();
+            ps.setString(1, gameStatus.substring(0, 1).toUpperCase() + gameStatus.substring(1));
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     @Override
     public Game findById(int id) throws SQLException {
         String sql = "SELECT * FROM \"GameTable\" WHERE \"GameID\" = ?";
@@ -49,15 +65,11 @@ public class GameDao extends AbstractDao implements Dao<Game> {
             ps.setString(2, game.getStatus().name());
             ps.setInt(3, game.getPlayer1().getPlayerId());
 
-            // --- THE FIX ---
-            // If player 2 is human and has a valid DB ID, save it.
-            // Otherwise, save it as NULL so the Foreign Key doesn't complain.
             if (game.getPlayer2() instanceof HumanPlayer && game.getPlayer2().getPlayerId() > 0) {
                 ps.setInt(4, game.getPlayer2().getPlayerId());
             } else {
                 ps.setNull(4, java.sql.Types.INTEGER);
             }
-            // ---------------
 
             ps.setInt(5, game.getStartPlayer());
             ps.setTime(6, new java.sql.Time(System.currentTimeMillis()));

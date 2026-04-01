@@ -42,12 +42,18 @@ public class TurnDao extends AbstractDao implements Dao<Turn> {
 
     @Override
     public void insert(Turn turn) throws SQLException {
-        String sql = "INSERT INTO \"TurnTable\" (\"GameID\", \"TurnStartTime\", \"TurnEndTime\") VALUES (?, ?, ?);";
-        try (PreparedStatement stmnt = getConnection().prepareStatement(sql)) {
-            stmnt.setInt(1, turn.getGameId());
-            stmnt.setTime(2, turn.getTurnStartTime());
-            stmnt.setTime(3, turn.getTurnEndTime()); // Can be null if turn is ongoing
-            stmnt.executeUpdate();
+        String sql = "INSERT INTO \"TurnTable\" (\"GameID\", \"TurnStartTime\") VALUES (?, ?);";
+        try (Connection c = getConnection();
+             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, turn.getGameId());
+            ps.setTime(2, turn.getTurnStartTime());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    turn.setTurnId(rs.getInt(1));
+                }
+            }
         }
     }
 
