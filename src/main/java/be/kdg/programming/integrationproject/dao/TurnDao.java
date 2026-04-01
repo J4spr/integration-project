@@ -3,7 +3,10 @@ package be.kdg.programming.integrationproject.dao;
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Turn;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,18 +45,12 @@ public class TurnDao extends AbstractDao implements Dao<Turn> {
 
     @Override
     public void insert(Turn turn) throws SQLException {
-        String sql = "INSERT INTO \"TurnTable\" (\"GameID\", \"TurnStartTime\") VALUES (?, ?);";
-        try (Connection c = getConnection();
-             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, turn.getGameId());
-            ps.setTime(2, turn.getTurnStartTime());
-            ps.executeUpdate();
-
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    turn.setTurnId(rs.getInt(1));
-                }
-            }
+        String sql = "INSERT INTO \"TurnTable\" (\"GameID\", \"TurnStartTime\", \"TurnEndTime\") VALUES (?, ?, ?);";
+        try (PreparedStatement stmnt = getConnection().prepareStatement(sql)) {
+            stmnt.setInt(1, turn.getGameId());
+            stmnt.setTime(2, turn.getTurnStartTime());
+            stmnt.setTime(3, turn.getTurnEndTime()); // Can be null if turn is ongoing
+            stmnt.executeUpdate();
         }
     }
 
@@ -67,20 +64,8 @@ public class TurnDao extends AbstractDao implements Dao<Turn> {
     }
 
     @Override
-    public void update(Turn turn) throws SQLException {
-        String sql = "UPDATE \"TurnTable\" SET \"TurnEndTime\" = ? WHERE \"TurnID\" = ?";
-        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setTime(1, turn.getTurnEndTime());
-            ps.setInt(2, turn.getTurnId());
-            ps.executeUpdate();
-        }
-    }
+    public void update(Turn turn) { /* Implementation here */ }
 
     @Override
-    public void delete(int id) throws SQLException {
-        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement("DELETE FROM \"TurnTable\" WHERE \"TurnID\" = ?")) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
-    }
+    public void delete(int id) { /* Implementation here */ }
 }

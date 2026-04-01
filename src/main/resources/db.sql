@@ -133,7 +133,7 @@ ALTER TABLE "MoveTable"
 
 ALTER TABLE "PlayerTable"
     ADD CONSTRAINT unique_username UNIQUE ("Username"),
---     ADD CONSTRAINT unique_email UNIQUE ("Email"),
+    ADD CONSTRAINT unique_email UNIQUE ("Email"),
     ADD CONSTRAINT check_email_format CHECK ("Email" LIKE '%@%');
 
 ALTER TABLE "GameTable"

@@ -2,6 +2,9 @@ package be.kdg.programming.integrationproject.presenter;
 
 import be.kdg.programming.integrationproject.dao.PlayerDao;
 import be.kdg.programming.integrationproject.model.DbConnection;
+import be.kdg.programming.integrationproject.model.Move;
+import be.kdg.programming.integrationproject.dao.MoveDao;
+import be.kdg.programming.integrationproject.model.Player;
 import be.kdg.programming.integrationproject.model.PlayerStats;
 import be.kdg.programming.integrationproject.view.LeaderBoardView;
 import be.kdg.programming.integrationproject.view.MainMenuView;
@@ -13,7 +16,6 @@ public class LeaderBoardPresenter {
     private final LeaderBoardView view;
     private final PlayerDao playerDao;
     private final MainMenuView mmv;
-
     public LeaderBoardPresenter(LeaderBoardView view, MainMenuView mainMenuView) {
         this.view = view;
         this.mmv = mainMenuView;
