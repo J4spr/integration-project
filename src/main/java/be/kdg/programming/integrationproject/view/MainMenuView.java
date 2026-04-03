@@ -15,6 +15,11 @@ public class MainMenuView {
     private Button btnLeaderBoard;
     private Button btnExit;
 
+    // Background Components
+    private Image bgImage;
+    private BackgroundSize bgSize;
+    private BackgroundImage background;
+
     // Containers
     private StackPane stPane;
     private VBox contentBox;
@@ -27,22 +32,19 @@ public class MainMenuView {
     private void initialiseNodes() {
         stPane = new StackPane();
 
-        // 1. Setup Background
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        Image bgImage = new Image(path);
+        this.bgImage = new Image(path);
+        this.bgSize = new BackgroundSize(150, 150, false, false, false, false);
 
-        // Using 150x150 size as per your original logic
-        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
-
-        BackgroundImage background = new BackgroundImage(
-                bgImage,
+        this.background = new BackgroundImage(
+                this.bgImage,
                 BackgroundRepeat.REPEAT,
                 BackgroundRepeat.REPEAT,
                 BackgroundPosition.DEFAULT,
-                bgSize
+                this.bgSize
         );
 
-        stPane.setBackground(new Background(background));
+        stPane.setBackground(new Background(this.background));
 
         // 2. Initialize Buttons with a helper to keep code DRY
         btnStart = createMenuButton("Start");
@@ -64,9 +66,6 @@ public class MainMenuView {
         contentBox.setMaxWidth(250);
         contentBox.setMaxHeight(320);
 
-        /* * FIX: We only call setStyle once here.
-         * Background is transparent so the white box disappears.
-         */
         contentBox.setStyle("-fx-background-color: transparent;");
 
         // Configure the root StackPane
@@ -75,9 +74,7 @@ public class MainMenuView {
         stPane.getChildren().setAll(contentBox);
     }
 
-    /**
-     * Helper method to reduce repetitive button configuration code
-     */
+
     private Button createMenuButton(String text) {
         Button button = new Button(text);
         button.setPrefWidth(150);
@@ -88,7 +85,6 @@ public class MainMenuView {
     public void showConfirmationOverlay(String message, Runnable onConfirm) {
         StackPane overlay = new StackPane();
 
-        // FIX 1: This makes the dark background cover the entire window
         overlay.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7);");
 
@@ -103,7 +99,6 @@ public class MainMenuView {
         HBox buttons = new HBox(20);
         buttons.setAlignment(Pos.CENTER);
 
-        // Reuse your helper method to keep them looking nice!
         Button btnYes = createMenuButton("Yes, Exit");
         Button btnNo = createMenuButton("Cancel");
 
@@ -113,7 +108,6 @@ public class MainMenuView {
         buttons.getChildren().addAll(btnYes, btnNo);
         dialog.getChildren().addAll(label, buttons);
 
-        // FIX 2: Ensure the white box stays in the dead center of the screen
         StackPane.setAlignment(dialog, Pos.CENTER);
         overlay.getChildren().add(dialog);
 

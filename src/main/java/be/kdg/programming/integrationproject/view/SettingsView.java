@@ -11,9 +11,10 @@ import javafx.scene.layout.*;
 public class SettingsView {
     private Button fullscreenBtn;
     private VBox pane;
+    // Background Components
     private Image image;
-    private BackgroundImage backgroundImage;
     private BackgroundSize backgroundSize;
+    private BackgroundImage backgroundImage;
     private Button btnBack;
     private Button clearLeaderBoardBtn;
     private StackPane sp;
@@ -26,21 +27,21 @@ public class SettingsView {
     }
 
     private void initialiseNodes() {
-
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        image = new Image(path);
-        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
+        this.image = new Image(path);
+        this.backgroundSize = new BackgroundSize(150, 150, false, false, false, false);
 
-        BackgroundImage background = new BackgroundImage(
-                image,
-                BackgroundRepeat.REPEAT,   // Repeat on X-axis
-                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
+        this.backgroundImage = new BackgroundImage(
+                this.image,
+                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT,
                 BackgroundPosition.DEFAULT,
-                bgSize
+                this.backgroundSize
         );
 
-
         this.sp = new StackPane();
+        this.sp.setBackground(new Background(this.backgroundImage));
+
         this.pane = new VBox();
         this.musicSlider = new Slider(0, 100, 50);
 
