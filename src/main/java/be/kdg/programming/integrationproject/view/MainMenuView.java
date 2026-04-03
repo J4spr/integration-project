@@ -38,13 +38,16 @@ public class MainMenuView {
         // Load the shared background image
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
         Image bgImage = new Image(path);
+        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
         BackgroundImage background = new BackgroundImage(
                 bgImage,
-                BackgroundRepeat.REPEAT,
-                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT,   // Repeat on X-axis
+                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
                 BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT
+                bgSize
         );
+
         this.stPane.setBackground(new Background(background));
 
         this.btnStart = new Button("Start");

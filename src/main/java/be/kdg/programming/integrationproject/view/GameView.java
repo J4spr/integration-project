@@ -75,15 +75,17 @@ public class GameView {
 
     private void initBackground() {
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        this.bgImage = new Image(path);
-        this.background = new BackgroundImage(
-                this.bgImage,
-                BackgroundRepeat.REPEAT,
-                BackgroundRepeat.REPEAT,
+        Image image = new Image(path);
+        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
+        BackgroundImage background = new BackgroundImage(
+                image,
+                BackgroundRepeat.REPEAT,   // Repeat on X-axis
+                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
                 BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT
+                bgSize
         );
-        this.gamePane.setBackground(new Background(this.background));
+        this.gamePane.setBackground(new Background(background));
     }
 
     private void initButtons() {

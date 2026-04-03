@@ -21,14 +21,25 @@ public class SettingsView {
     private Label musicSliderLabel;
 
     public SettingsView() {
-        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        image = new Image(path);
-        backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        initialiseNodes();
+       initialiseNodes();
         layoutNodes();
     }
 
     private void initialiseNodes() {
+
+        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
+        image = new Image(path);
+        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
+        BackgroundImage background = new BackgroundImage(
+                image,
+                BackgroundRepeat.REPEAT,   // Repeat on X-axis
+                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
+                BackgroundPosition.DEFAULT,
+                bgSize
+        );
+
+
         this.sp = new StackPane();
         this.pane = new VBox();
         this.musicSlider = new Slider(0, 100, 50);

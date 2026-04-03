@@ -18,9 +18,6 @@ public class RulesView {
 
 
     public RulesView() {
-        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        image = new Image(path);
-        backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
 
 
         initialiseNodes();
@@ -31,8 +28,18 @@ public class RulesView {
     private void initialiseNodes() {
         pane = new StackPane();
         btnBack = new Button("Go back");
-        pane.setBackground(new Background(backgroundImage));
+        String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
+        image = new Image(path);
+        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
 
+        BackgroundImage background = new BackgroundImage(
+                image,
+                BackgroundRepeat.REPEAT,   // Repeat on X-axis
+                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
+                BackgroundPosition.DEFAULT,
+                bgSize
+        );
+        this.pane.setBackground(new Background(background));
         txRules = new TextArea();
         txRules.setEditable(false);
         txRules.setWrapText(true);

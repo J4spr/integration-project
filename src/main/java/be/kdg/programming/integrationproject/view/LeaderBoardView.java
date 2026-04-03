@@ -31,7 +31,15 @@ public class LeaderBoardView extends VBox {
         this.pane = new StackPane();
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
         image = new Image(path);
-        backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
+        BackgroundImage background = new BackgroundImage(
+                image,
+                BackgroundRepeat.REPEAT,   // Repeat on X-axis
+                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
+                BackgroundPosition.DEFAULT,
+                bgSize
+        );
         this.pane.setBackground(new Background(backgroundImage));
 
         this.btnBack = new Button("Back");

@@ -104,16 +104,18 @@ public class StartMenuView {
         contentBox.setMaxHeight(350);
         contentBox.setStyle("-fx-border-color: #aaaaaa; -fx-border-radius: 8; -fx-background-color: white; -fx-background-radius: 8;");
 
-        //load the same background image used in MainMenuView
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        Image bgImage = new Image(path);
+        Image image = new Image(path);
+        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
         BackgroundImage background = new BackgroundImage(
-                bgImage,
-                BackgroundRepeat.REPEAT,
-                BackgroundRepeat.REPEAT,
+                image,
+                BackgroundRepeat.REPEAT,   // Repeat on X-axis
+                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
                 BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT
+                bgSize
         );
+
         root.setBackground(new Background(background));
 
         //StackPane centers the contentBox and scales naturally with window resize
