@@ -150,3 +150,63 @@ ALTER TABLE "MoveTable"
 ALTER TABLE "PatchTable"
     ADD CONSTRAINT check_patch_costs CHECK ("ButtonCost" >= 0 AND "TimeCost" >= 0),
     ADD CONSTRAINT check_patch_income CHECK ("ButtonIncome" >= 0);
+
+CREATE VIEW move_outliers AS
+WITH move_data AS (
+    SELECT
+        p."Username" AS player,
+        g."GameStartTime" AS game_start,
+
+        CASE
+            WHEN g."WinnerID" = p."PlayerID" THEN 'W'
+            WHEN g."WinnerID" IS NULL THEN 'D'
+            ELSE 'L'
+            END AS outcome,
+
+        m."MoveStartTime" AS move_time,
+
+        EXTRACT(EPOCH FROM (m."MoveEndTime" - m."MoveStartTime")) AS duration
+
+    FROM "MoveTable" m
+             JOIN "TurnTable" t ON m."TurnID" = t."TurnID"
+             JOIN "GameTable" g ON t."GameID" = g."GameID"
+             JOIN "PlayerTable" p ON p."PlayerID" IN (g."Player1ID", g."Player2ID")
+
+    WHERE g."State" = 'Finished'
+      AND m."MoveEndTime" IS NOT NULL
+),
+
+     quartiles AS (
+         SELECT
+                     percentile_cont(0.25) WITHIN GROUP (ORDER BY duration) AS q1,
+                     percentile_cont(0.75) WITHIN GROUP (ORDER BY duration) AS q3
+         FROM move_data
+     ),
+
+     final_data AS (
+         SELECT
+             md.*,
+             q.q1,
+             q.q3,
+             (q.q3 - q.q1) AS iqr
+         FROM move_data md
+                  CROSS JOIN quartiles q
+     )
+
+SELECT
+    player,
+    game_start,
+    outcome,
+    move_time,
+    duration,
+
+    CASE
+        WHEN duration < (q1 - 1.5 * iqr)
+            OR duration > (q3 + 1.5 * iqr)
+            THEN 'X'
+        ELSE NULL
+        END AS outlier
+
+FROM final_data;
+
+SELECT * FROM move_outliers;
