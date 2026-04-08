@@ -86,7 +86,7 @@ public class MainMenuView {
         StackPane overlay = new StackPane();
 
         overlay.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7);");
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 
         VBox dialog = new VBox(20);
         dialog.setAlignment(Pos.CENTER);

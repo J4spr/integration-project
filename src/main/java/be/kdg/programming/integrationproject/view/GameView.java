@@ -204,7 +204,7 @@ public class GameView {
         this.confirmationContentBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12;");
 
         this.confirmationOverlay = new StackPane(this.confirmationContentBox);
-        this.confirmationOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
+        this.confirmationOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 
         this.btnCancelQuit.setOnAction(e -> this.root.getChildren().remove(this.confirmationOverlay));
         this.btnConfirmQuit.setOnAction(e -> {
