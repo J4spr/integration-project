@@ -36,13 +36,28 @@ public class RulesPresenter {
         try (InputStream is = getClass().getResourceAsStream("/rules.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
 
-            StringBuilder sb = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
+            StringBuilder content = new StringBuilder();
+            String currentTitle = "Rules"; // Default title
 
-            view.setRulesText(sb.toString());
+            while ((line = reader.readLine()) != null) {
+                // Check if the line looks like a header (e.g., ===== SETUP =====)
+                if (line.startsWith("=====") && line.endsWith("=====")) {
+                    // If we already have content collected, send it to the view as a card
+                    if (content.length() > 0) {
+                        view.addRuleCard(currentTitle, content.toString().trim());
+                        content.setLength(0); // Clear for next section
+                    }
+                    // Clean up the header to use as the next title (remove the ====)
+                    currentTitle = line.replace("=", "").trim();
+                } else {
+                    content.append(line).append("\n");
+                }
+            }
+            // Don't forget the last section!
+            if (content.length() > 0) {
+                view.addRuleCard(currentTitle, content.toString().trim());
+            }
 
         } catch (Exception e) {
             view.setRulesText("Error loading rules: " + e.getMessage());
