@@ -1,9 +1,10 @@
 package be.kdg.programming.integrationproject.model;
 
 import be.kdg.programming.integrationproject.model.Enums.GameStatus;
-import java.util.Queue;
-import java.util.LinkedList;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Game {
     private int gameId;
@@ -24,12 +25,12 @@ public class Game {
     private Timeboard timeboard;
     private PatchStack patchStack;
     //separated leather patch queues per player so there is no ambiguity about who places what
-    private Queue<Patch> leatherPatchQueueP1 = new LinkedList<>();
-    private Queue<Patch> leatherPatchQueueP2 = new LinkedList<>();
+    private Queue<Patch> leatherPatchQueueP1;
+    private Queue<Patch> leatherPatchQueueP2;
     //counter to ensure each leather patch gets a unique ID
     private int leatherPatchCounter = 0;
     //queue of leather patches the current player still needs to place
-    private Queue<Patch> leatherPatchQueue = new LinkedList<>();
+    private Queue<Patch> leatherPatchQueue;
 
     public Game(HumanPlayer player1, Player player2, int startPlayer) {
         this.player1 = player1;
@@ -44,6 +45,10 @@ public class Game {
         //each player starts with 5 buttons according to the rules
         player1.setTotalButtons(5);
         player2.setTotalButtons(5);
+        this.leatherPatchQueueP1 = new LinkedList<>();
+        this.leatherPatchQueueP2 = new LinkedList<>();
+        this.leatherPatchQueue = new LinkedList<>();
+
     }
 
     //getters & setters
@@ -67,12 +72,12 @@ public class Game {
         return specialTileOwner;
     }
 
-    public Player getWinner() {
-        return winner;
-    }
-
     public void setSpecialTileOwner(Player specialTileOwner) {
         this.specialTileOwner = specialTileOwner;
+    }
+
+    public Player getWinner() {
+        return winner;
     }
 
     public GameStatus getStatus() {

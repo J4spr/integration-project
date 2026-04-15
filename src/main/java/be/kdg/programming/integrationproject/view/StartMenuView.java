@@ -50,10 +50,10 @@ public class StartMenuView {
         lblDifficulty = new Label("CPU difficulty:");
         cbDifficulty = new ComboBox<>();
         cbDifficulty.getItems().add(Difficulty.EASY);
+        cbDifficulty.getItems().add(Difficulty.MEDIUM);
+        cbDifficulty.getItems().add(Difficulty.HARD);
         cbDifficulty.setValue(Difficulty.EASY);
-        //EASY is the only option for the beta, so the combobox is disabled
-        cbDifficulty.setDisable(true);
-
+        
         lblStartPlayer = new Label("Starting player:");
         cbStartPlayer = new ComboBox<>();
         //1 = human player starts, 2 = CPU starts

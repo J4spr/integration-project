@@ -66,7 +66,7 @@ public class Patch {
 
     //core rotation logic extracted so both getRotatedShape and getRotatedShapeFor can use it
     private boolean[][] rotateShape(PatchRotation targetRotation) {
-        boolean[][] original = shape.getShape();
+        boolean[][] original = this.shape.getShape();
         int rows = original.length;
         int cols = original[0].length;
 
