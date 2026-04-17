@@ -12,7 +12,7 @@ public abstract class AbstractDao {
         this.dbConnection = dbConnection;
     }
 
-    protected Connection getConnection() throws SQLException {
+    protected Connection getConnection() {
         return dbConnection.getConnection();
     }
 }

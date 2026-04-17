@@ -38,13 +38,21 @@ public class DbConnection {
         this.url = String.format("jdbc:postgresql://%s:%s/%s", this.hostname,this.portNumber, this.databaseName);
     }
 
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
         try {
             Class.forName("org.postgresql.Driver");
+            return DriverManager.getConnection(this.url, this.username, this.password);
+
         } catch (ClassNotFoundException e) {
-            System.err.println("Could not load Database class");
-            System.exit(1);
+            System.err.println("Database driver niet gevonden");
+            e.printStackTrace();
+
+        } catch (SQLException e) {
+            System.err.println("Fout bij maken van database connectie");
+            e.printStackTrace();
         }
-        return DriverManager.getConnection(this.url, this.username, this.password);
+
+        return null;
     }
+
 }

@@ -3,10 +3,7 @@ package be.kdg.programming.integrationproject.dao;
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Turn;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,40 +14,76 @@ public class TurnDao extends AbstractDao implements Dao<Turn> {
     }
 
     @Override
-    public Turn findById(int turnId) throws SQLException {
+    public Turn findById(int turnId) {
         String sql = "SELECT * FROM \"TurnTable\" WHERE \"TurnID\" = ?;";
-        try (PreparedStatement stmnt = getConnection().prepareStatement(sql)) {
-            stmnt.setInt(1, turnId);
-            try (ResultSet rs = stmnt.executeQuery()) {
+
+        Connection c = getConnection();
+        if (c == null) {
+            System.err.println("Geen DB connectie in TurnDao.findById");
+            return null;
+        }
+
+        try (PreparedStatement st = c.prepareStatement(sql)) {
+            st.setInt(1, turnId);
+
+            try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToTurn(rs);
                 }
             }
+
+        } catch (SQLException e) {
+            System.err.println("Fout in TurnDao.findById");
+            e.printStackTrace();
         }
+
         return null;
     }
 
     @Override
-    public List<Turn> findAll() throws SQLException {
+    public List<Turn> findAll() {
         List<Turn> turns = new ArrayList<>();
-        String sql = "SELECT * FROM \"TurnTable\";";
-        try (Statement stmnt = getConnection().createStatement();
-             ResultSet rs = stmnt.executeQuery(sql)) {
+
+        Connection c = getConnection();
+        if (c == null) {
+            System.err.println("Geen DB connectie in TurnDao.findAll");
+            return turns;
+        }
+
+        try (Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery("SELECT * FROM \"TurnTable\"")) {
+
             while (rs.next()) {
                 turns.add(mapResultSetToTurn(rs));
             }
+
+        } catch (SQLException e) {
+            System.err.println("Fout in TurnDao.findAll");
+            e.printStackTrace();
         }
+
         return turns;
     }
 
     @Override
-    public void insert(Turn turn) throws SQLException {
-        String sql = "INSERT INTO \"TurnTable\" (\"GameID\", \"TurnStartTime\", \"TurnEndTime\") VALUES (?, ?, ?);";
-        try (PreparedStatement stmnt = getConnection().prepareStatement(sql)) {
-            stmnt.setInt(1, turn.getGameId());
-            stmnt.setTime(2, turn.getTurnStartTime());
-            stmnt.setTime(3, turn.getTurnEndTime()); // Can be null if turn is ongoing
-            stmnt.executeUpdate();
+    public void insert(Turn turn) {
+        String sql = "INSERT INTO \"TurnTable\" (\"GameID\", \"TurnStartTime\", \"TurnEndTime\") VALUES (?, ?, ?)";
+
+        Connection c = getConnection();
+        if (c == null) {
+            System.err.println("Geen DB connectie in TurnDao.insert");
+            return;
+        }
+
+        try (PreparedStatement st = c.prepareStatement(sql)) {
+            st.setInt(1, turn.getGameId());
+            st.setTime(2, turn.getTurnStartTime());
+            st.setTime(3, turn.getTurnEndTime());
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Fout in TurnDao.insert");
+            e.printStackTrace();
         }
     }
 
@@ -63,9 +96,6 @@ public class TurnDao extends AbstractDao implements Dao<Turn> {
         );
     }
 
-    @Override
-    public void update(Turn turn) { /* Implementation here */ }
-
-    @Override
-    public void delete(int id) { /* Implementation here */ }
+    @Override public void update(Turn turn) {}
+    @Override public void delete(int id) {}
 }

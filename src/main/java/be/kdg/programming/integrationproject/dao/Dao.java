@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface Dao<T> {
-    T findById(int id) throws SQLException;
-    List<T> findAll() throws SQLException;
-    void insert(T t) throws SQLException;
-    void update(T t) throws SQLException;
-    void delete(int id) throws SQLException;
+    T findById(int id);
+    List<T> findAll();
+    void insert(T t);
+    void update(T t);
+    void delete(int id);
 }
