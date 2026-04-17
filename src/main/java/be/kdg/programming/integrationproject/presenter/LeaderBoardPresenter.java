@@ -26,13 +26,8 @@ public class LeaderBoardPresenter {
     }
 
     public void refreshLeaderboard() {
-        try {
-            // Correctly fetch the List of DTOs
-            List<PlayerStats> stats = playerDao.getDetailedLeaderboard();
-            view.setStatsData(stats);
-        } catch (SQLException e) {
-            view.showError("Database error: " + e.getMessage());
-        }
+        List<PlayerStats> stats = playerDao.getDetailedLeaderboard();
+        view.setStatsData(stats);
     }
 
     private void addHandlers() {
