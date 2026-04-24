@@ -9,13 +9,17 @@ import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
         MainMenuView view = new MainMenuView();
         new MainMenuPresenter(view);
 
         Scene scene = new Scene(view.getPane(), 400, 300);
-    
+
         stage.setTitle("Patchwork");
         stage.setScene(scene);
         //start the application in fullscreen mode, ESC exits fullscreen by default
@@ -24,17 +28,17 @@ public class Main extends Application {
         stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.show();
 
-        DbConnection db = new DbConnection();
+        try {
+            DbConnection db = new DbConnection();
 
-        if (!db.tableExists("playertable")) {
-            System.out.println("Tabellen bestaan nog niet, worden aangemaakt...");
-            db.runSqlScript("src/main/resources/db.sql");
-        } else {
-            System.out.println("Tabellen bestaan al.");
+            if (!db.tableExists("playertable")) {
+                System.out.println("Tabellen bestaan nog niet, worden aangemaakt...");
+                db.runSqlScript("src/main/resources/db.sql");
+            } else {
+                System.out.println("Tabellen bestaan al.");
+            }
+        } catch (RuntimeException e) {
+            System.out.println("Database niet gevonden");
         }
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
