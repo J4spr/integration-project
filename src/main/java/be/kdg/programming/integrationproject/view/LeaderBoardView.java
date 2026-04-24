@@ -1,6 +1,5 @@
 package be.kdg.programming.integrationproject.view;
 
-import be.kdg.programming.integrationproject.model.Player;
 import be.kdg.programming.integrationproject.model.PlayerStats;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -17,9 +16,10 @@ public class LeaderBoardView extends VBox {
     private StackPane pane;
     private Button btnBack;
 
-    private Image image;
-    private BackgroundImage backgroundImage;
-    private BackgroundSize backgroundSize;
+    // Background Components
+    private Image bgImage;
+    private BackgroundSize bgSize;
+    private BackgroundImage background;
 
 
     public LeaderBoardView() {
@@ -30,9 +30,17 @@ public class LeaderBoardView extends VBox {
     private void initialiseNodes() {
         this.pane = new StackPane();
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        image = new Image(path);
-        backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        this.pane.setBackground(new Background(backgroundImage));
+        this.bgImage = new Image(path);
+        this.bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
+        this.background = new BackgroundImage(
+                this.bgImage,
+                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT,
+                BackgroundPosition.DEFAULT,
+                this.bgSize
+        );
+        this.pane.setBackground(new Background(this.background));
 
         this.btnBack = new Button("Back");
         this.btnBack.setPrefWidth(80);
