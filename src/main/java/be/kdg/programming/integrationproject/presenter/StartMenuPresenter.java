@@ -7,6 +7,8 @@ import be.kdg.programming.integrationproject.view.GameView;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.StartMenuView;
 import javafx.scene.control.Alert;
+import be.kdg.programming.integrationproject.dao.GameDao;
+import be.kdg.programming.integrationproject.dao.PlayerDao;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,15 +41,25 @@ public class StartMenuPresenter {
         }
 
         HumanPlayer player1 = new HumanPlayer(view.getPlayerName());
-        player1.setPlayerId(1);
         player1.setColor(view.getSelectedTokenColor());
 
         CpuPlayer player2 = new CpuPlayer(view.getSelectedDifficulty());
-        player2.setPlayerId(2);
+        try {PlayerDao playerDao = new PlayerDao(new DbConnection());
+
+            playerDao.insert(player1);
+            playerDao.insert(player2);
+        }
+        catch(Exception ex){ex.printStackTrace();}
         //pick a random color for the CPU that is different from player 1's color
         player2.setColor(pickCpuColor(view.getSelectedTokenColor()));
 
         Game game = new Game(player1, player2, view.getStartPlayer());
+        try {GameDao dao = new GameDao(new DbConnection());
+
+            int newGameId = dao.createNewPausedGame(player1.getPlayerId(), player2.getPlayerId(), view.getStartPlayer());
+            game.setGameId(newGameId);
+        }
+        catch(Exception ex){ex.printStackTrace();}
 
         String colorP1 = tokenColorToHex(player1.getColor());
         String colorP2 = tokenColorToHex(player2.getColor());

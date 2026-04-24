@@ -40,6 +40,7 @@ public class GameView {
     // Controls
     private Button btnPass;
     private Button btnRotate;
+    private Button btnPause;
     private Button btnQuit;
 
     // Confirmation Overlay Components
@@ -91,9 +92,10 @@ public class GameView {
     private void initButtons() {
         this.btnPass = new Button("Pass");
         this.btnRotate = new Button("Rotate");
+        this.btnPause = new Button("Pause");
         this.btnQuit = new Button("Quit Game");
 
-        for (Button btn : new Button[]{this.btnPass, this.btnRotate, this.btnQuit}) {
+        for (Button btn : new Button[]{this.btnPass, this.btnRotate,this.btnPause, this.btnQuit}) {
             btn.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
             btn.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
             btn.setMaxSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -148,7 +150,7 @@ public class GameView {
         bottomPatches.setAlignment(Pos.CENTER);
         bottomPatches.setMaxHeight(PATCH_SLOT_HEIGHT);
 
-        HBox controlBar = new HBox(15, this.btnPass, this.btnRotate, this.btnQuit);
+        HBox controlBar = new HBox(15, this.btnPass, this.btnRotate,this.btnPause, this.btnQuit);
         controlBar.setAlignment(Pos.CENTER);
         controlBar.setPadding(new Insets(10, 0, 0, 0));
         controlBar.setMinHeight(55);
@@ -264,4 +266,5 @@ public class GameView {
     public Button getBtnPass() { return this.btnPass; }
     public Button getBtnRotate() { return this.btnRotate; }
     public Button getBtnQuit() { return this.btnQuit; }
+    public Button getBtnPause(){return btnPause;}
 }

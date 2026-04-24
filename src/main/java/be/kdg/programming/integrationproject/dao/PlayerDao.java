@@ -3,6 +3,8 @@ package be.kdg.programming.integrationproject.dao;
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Player;
 import be.kdg.programming.integrationproject.model.PlayerStats;
+import be.kdg.programming.integrationproject.model.CpuPlayer;
+import be.kdg.programming.integrationproject.model.HumanPlayer;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -72,10 +74,49 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
     public List<Player> findAll() throws SQLException {
         return List.of();
     }
-
     @Override
     public void insert(Player player) throws SQLException {
 
+        String username;
+
+        if(player instanceof HumanPlayer human){
+            username = human.getName();
+        }else{
+            username = "CPU_Player";
+        }
+
+        String checkSql =
+                "SELECT \"PlayerID\" FROM \"PlayerTable\" WHERE \"Username\"=?";
+
+        try(PreparedStatement check= getConnection().prepareStatement(checkSql)){
+
+            check.setString(1,username);
+
+            ResultSet rs=check.executeQuery();
+
+            if(rs.next()){player.setPlayerId(rs.getInt("PlayerID"));
+                return;
+            }
+        }
+
+        String email= username.toLowerCase().replace(" ","") +"@game.com";
+
+        String sql="""
+    INSERT INTO "PlayerTable"
+    ("Username","Email")
+    VALUES (?,?)
+    RETURNING "PlayerID"
+    """;
+
+        try(PreparedStatement st= getConnection().prepareStatement(sql)){
+
+            st.setString(1,username);
+            st.setString(2,email);
+
+            ResultSet rs=st.executeQuery();
+
+            if(rs.next()){player.setPlayerId(rs.getInt(1));}
+        }
     }
 
     @Override
@@ -96,6 +137,8 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
     public void getGlobalStats() {
 
     }
+
+
 
 
 }

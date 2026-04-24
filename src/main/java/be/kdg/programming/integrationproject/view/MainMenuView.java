@@ -14,6 +14,7 @@ public class MainMenuView {
     private Button btnSettings;
     private Button btnLeaderBoard;
     private Button btnExit;
+    private Button btnContinue;
 
     // Background Components
     private Image bgImage;
@@ -52,9 +53,10 @@ public class MainMenuView {
         btnSettings = createMenuButton("Settings");
         btnLeaderBoard = createMenuButton("Leaderboard");
         btnExit = createMenuButton("Exit to Desktop");
+        btnContinue=createMenuButton("Continue Game");
 
         // 3. Setup ContentBox (Transparent by default now)
-        contentBox = new VBox(15, btnStart, btnRules, btnSettings, btnLeaderBoard, btnExit);
+        contentBox = new VBox(15, btnStart,btnContinue, btnRules, btnSettings, btnLeaderBoard, btnExit);
     }
 
     private void layoutNodes() {
@@ -121,4 +123,5 @@ public class MainMenuView {
     public Button getSettingsButton() { return btnSettings; }
     public Button getLeaderboardButton() { return btnLeaderBoard; }
     public Button getBtnExit() { return btnExit; }
+    public Button getContinueButton(){return btnContinue;}
 }

@@ -49,6 +49,12 @@ public class MainMenuPresenter {
                     () -> Platform.exit()
             );
         });
+        mmv.getContinueButton().setOnAction(e->{UnfinishedGamesView ugv= new UnfinishedGamesView();
+
+                    new UnfinishedGamesPresenter(ugv, mmv);
+
+                    mmv.getPane().getScene().setRoot(ugv.getPane());
+                });
 
     }
 }
