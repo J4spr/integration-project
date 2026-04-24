@@ -1,5 +1,6 @@
 package be.kdg.programming.integrationproject;
 
+import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.presenter.MainMenuPresenter;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import javafx.application.Application;
@@ -22,6 +23,15 @@ public class Main extends Application {
         stage.setFullScreenExitHint("");
         stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.show();
+
+        DbConnection db = new DbConnection();
+
+        if (!db.tableExists("playertable")) {
+            System.out.println("Tabellen bestaan nog niet, worden aangemaakt...");
+            db.runSqlScript("src/main/resources/db.sql");
+        } else {
+            System.out.println("Tabellen bestaan al.");
+        }
     }
 
     public static void main(String[] args) {
