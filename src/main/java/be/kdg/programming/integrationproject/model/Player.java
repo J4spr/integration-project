@@ -9,6 +9,8 @@ public abstract class Player {
     private int totalButtonIncome;
     private Quiltboard quiltBoard;
     private TokenColor color;
+    private String username;
+    private String email;
 
     //constructor
     public Player() {
@@ -60,5 +62,21 @@ public abstract class Player {
 
     public void setColor(TokenColor color) {
         this.color = color;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -51,10 +51,55 @@ public class GameDao extends AbstractDao implements Dao<Game> {
     }
 
     @Override
-    public void insert(Game game) throws SQLException {}
+    public void insert(Game game) throws SQLException {
+        // We slaan alleen de opstart-gegevens op. Winner etc. komt pas aan het einde van het spel (via een UPDATE).
+        String sql = "INSERT INTO \"GameTable\" (\"GameType\", \"State\", \"Player1ID\", \"Player2ID\", \"StartingPlayer\", \"GameStartTime\") VALUES (?, ?, ?, ?, ?, ?);";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Vul de attributen in vanuit ons Game object
+            pstmt.setString(1, game.getGameType());
+            pstmt.setString(2, game.getStatus().name());
+            pstmt.setInt(3, game.getPlayer1().getPlayerId());
+            pstmt.setInt(4, game.getPlayer2().getPlayerId());
+            pstmt.setInt(5, game.getStartPlayer());
+            pstmt.setTime(6, game.getGameStartTime());
+
+            pstmt.executeUpdate();
+
+            // Haal de automatisch gegenereerde GameID op uit de database
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    game.setGameId(rs.getInt(1)); // Koppel de ID aan je lopende game!
+                }
+            }
+        }
+    }
 
     @Override
-    public void update(Game game) throws SQLException {}
+    public void update(Game game) throws SQLException {
+        String sql = "UPDATE \"GameTable\" SET \"State\" = ?, \"WinnerID\" = ?, \"GameEndTime\" = ? WHERE \"GameID\" = ?;";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, game.getStatus().name());
+
+            if (game.getWinner() != null) {
+                pstmt.setInt(2, game.getWinner().getPlayerId());
+            } else {
+                pstmt.setNull(2, java.sql.Types.INTEGER);
+            }
+
+            java.sql.Time endTime = new java.sql.Time(System.currentTimeMillis());
+            pstmt.setTime(3, endTime);
+
+            pstmt.setInt(4, game.getGameId());
+
+            pstmt.executeUpdate();
+        }
+    }
 
     @Override
     public void delete(int id) throws SQLException {}

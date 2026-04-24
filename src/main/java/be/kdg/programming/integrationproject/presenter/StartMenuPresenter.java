@@ -32,30 +32,60 @@ public class StartMenuPresenter {
     }
 
     private void startGame() {
-        //validate that the player has entered a name
+        // Check of de speler wel een naam heeft ingevuld
         if (view.getPlayerName().isEmpty()) {
             showWarning("Please enter your name.");
             return;
         }
 
+        // Maak de Java objecten aan voor de spelers
         HumanPlayer player1 = new HumanPlayer(view.getPlayerName());
-        player1.setPlayerId(1);
+        player1.setUsername(view.getPlayerName());
+        // We vullen een e-mail in om aan de CHECK constraint in de database te voldoen
+        player1.setEmail(view.getPlayerName().toLowerCase() + "@student.kdg.be");
         player1.setColor(view.getSelectedTokenColor());
 
         CpuPlayer player2 = new CpuPlayer(view.getSelectedDifficulty());
-        player2.setPlayerId(2);
-        //pick a random color for the CPU that is different from player 1's color
+        player2.setUsername("CPU_" + view.getSelectedDifficulty());
+        player2.setEmail("cpu@patchwork.com");
         player2.setColor(pickCpuColor(view.getSelectedTokenColor()));
 
-        Game game = new Game(player1, player2, view.getStartPlayer());
+        // Sla de spelers en de game sessie op
+        try {
 
-        String colorP1 = tokenColorToHex(player1.getColor());
-        String colorP2 = tokenColorToHex(player2.getColor());
+            DbConnection db = new DbConnection();
+            be.kdg.programming.integrationproject.dao.PlayerDao playerDao = new be.kdg.programming.integrationproject.dao.PlayerDao(db);
+            be.kdg.programming.integrationproject.dao.GameDao gameDao = new be.kdg.programming.integrationproject.dao.GameDao(db);
 
-        GameView gameView = new GameView(player1.getName(), colorP1, "CPU", colorP2);
-        new GamePresenter(game, gameView, mainMenuView);
+            // Sla de spelers op in de database
+            playerDao.insert(player1);
+            playerDao.insert(player2);
 
-        view.getPane().getScene().setRoot(gameView.getPane());
+            // Maak het Game object aan.
+            // We geven "CPU_GAME" mee als type (zoals afgesproken in het aangepaste Game model).
+            Game game = new Game(player1, player2, view.getStartPlayer(), "CPU_GAME");
+
+            // Sla de start van de game sessie op in de database
+            gameDao.insert(game);
+
+            // Ga naar het spelscherm
+            String colorP1 = tokenColorToHex(player1.getColor());
+            String colorP2 = tokenColorToHex(player2.getColor());
+
+            // Maak de GameView aan met de namen uit de database/objecten
+            GameView gameView = new GameView(player1.getUsername(), colorP1, player2.getUsername(), colorP2);
+
+            // Start de GamePresenter die het spel verder afhandelt
+            new GamePresenter(game, gameView, mainMenuView);
+
+            view.getPane().getScene().setRoot(gameView.getPane());
+
+        } catch (java.sql.SQLException e) {
+            // Als er iets misgaat met de database (bijv. Postgres staat uit),
+            // tonen we een foutmelding en printen we de stacktrace voor debugging.
+            e.printStackTrace();
+            showWarning("Fout bij het opslaan in de database. Controleer of de database draait.");
+        }
     }
 
     //picks a random TokenColor that is not the same as the human player's color

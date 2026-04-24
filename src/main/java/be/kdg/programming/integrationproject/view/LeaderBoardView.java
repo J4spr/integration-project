@@ -41,7 +41,7 @@ public class LeaderBoardView extends VBox {
     }
 
     private void layoutNodes() {
-        // Define how to display the Move object in the list
+        // Define how to display the PlayerStats object in the list
         listView.setCellFactory(lv -> new ListCell<PlayerStats>() {
             @Override
             protected void updateItem(PlayerStats item, boolean empty) {
@@ -49,10 +49,12 @@ public class LeaderBoardView extends VBox {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    // Using String.format to create a "Table" look inside the List
                     setText(String.format("%-15s | Wins: %d | Games: %d | Win%%: %.1f%% | Spent: %d",
-                            item.getUsername(), item.getWins(), item.getGamesPlayed(),
-                            item.getWinPercentage(), item.getTotalButtonsSpent()));
+                            item.getUsername(),
+                            item.getWins(),
+                            item.getGamesPlayed(),
+                            item.getWinPercentage(),
+                            item.getTotalButtonsSpent()));
                 }
             }
         });

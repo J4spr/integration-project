@@ -75,7 +75,37 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
 
     @Override
     public void insert(Player player) throws SQLException {
+        String checkSql = "SELECT \"PlayerID\" FROM \"PlayerTable\" WHERE \"Username\" = ?;";
 
+        try (Connection conn = getConnection();
+             PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+
+            checkStmt.setString(1, player.getUsername());
+
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next()) {
+                    player.setPlayerId(rs.getInt("PlayerID"));
+                    return;
+                }
+            }
+        }
+
+        String insertSql = "INSERT INTO \"PlayerTable\" (\"Username\", \"Email\") VALUES (?, ?);";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, player.getUsername());
+            pstmt.setString(2, player.getEmail());
+
+            pstmt.executeUpdate();
+
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    player.setPlayerId(generatedKeys.getInt(1));
+                }
+            }
+        }
     }
 
     @Override

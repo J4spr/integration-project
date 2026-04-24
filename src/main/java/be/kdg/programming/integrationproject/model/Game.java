@@ -4,6 +4,7 @@ import be.kdg.programming.integrationproject.model.Enums.GameStatus;
 import java.util.Queue;
 import java.util.LinkedList;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
+import java.sql.Time;
 
 public class Game {
     private int gameId;
@@ -19,6 +20,9 @@ public class Game {
     private Player firstToFinish;
     private Player winner;
     private GameStatus status;
+    private String gameType;
+    private Time gameStartTime;
+    private Time gameEndTime;
     //1 = player1 starts, 2 = player2 starts
     private int startPlayer;
     private Timeboard timeboard;
@@ -31,17 +35,17 @@ public class Game {
     //queue of leather patches the current player still needs to place
     private Queue<Patch> leatherPatchQueue = new LinkedList<>();
 
-    public Game(HumanPlayer player1, Player player2, int startPlayer) {
+    public Game(HumanPlayer player1, Player player2, int startPlayer, String gameType) {
         this.player1 = player1;
         this.player2 = player2;
         this.startPlayer = startPlayer;
-        //set the starting player based on the chosen start player
+        this.gameType = gameType;
+        this.gameStartTime = new Time(System.currentTimeMillis());
+
         this.currentPlayer = startPlayer == 1 ? player1 : player2;
         this.status = GameStatus.ACTIVE;
         this.timeboard = new Timeboard();
-        //use PatchStackBuilder to create and shuffle all patches
         this.patchStack = PatchStackBuilder.build();
-        //each player starts with 5 buttons according to the rules
         player1.setTotalButtons(5);
         player2.setTotalButtons(5);
     }
@@ -249,4 +253,9 @@ public class Game {
         }
         return false;
     }
+
+    public String getGameType() { return gameType; }
+    public Time getGameStartTime() { return gameStartTime; }
+    public Time getGameEndTime() { return gameEndTime; }
+    public void setGameEndTime(Time gameEndTime) { this.gameEndTime = gameEndTime; }
 }

@@ -138,7 +138,6 @@ public class QuiltboardPresenter {
     private void handleBoardClick(int row, int col) {
         Player human = game.getPlayer1();
 
-        //if the human has leather patches to place, handle those first
         if (!game.getLeatherPatchQueue(human).isEmpty()) {
             boolean placed = game.placeLeatherPatch(human, row, col);
             if (!placed) {
@@ -146,7 +145,6 @@ public class QuiltboardPresenter {
                 return;
             }
             gamePresenter.initializeView();
-            //only switch turns once all leather patches are placed
             if (game.getLeatherPatchQueue(human).isEmpty()) {
                 game.updateCurrentPlayer();
                 gamePresenter.handleCpuTurn();
@@ -160,8 +158,14 @@ public class QuiltboardPresenter {
             return;
         }
 
+
+        int currentPatchId = gamePresenter.getSelectedPatchId();
+        Patch selectedPatch = game.getPatchStack().getPatch(currentPatchId);
+        int timeCost = (selectedPatch != null) ? selectedPatch.getTimeCost() : 0;
+        // --------------------------------------------------------------
+
         boolean success = game.buyAndPlacePatch(
-                gamePresenter.getSelectedPatchId(),
+                currentPatchId,
                 row,
                 col,
                 gamePresenter.getSelectedRotation()
@@ -172,10 +176,43 @@ public class QuiltboardPresenter {
             return;
         }
 
+        try {
+            be.kdg.programming.integrationproject.dao.MoveDao moveDao =
+                    new be.kdg.programming.integrationproject.dao.MoveDao(new be.kdg.programming.integrationproject.model.DbConnection());
+
+
+            int degrees = switch (gamePresenter.getSelectedRotation()) {
+                case NOROTATION -> 0;
+                case NINETY -> 90;
+                case ONEEIGHTY -> 180;
+                case TWOSEVENTY -> 270;
+            };
+
+            Move newMove = new Move(
+                    0,
+                    0,
+                    currentPatchId,
+                    new java.sql.Time(System.currentTimeMillis()),
+                    new java.sql.Time(System.currentTimeMillis()),
+                    0,
+                    timeCost,
+                    human.getPosition(),
+                    degrees,
+                    game.getPlayer1().getTotalButtons(),
+                    game.getPlayer2().getTotalButtons()
+            );
+
+            moveDao.insert(newMove);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println("Let op: Kon de move niet opslaan in de database.");
+        }
+
         gamePresenter.resetSelection();
         gamePresenter.notifyLeatherPatchIfNeeded();
         gamePresenter.initializeView();
-        //if leather patches need to be placed, keep currentPlayer as-is so the human keeps control
+
         if (game.getLeatherPatchQueue(human).isEmpty()) {
             game.updateCurrentPlayer();
             gamePresenter.handleCpuTurn();
@@ -183,7 +220,6 @@ public class QuiltboardPresenter {
         }
     }
 
-    //initializes both quiltboard views based on the current game state
     public void initializeView() {
         HumanPlayer p1 = game.getPlayer1();
         Player p2 = game.getPlayer2();

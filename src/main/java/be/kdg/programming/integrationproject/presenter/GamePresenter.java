@@ -47,7 +47,41 @@ public class GamePresenter {
                 this.view.showWarningBanner("Place your leather patch first before passing.");
                 return;
             }
+
+            Player currentPlayer = this.game.getCurrentPlayer();
+            int oldPosition = currentPlayer.getPosition();
+
             this.game.pass();
+
+            int newPosition = currentPlayer.getPosition();
+            int spacesMoved = newPosition - oldPosition;
+
+            try {
+                be.kdg.programming.integrationproject.dao.MoveDao moveDao =
+                        new be.kdg.programming.integrationproject.dao.MoveDao(new be.kdg.programming.integrationproject.model.DbConnection());
+
+                Move passMove = new Move(
+                        0,
+                        0,
+                        -1, // PatchID (-1 omdat we geen patch plaatsen)
+                        new java.sql.Time(System.currentTimeMillis()),
+                        new java.sql.Time(System.currentTimeMillis()),
+                        0,  // Special patches
+                        spacesMoved, // Hoeveel vakjes we net vooruit zijn gesprongen
+                        newPosition, // De nieuwe positie
+                        0,  // Geen rotatie bij een pass
+                        this.game.getPlayer1().getTotalButtons(),
+                        this.game.getPlayer2().getTotalButtons()
+                );
+
+                moveDao.insert(passMove);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.err.println("Let op: Kon de pass-move niet opslaan in de database.");
+            }
+
+
             this.resetSelection();
             this.notifyLeatherPatchIfNeeded();
             this.initializeView();
@@ -118,6 +152,19 @@ public class GamePresenter {
 
     public void checkGameEnd() {
         if (this.game.getStatus() == GameStatus.FINISHED) {
+
+            try {
+                be.kdg.programming.integrationproject.dao.GameDao gameDao =
+                        new be.kdg.programming.integrationproject.dao.GameDao(new be.kdg.programming.integrationproject.model.DbConnection());
+
+                gameDao.update(this.game);
+                System.out.println("Spel is afgelopen en resultaten zijn succesvol opgeslagen in de database!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.err.println("Let op: Kon de eindresultaten niet opslaan.");
+            }
+
+
             ResultsScreenView resultsScreenView = new ResultsScreenView();
             new ResultsScreenPresenter(this.game, resultsScreenView, this.mainMenuView, this.view.getPane());
             this.view.showResultsScreen(resultsScreenView);
