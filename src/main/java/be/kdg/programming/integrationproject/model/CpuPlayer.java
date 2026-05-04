@@ -7,6 +7,21 @@ import java.util.List;
 
 public class CpuPlayer extends Player {
     private Difficulty difficulty;
+    private static class Move{
+        int patchId;
+        int row;
+        int col;
+        PatchRotation rotation;
+        double score;
+
+        public Move(int patchId,int row,int col,PatchRotation rotation,double score){
+            this.patchId=patchId;
+            this.row=row;
+            this.col=col;
+            this.rotation=rotation;
+            this.score=score;
+        }
+    }
 
     public CpuPlayer(Difficulty difficulty) {
         this.difficulty = difficulty;
@@ -17,7 +32,25 @@ public class CpuPlayer extends Player {
         this.setPosition(this.getPosition() + steps);
     }
 
-    public void decideTurn(Game game) {
+    public void decideTurn(Game game){
+
+        Move bestMove = findBestMove(game);
+
+        if(bestMove != null){
+            game.buyAndPlacePatch(
+                    bestMove.patchId,
+                    bestMove.row,
+                    bestMove.col,
+                    bestMove.rotation
+            );
+        }
+        else{
+            game.pass();
+        }
+
+    }
+
+    private Move findBestMove(Game game) {
         List<Patch> availablePatches = game.getPatchStack().getAvailablePatches();
         Patch bestPatch = null;
         int bestRow = -1;
@@ -48,38 +81,58 @@ public class CpuPlayer extends Player {
                     }
                 }
             }
+            Player other = (game.getCurrentPlayer()==game.getPlayer1())
+                    ? game.getPlayer2()
+                    : game.getPlayer1();
+
+            int passGain = (other.getPosition()+1) - this.getPosition();
         }
 
-        Player otherPlayer = (game.getCurrentPlayer() == game.getPlayer1()) ? game.getPlayer2() : game.getPlayer1();
-        int passButtons = (otherPlayer.getPosition() + 1) - this.getPosition();
+        Player other = (game.getCurrentPlayer()==game.getPlayer1())
+                ? game.getPlayer2()
+                : game.getPlayer1();
 
-        if (bestPatch != null && bestScore >= (double) passButtons) {
-            game.buyAndPlacePatch(bestPatch.getPatchID(), bestRow, bestCol, bestRotation);
-        } else {
-            game.pass();
+        int passGain = (other.getPosition()+1) - this.getPosition();
+
+        if(bestPatch != null && bestScore > passGain){
+            return new Move(bestPatch.getPatchID(), bestRow, bestCol, bestRotation, bestScore
+            );
         }
+
+        return null;
     }
 
-    private double calculateMoveScore(Game game, Patch patch, int row, int col) {
+
+
+    private double calculateMoveScore(Game game, Patch patch, int row, int col){
+
         double score = 0;
 
-        if (difficulty == Difficulty.EASY) {
-            return 100 - patch.getButtonCost();
-        }
+// 1. grootte van patch (belangrijk)
+        boolean[][] shape = patch.getRotatedShape();
+        int filled = 0;
 
-        score += patch.getButtonIncome() * 3.0;
-        score -= patch.getTimeCost() * 1.5;
-        score -= patch.getButtonCost() * 0.5;
-
-        if (difficulty == Difficulty.HARD) {
-            if (this.getQuiltBoard().hasSevenBySeven()) score += 7.0;
-
-            int futurePos = game.getTimeboard().updatePosition(this.getPosition(), patch.getTimeCost());
-            if (futurePos == 26 || futurePos == 32 || futurePos == 38 || futurePos == 44 || futurePos == 50) {
-                score += 15.0;
+        for(int r=0;r<shape.length;r++){
+            for(int c=0;c<shape[r].length;c++){
+                if(shape[r][c]) filled++;
             }
         }
+        score += filled * 2.5;
+
+// 2. button income (heel belangrijk)
+        score += patch.getButtonIncome() * 3.0;
+
+// 3. kost penalty
+        score -= patch.getButtonCost() * 1.5;
+
+// 4. time penalty
+        score -= patch.getTimeCost() * 1.0;
+
+// 5. bonus: centrum voorkeur (slim!)
+        int centerDist = Math.abs(4 - row) + Math.abs(4 - col);
+        score -= centerDist * 0.3;
 
         return score;
     }
 }
+
