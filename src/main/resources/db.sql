@@ -155,9 +155,11 @@ ALTER TABLE "PatchTable"
     ADD CONSTRAINT check_patch_costs CHECK ("ButtonCost" >= 0 AND "TimeCost" >= 0),
     ADD CONSTRAINT check_patch_income CHECK ("ButtonIncome" >= 0);
 
+
 INSERT INTO "PatchTable"
 ("PatchID","ButtonCost","TimeCost","ButtonIncome")
 VALUES
+    (999,0,0,0),
     (1,2,1,0),
     (2,1,3,0),
     (3,3,1,0),
@@ -190,6 +192,15 @@ VALUES
     (30,7,2,2),
     (31,10,4,3),
     (32,2,3,1);
+
+ALTER TABLE "GameTable"
+    ADD COLUMN "ButtonsP1" int,
+    ADD COLUMN "ButtonsP2" int,
+    ADD COLUMN "IncomeP1" int,
+    ADD COLUMN "IncomeP2" int;
+ALTER TABLE "GameTable"
+    ADD COLUMN "ColorP1" varchar,
+    ADD COLUMN "ColorP2" varchar;
 
 CREATE VIEW move_outliers AS
 WITH move_data AS (

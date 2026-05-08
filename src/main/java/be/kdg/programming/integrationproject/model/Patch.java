@@ -49,7 +49,7 @@ public class Patch {
     }
 
     public static Patch createLeatherPatch(int patchID) {
-        return new Patch(patchID, PatchShape.LEATHER_PATCH, 0, 0, 0);
+        return new Patch(999, PatchShape.LEATHER_PATCH, 0, 0, 0);
     }
 
     //returns the patch shape as a 2D boolean array rotated according to the current rotation

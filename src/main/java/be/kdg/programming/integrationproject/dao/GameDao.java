@@ -12,6 +12,7 @@ import be.kdg.programming.integrationproject.model.CpuPlayer;
 import be.kdg.programming.integrationproject.model.Patch;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 import be.kdg.programming.integrationproject.model.PatchPlacement;
+import be.kdg.programming.integrationproject.model.Enums.TokenColor;
 
 public class GameDao extends AbstractDao implements Dao<Game> {
 
@@ -125,6 +126,17 @@ public class GameDao extends AbstractDao implements Dao<Game> {
             p2.setPlayerId(gRs.getInt("Player2ID"));
 
             Game game= new Game(p1, p2, gRs.getInt("StartingPlayer"));
+            p1.setTotalButtons(gRs.getInt("ButtonsP1"));
+            p2.setTotalButtons(gRs.getInt("ButtonsP2"));
+
+            p1.setTotalButtonIncome(gRs.getInt("IncomeP1"));
+            p2.setTotalButtonIncome(gRs.getInt("IncomeP2"));
+
+            String c1 = gRs.getString("ColorP1");
+            String c2 = gRs.getString("ColorP2");
+
+            if(c1 != null) p1.setColor(TokenColor.valueOf(c1));
+            if(c2 != null) p2.setColor(TokenColor.valueOf(c2));
 
             game.setGameId(gameId);
 
@@ -140,7 +152,13 @@ public class GameDao extends AbstractDao implements Dao<Game> {
                 int rot=mRs.getInt("RotationDegrees");
                 int owner=mRs.getInt("PlayerID");
 
-                Patch patch=game.getPatchStack().getPatch(patchId);
+                Patch patch;
+
+                if(patchId == 999){
+                    patch = Patch.createLeatherPatch(999);
+                } else {
+                    patch = game.getPatchStack().getPatch(patchId);
+                }
 
                 if(patch!=null){
 
@@ -148,7 +166,8 @@ public class GameDao extends AbstractDao implements Dao<Game> {
                     else if(rot==180) patch.setRotation(PatchRotation.ONEEIGHTY);
                     else if(rot==270) patch.setRotation(PatchRotation.TWOSEVENTY);
 
-                    game.getPatchStack().removePatch(patchId);
+                    if(patchId != 999){
+                        game.getPatchStack().removePatch(patchId);}
 
                     if(owner==p1.getPlayerId()){
                         p1.getQuiltBoard().placePatch(patch,row,col);
@@ -160,6 +179,7 @@ public class GameDao extends AbstractDao implements Dao<Game> {
                 }
 
             }
+
 
 
             game.updateCurrentPlayer();
@@ -241,47 +261,28 @@ INSERT INTO "MoveTable"
 VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
 
         Connection c=getConnection();
-
         PreparedStatement d1= c.prepareStatement(deleteMoves);
-
         d1.setInt(1, game.getGameId());
-
         d1.executeUpdate();
-
         PreparedStatement d2= c.prepareStatement(deleteTurns);
-
         d2.setInt(1, game.getGameId());
-
         d2.executeUpdate();
-
         PreparedStatement turn= c.prepareStatement(createTurn);
-
         turn.setInt(1, game.getGameId());
         ResultSet rs= turn.executeQuery();rs.next();
 
         int turnId= rs.getInt(1);
-
         PreparedStatement move= c.prepareStatement(insertMove);
-
         for(PatchPlacement pp : game.getPlayer1().getQuiltBoard().getPlacements()){
 
             move.setInt(1,turnId);
             move.setInt(2,game.getPlayer1().getPlayerId());
             move.setInt(3,pp.getPatch().getPatchID());
-
             move.setInt(4,game.getPlayer1().getTotalButtons());
             move.setInt(5,game.getPlayer2().getTotalButtons());
-
             move.setInt(6,pp.getRow());
             move.setInt(7,pp.getCol());
-
-            move.setInt(
-                    8,
-                    pp.getPatch().getRotation().getRotation()
-            );
-
-            move.executeUpdate();
-
+            move.setInt(8, pp.getPatch().getRotation().getRotation());move.executeUpdate();
         }
 
         for(PatchPlacement pp :
@@ -290,21 +291,40 @@ VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
             move.setInt(1,turnId);
             move.setInt(2,game.getPlayer2().getPlayerId());
             move.setInt(3,pp.getPatch().getPatchID());
-
             move.setInt(4,game.getPlayer1().getTotalButtons());
             move.setInt(5,game.getPlayer2().getTotalButtons());
-
             move.setInt(6,pp.getRow());
             move.setInt(7,pp.getCol());
-
-            move.setInt(
-                    8,
-                    pp.getPatch().getRotation().getRotation()
-            );
-
+            move.setInt(8, pp.getPatch().getRotation().getRotation());
             move.executeUpdate();
 
         }
+        String updateGame = """
+UPDATE "GameTable"
+SET "ButtonsP1"=?, "ButtonsP2"=?, "IncomeP1"=?, "IncomeP2"=?
+WHERE "GameID"=?
+""";
+
+        PreparedStatement st = c.prepareStatement(updateGame);
+
+        st.setInt(1, game.getPlayer1().getTotalButtons());
+        st.setInt(2, game.getPlayer2().getTotalButtons());
+        st.setInt(3, game.getPlayer1().getTotalButtonIncome());
+        st.setInt(4, game.getPlayer2().getTotalButtonIncome());
+        st.setInt(5, game.getGameId());
+
+        st.executeUpdate();
+        String updateColors = """
+UPDATE "GameTable"
+SET "ColorP1"=?, "ColorP2"=?
+WHERE "GameID"=?
+""";
+
+        PreparedStatement stColors = c.prepareStatement(updateColors);
+        stColors.setString(1, game.getPlayer1().getColor().name());
+        stColors.setString(2, game.getPlayer2().getColor().name());
+        stColors.setInt(3, game.getGameId());
+        stColors.executeUpdate();
 
         c.close();
 
