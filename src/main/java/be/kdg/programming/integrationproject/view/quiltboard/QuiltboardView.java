@@ -88,7 +88,7 @@ public class QuiltboardView {
         );
     }
 
-    VBox getPane() {
+    public VBox getPane() {
         return root;
     }
 

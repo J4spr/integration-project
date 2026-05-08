@@ -259,10 +259,10 @@ public class GameView {
     }
 
     // Getters
-    StackPane getPane() { return this.root; }
-    QuiltboardView getQuiltboardViewP1() { return this.quiltboardViewP1; }
-    QuiltboardView getQuiltboardViewP2() { return this.quiltboardViewP2; }
-    TimeboardView getTimeboardView() { return this.timeboardView; }
+    public StackPane getPane() { return this.root; }
+    public QuiltboardView getQuiltboardViewP1() { return this.quiltboardViewP1; }
+    public QuiltboardView getQuiltboardViewP2() { return this.quiltboardViewP2; }
+    public TimeboardView getTimeboardView() { return this.timeboardView; }
     GridPane getPatchSlot(int index) { return this.patchSlots[index]; }
     VBox getPatchSlotWrapper(int index) { return this.patchSlotWrappers[index]; }
     int getPatchStoreSize() { return PATCH_STORE_SIZE; }
