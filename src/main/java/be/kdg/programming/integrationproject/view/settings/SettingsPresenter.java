@@ -1,11 +1,7 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.settings;
 
 import be.kdg.programming.integrationproject.model.ClearLeaderBoard;
-import be.kdg.programming.integrationproject.view.MainMenuView;
-import be.kdg.programming.integrationproject.view.SettingsView;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 

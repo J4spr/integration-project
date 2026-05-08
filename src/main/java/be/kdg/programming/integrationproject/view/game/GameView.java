@@ -1,5 +1,8 @@
-package be.kdg.programming.integrationproject.view;
+package be.kdg.programming.integrationproject.view.game;
 
+import be.kdg.programming.integrationproject.view.quiltboard.QuiltboardView;
+import be.kdg.programming.integrationproject.view.resultsScreen.ResultsScreenView;
+import be.kdg.programming.integrationproject.view.timeBoard.TimeboardView;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

@@ -1,9 +1,6 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.rules;
 
-import be.kdg.programming.integrationproject.view.MainMenuView;
-import be.kdg.programming.integrationproject.view.RulesView;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundSize;

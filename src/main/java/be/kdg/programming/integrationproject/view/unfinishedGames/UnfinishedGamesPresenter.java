@@ -1,8 +1,10 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.unfinishedGames;
 
 import be.kdg.programming.integrationproject.dao.GameDao;
 import be.kdg.programming.integrationproject.model.*;
-import be.kdg.programming.integrationproject.view.*;
+import be.kdg.programming.integrationproject.view.game.GamePresenter;
+import be.kdg.programming.integrationproject.view.game.GameView;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 
 public class UnfinishedGamesPresenter {
 

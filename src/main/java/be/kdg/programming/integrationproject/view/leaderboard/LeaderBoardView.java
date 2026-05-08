@@ -1,4 +1,4 @@
-package be.kdg.programming.integrationproject.view;
+package be.kdg.programming.integrationproject.view.leaderboard;
 
 import be.kdg.programming.integrationproject.model.PlayerStats;
 import javafx.collections.FXCollections;

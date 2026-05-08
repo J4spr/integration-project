@@ -1,7 +1,8 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.timeBoard;
 
 import be.kdg.programming.integrationproject.model.Game;
-import be.kdg.programming.integrationproject.view.GameView;
+import be.kdg.programming.integrationproject.view.game.GamePresenter;
+import be.kdg.programming.integrationproject.view.game.GameView;
 
 public class TimeboardPresenter {
     private final Game game;

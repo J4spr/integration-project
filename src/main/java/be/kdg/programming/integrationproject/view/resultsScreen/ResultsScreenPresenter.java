@@ -1,10 +1,9 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.resultsScreen;
 
 import be.kdg.programming.integrationproject.model.Game;
 import be.kdg.programming.integrationproject.model.HumanPlayer;
 import be.kdg.programming.integrationproject.model.Player;
-import be.kdg.programming.integrationproject.view.MainMenuView;
-import be.kdg.programming.integrationproject.view.ResultsScreenView;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 import javafx.scene.layout.StackPane;
 
 public class ResultsScreenPresenter {

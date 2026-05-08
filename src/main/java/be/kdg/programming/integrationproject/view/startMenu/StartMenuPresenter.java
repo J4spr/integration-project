@@ -1,11 +1,10 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.startMenu;
 
 import be.kdg.programming.integrationproject.model.*;
-import be.kdg.programming.integrationproject.model.Enums.Difficulty;
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;
-import be.kdg.programming.integrationproject.view.GameView;
-import be.kdg.programming.integrationproject.view.MainMenuView;
-import be.kdg.programming.integrationproject.view.StartMenuView;
+import be.kdg.programming.integrationproject.view.game.GamePresenter;
+import be.kdg.programming.integrationproject.view.game.GameView;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 import javafx.scene.control.Alert;
 import be.kdg.programming.integrationproject.dao.GameDao;
 import be.kdg.programming.integrationproject.dao.PlayerDao;

@@ -1,9 +1,8 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.game;
 
 import be.kdg.programming.integrationproject.model.Game;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 import be.kdg.programming.integrationproject.model.Patch;
-import be.kdg.programming.integrationproject.view.GameView;
 
 import java.util.List;
 

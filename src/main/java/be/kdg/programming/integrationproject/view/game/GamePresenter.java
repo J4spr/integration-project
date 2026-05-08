@@ -1,12 +1,13 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.game;
 
 import be.kdg.programming.integrationproject.model.*;
 import be.kdg.programming.integrationproject.model.Enums.GameStatus;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;
-import be.kdg.programming.integrationproject.view.GameView;
-import be.kdg.programming.integrationproject.view.MainMenuView;
-import be.kdg.programming.integrationproject.view.ResultsScreenView;
+import be.kdg.programming.integrationproject.view.resultsScreen.ResultsScreenPresenter;
+import be.kdg.programming.integrationproject.view.timeBoard.TimeboardPresenter;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
+import be.kdg.programming.integrationproject.view.resultsScreen.ResultsScreenView;
 import java.util.Random;
 import be.kdg.programming.integrationproject.dao.GameDao;
 

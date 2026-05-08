@@ -1,4 +1,4 @@
-package be.kdg.programming.integrationproject.view;
+package be.kdg.programming.integrationproject.view.unfinishedGames;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

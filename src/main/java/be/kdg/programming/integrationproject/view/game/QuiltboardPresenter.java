@@ -1,7 +1,6 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.game;
 
 import be.kdg.programming.integrationproject.model.*;
-import be.kdg.programming.integrationproject.view.GameView;
 
 public class QuiltboardPresenter {
 

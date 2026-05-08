@@ -1,7 +1,7 @@
 package be.kdg.programming.integrationproject;
 
-import be.kdg.programming.integrationproject.presenter.MainMenuPresenter;
-import be.kdg.programming.integrationproject.view.MainMenuView;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuPresenter;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;

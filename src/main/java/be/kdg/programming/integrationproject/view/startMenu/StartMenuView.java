@@ -1,4 +1,4 @@
-package be.kdg.programming.integrationproject.view;
+package be.kdg.programming.integrationproject.view.startMenu;
 
 import be.kdg.programming.integrationproject.model.Enums.Difficulty;
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;

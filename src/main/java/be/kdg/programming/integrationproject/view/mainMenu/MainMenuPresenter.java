@@ -1,7 +1,16 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.mainMenu;
 
 
-import be.kdg.programming.integrationproject.view.*;
+import be.kdg.programming.integrationproject.view.rules.RulesPresenter;
+import be.kdg.programming.integrationproject.view.settings.SettingsPresenter;
+import be.kdg.programming.integrationproject.view.startMenu.StartMenuPresenter;
+import be.kdg.programming.integrationproject.view.unfinishedGames.UnfinishedGamesPresenter;
+import be.kdg.programming.integrationproject.view.leaderboard.LeaderBoardPresenter;
+import be.kdg.programming.integrationproject.view.leaderboard.LeaderBoardView;
+import be.kdg.programming.integrationproject.view.rules.RulesView;
+import be.kdg.programming.integrationproject.view.settings.SettingsView;
+import be.kdg.programming.integrationproject.view.startMenu.StartMenuView;
+import be.kdg.programming.integrationproject.view.unfinishedGames.UnfinishedGamesView;
 import javafx.application.Platform;
 
 public class MainMenuPresenter {
@@ -49,7 +58,8 @@ public class MainMenuPresenter {
                     () -> Platform.exit()
             );
         });
-        mmv.getContinueButton().setOnAction(e->{UnfinishedGamesView ugv= new UnfinishedGamesView();
+        mmv.getContinueButton().setOnAction(e->{
+            UnfinishedGamesView ugv= new UnfinishedGamesView();
 
                     new UnfinishedGamesPresenter(ugv, mmv);
 

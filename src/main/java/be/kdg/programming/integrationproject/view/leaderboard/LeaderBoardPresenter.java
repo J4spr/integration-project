@@ -1,13 +1,9 @@
-package be.kdg.programming.integrationproject.presenter;
+package be.kdg.programming.integrationproject.view.leaderboard;
 
 import be.kdg.programming.integrationproject.dao.PlayerDao;
 import be.kdg.programming.integrationproject.model.DbConnection;
-import be.kdg.programming.integrationproject.model.Move;
-import be.kdg.programming.integrationproject.dao.MoveDao;
-import be.kdg.programming.integrationproject.model.Player;
 import be.kdg.programming.integrationproject.model.PlayerStats;
-import be.kdg.programming.integrationproject.view.LeaderBoardView;
-import be.kdg.programming.integrationproject.view.MainMenuView;
+import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 
 import java.sql.SQLException;
 import java.util.List;
