@@ -105,7 +105,7 @@ public class RulesView {
     }
 
     // Kept the return type as ButtonBase or Button so the Presenter doesn't "tweak"
-    public Button getBtnBack() {
+    Button getBtnBack() {
         return this.btnBack;
     }
 }

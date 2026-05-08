@@ -53,7 +53,7 @@ public class StartMenuView {
         cbDifficulty.getItems().add(Difficulty.MEDIUM);
         cbDifficulty.getItems().add(Difficulty.HARD);
         cbDifficulty.setValue(Difficulty.EASY);
-        
+
         lblStartPlayer = new Label("Starting player:");
         cbStartPlayer = new ComboBox<>();
         //1 = human player starts, 2 = CPU starts
@@ -128,28 +128,28 @@ public class StartMenuView {
         return root;
     }
 
-    public String getPlayerName() {
+    String getPlayerName() {
         return tfPlayerName.getText().trim();
     }
 
-    public TokenColor getSelectedTokenColor() {
+    TokenColor getSelectedTokenColor() {
         return cbTokenColor.getValue();
     }
 
-    public Difficulty getSelectedDifficulty() {
+    Difficulty getSelectedDifficulty() {
         return cbDifficulty.getValue();
     }
 
     //returns 1 if the human player starts, 2 if the CPU starts
-    public int getStartPlayer() {
+    int getStartPlayer() {
         return cbStartPlayer.getValue().equals("You") ? 1 : 2;
     }
 
-    public Button getBtnStartGame() {
+    Button getBtnStartGame() {
         return btnStartGame;
     }
 
-    public Button getBtnBack() {
+    Button getBtnBack() {
         return btnBack;
     }
 }

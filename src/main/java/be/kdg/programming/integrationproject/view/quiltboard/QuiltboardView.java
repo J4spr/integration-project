@@ -88,11 +88,11 @@ public class QuiltboardView {
         );
     }
 
-    public VBox getPane() {
+    VBox getPane() {
         return root;
     }
 
-    public Button[][] getCells() {
+    Button[][] getCells() {
         return cells;
     }
 }

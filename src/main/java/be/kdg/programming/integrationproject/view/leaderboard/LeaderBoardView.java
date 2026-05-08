@@ -81,23 +81,19 @@ public class LeaderBoardView extends VBox {
     }
 
 
-    public void showError(String message) {
+    void showError(String message) {
         System.err.println(message);
     }
-
-    public ListView<PlayerStats> getTable() {
+    ListView<PlayerStats> getTable() {
         return this.listView;
     }
-
-    public StackPane getPane() {
+    StackPane getPane() {
         return this.pane;
     }
-
-    public Button getBtnBack() {
+    Button getBtnBack() {
         return btnBack;
     }
-
-    public void setStatsData(List<PlayerStats> stats) {
+    void setStatsData(List<PlayerStats> stats) {
         listView.setItems(FXCollections.observableArrayList(stats));
     }
 }

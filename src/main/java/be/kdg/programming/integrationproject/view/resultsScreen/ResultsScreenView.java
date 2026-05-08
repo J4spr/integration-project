@@ -82,11 +82,11 @@ public class ResultsScreenView {
         }
     }
 
-    public StackPane getPane() {
+     StackPane getPane() {
         return root;
     }
 
-    public Button getBtnMainMenu() {
+     Button getBtnMainMenu() {
         return btnMainMenu;
     }
 }

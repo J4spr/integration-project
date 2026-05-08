@@ -4,6 +4,7 @@ import be.kdg.programming.integrationproject.model.*;
 import be.kdg.programming.integrationproject.model.Enums.GameStatus;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;
+import be.kdg.programming.integrationproject.view.quiltboard.QuiltboardPresenter;
 import be.kdg.programming.integrationproject.view.resultsScreen.ResultsScreenPresenter;
 import be.kdg.programming.integrationproject.view.timeBoard.TimeboardPresenter;
 import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;

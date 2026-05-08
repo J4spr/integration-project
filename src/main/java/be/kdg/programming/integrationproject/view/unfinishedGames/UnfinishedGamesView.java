@@ -63,7 +63,7 @@ public class UnfinishedGamesView {
         );
 
         gameList = new ListView<>();
-        gameList.setPrefSize(500,300);
+        gameList.setPrefSize(500, 300);
 
         btnLoad = new Button("Load Game");
         btnBack = new Button("Back");
@@ -101,11 +101,19 @@ public class UnfinishedGamesView {
 
     // getters
 
-    public StackPane getPane() {return root;}
+    public StackPane getPane() {
+        return root;
+    }
 
-    public ListView<String> getGameList() {return gameList;}
+    ListView<String> getGameList() {
+        return gameList;
+    }
 
-    public Button getBtnLoad() {return btnLoad;}
+    Button getBtnLoad() {
+        return btnLoad;
+    }
 
-    public Button getBtnBack() {return btnBack;}
+    Button getBtnBack() {
+        return btnBack;
+    }
 }

@@ -125,7 +125,7 @@ public class TimeboardView {
         return false;
     }
 
-    public VBox getPane() {
+    VBox getPane() {
         return root;
     }
 }

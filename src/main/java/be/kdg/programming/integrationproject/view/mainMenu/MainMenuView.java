@@ -118,10 +118,10 @@ public class MainMenuView {
 
     // Getters
     public StackPane getPane() { return stPane; }
-    public Button getStartButton() { return btnStart; }
-    public Button getRulesButton() { return btnRules; }
-    public Button getSettingsButton() { return btnSettings; }
-    public Button getLeaderboardButton() { return btnLeaderBoard; }
-    public Button getBtnExit() { return btnExit; }
-    public Button getContinueButton(){return btnContinue;}
+    Button getStartButton() { return btnStart; }
+    Button getRulesButton() { return btnRules; }
+    Button getSettingsButton() { return btnSettings; }
+    Button getLeaderboardButton() { return btnLeaderBoard; }
+    Button getBtnExit() { return btnExit; }
+    Button getContinueButton(){return btnContinue;}
 }

@@ -22,7 +22,7 @@ public class SettingsView {
     private Label musicSliderLabel;
 
     public SettingsView() {
-       initialiseNodes();
+        initialiseNodes();
         layoutNodes();
     }
 
@@ -72,28 +72,22 @@ public class SettingsView {
 
     }
 
-    public Button getBtnBack() {
+    Button getBtnBack() {
         return btnBack;
     }
-
-
-    public Button getFullscreenBtn() {
+    Button getFullscreenBtn() {
         return this.fullscreenBtn;
     }
-
     public StackPane getPane() {
         return this.sp;
     }
-
-    public Slider getMusicSlider() {
+    Slider getMusicSlider() {
         return musicSlider;
     }
-
-    public Label getMusicSliderLabel() {
+    Label getMusicSliderLabel() {
         return musicSliderLabel;
     }
-
-    public Button getClearLeaderBoardBtn() {
+    Button getClearLeaderBoardBtn() {
         return this.clearLeaderBoardBtn;
     }
 }

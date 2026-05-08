@@ -259,15 +259,15 @@ public class GameView {
     }
 
     // Getters
-    public StackPane getPane() { return this.root; }
-    public QuiltboardView getQuiltboardViewP1() { return this.quiltboardViewP1; }
-    public QuiltboardView getQuiltboardViewP2() { return this.quiltboardViewP2; }
-    public TimeboardView getTimeboardView() { return this.timeboardView; }
-    public GridPane getPatchSlot(int index) { return this.patchSlots[index]; }
-    public VBox getPatchSlotWrapper(int index) { return this.patchSlotWrappers[index]; }
-    public int getPatchStoreSize() { return PATCH_STORE_SIZE; }
-    public Button getBtnPass() { return this.btnPass; }
-    public Button getBtnRotate() { return this.btnRotate; }
-    public Button getBtnQuit() { return this.btnQuit; }
-    public Button getBtnPause(){return btnPause;}
+    StackPane getPane() { return this.root; }
+    QuiltboardView getQuiltboardViewP1() { return this.quiltboardViewP1; }
+    QuiltboardView getQuiltboardViewP2() { return this.quiltboardViewP2; }
+    TimeboardView getTimeboardView() { return this.timeboardView; }
+    GridPane getPatchSlot(int index) { return this.patchSlots[index]; }
+    VBox getPatchSlotWrapper(int index) { return this.patchSlotWrappers[index]; }
+    int getPatchStoreSize() { return PATCH_STORE_SIZE; }
+    Button getBtnPass() { return this.btnPass; }
+    Button getBtnRotate() { return this.btnRotate; }
+    Button getBtnQuit() { return this.btnQuit; }
+    Button getBtnPause(){return btnPause;}
 }
