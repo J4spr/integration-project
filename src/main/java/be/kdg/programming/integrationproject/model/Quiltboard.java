@@ -7,7 +7,8 @@ public class Quiltboard {
     private static final int SIZE = 9;//board is a 9x9 grid
     private final boolean[][] grid = new boolean[SIZE][SIZE];//true = occupied, false = empty
     private final List<Patch> placedPatches = new ArrayList<>();//list of placed patches
-
+    private final List<PatchPlacement> placements =
+            new ArrayList<>();
     //getter
     public boolean[][] getGrid() {
         return grid;
@@ -47,6 +48,8 @@ public class Quiltboard {
             }
         }
         placedPatches.add(patch);
+
+        placements.add(new PatchPlacement(patch, row, col));
         return true;
     }
 
@@ -90,5 +93,8 @@ public class Quiltboard {
             }
         }
         return true;
+    }
+    public List<PatchPlacement> getPlacements(){
+        return placements;
     }
 }

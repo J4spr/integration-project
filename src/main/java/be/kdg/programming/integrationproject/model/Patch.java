@@ -49,7 +49,7 @@ public class Patch {
     }
 
     public static Patch createLeatherPatch(int patchID) {
-        return new Patch(patchID, PatchShape.LEATHER_PATCH, 0, 0, 0);
+        return new Patch(999, PatchShape.LEATHER_PATCH, 0, 0, 0);
     }
 
     //returns the patch shape as a 2D boolean array rotated according to the current rotation
@@ -66,7 +66,7 @@ public class Patch {
 
     //core rotation logic extracted so both getRotatedShape and getRotatedShapeFor can use it
     private boolean[][] rotateShape(PatchRotation targetRotation) {
-        boolean[][] original = shape.getShape();
+        boolean[][] original = this.shape.getShape();
         int rows = original.length;
         int cols = original[0].length;
 

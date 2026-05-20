@@ -8,6 +8,7 @@ import be.kdg.programming.integrationproject.view.GameView;
 import be.kdg.programming.integrationproject.view.MainMenuView;
 import be.kdg.programming.integrationproject.view.ResultsScreenView;
 import java.util.Random;
+import be.kdg.programming.integrationproject.dao.GameDao;
 
 public class GamePresenter {
     private final Game game;
@@ -66,6 +67,21 @@ public class GamePresenter {
             // Cycle the rotation state
             this.selectedRotation = this.selectedRotation.next();
             this.initializeView(); // Re-render previews with new rotation
+        });
+        this.view.getBtnPause().setOnAction(e -> {
+
+            try{GameDao dao = new GameDao(new DbConnection());
+
+                dao.savePausedState(game);
+
+            }
+            catch(Exception ex){ex.printStackTrace();
+            }
+
+            this.view.showConfirmationOverlay(
+                    "Game paused. Return to main menu?",
+                    () -> this.view.getPane().getScene().setRoot(this.mainMenuView.getPane()));
+
         });
 
         this.view.getBtnQuit().setOnAction(e ->

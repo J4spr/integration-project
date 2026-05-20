@@ -8,23 +8,21 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
 public class MainMenuView {
-    private Button startButton;
-    private Button rulesButton;
-    private Button settingsButton;
-    private Button leaderboardButton;
-    private Image image;
-    private BackgroundImage backgroundImage;
-    private BackgroundSize backgroundSize;
-
-    private GridPane pane;
-    private StackPane stPane;
-
+    // Buttons
     private Button btnStart;
     private Button btnRules;
     private Button btnSettings;
     private Button btnLeaderBoard;
     private Button btnExit;
+    private Button btnContinue;
 
+    // Background Components
+    private Image bgImage;
+    private BackgroundSize bgSize;
+    private BackgroundImage background;
+
+    // Containers
+    private StackPane stPane;
     private VBox contentBox;
 
     public MainMenuView() {
@@ -35,64 +33,62 @@ public class MainMenuView {
     private void initialiseNodes() {
         stPane = new StackPane();
 
-        // Load the shared background image
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        Image bgImage = new Image(path);
-        BackgroundImage background = new BackgroundImage(
-                bgImage,
+        this.bgImage = new Image(path);
+        this.bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
+        this.background = new BackgroundImage(
+                this.bgImage,
                 BackgroundRepeat.REPEAT,
                 BackgroundRepeat.REPEAT,
                 BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT
+                this.bgSize
         );
-        this.stPane.setBackground(new Background(background));
 
-        this.btnStart = new Button("Start");
-        this.btnStart.setPrefWidth(150);
-        this.btnStart.setPrefHeight(35);
+        stPane.setBackground(new Background(this.background));
 
-        this.btnRules = new Button("Rules");
-        this.btnRules.setPrefWidth(150);
-        this.btnRules.setPrefHeight(35);
+        // 2. Initialize Buttons with a helper to keep code DRY
+        btnStart = createMenuButton("Start");
+        btnRules = createMenuButton("Rules");
+        btnSettings = createMenuButton("Settings");
+        btnLeaderBoard = createMenuButton("Leaderboard");
+        btnExit = createMenuButton("Exit to Desktop");
+        btnContinue=createMenuButton("Continue Game");
 
-        this.btnSettings = new Button("Settings");
-        this.btnSettings.setPrefWidth(150);
-        this.btnSettings.setPrefHeight(35);
-
-        this.btnLeaderBoard = new Button("Leaderboard");
-        this.btnLeaderBoard.setPrefWidth(150);
-        this.btnLeaderBoard.setPrefHeight(35);
-
-        this.btnExit = new Button("Exit to Desktop");
-        this.btnExit.setPrefWidth(150);
-        this.btnExit.setPrefHeight(35);
-
-        // Added btnLeaderBoard to the VBox here so it appears in the menu
-        this.contentBox = new VBox(15, btnStart, btnRules, btnSettings, btnLeaderBoard, btnExit);
+        // 3. Setup ContentBox (Transparent by default now)
+        contentBox = new VBox(15, btnStart,btnContinue, btnRules, btnSettings, btnLeaderBoard, btnExit);
     }
 
     private void layoutNodes() {
-        // Style the content box (the white menu container)
-        this.contentBox.setAlignment(Pos.CENTER);
-        StackPane.setAlignment(this.contentBox, Pos.CENTER);
-        this.stPane.setAlignment(Pos.CENTER);
-        this.contentBox.setPadding(new Insets(30));
-        this.contentBox.setMaxWidth(250);
-        // Increased height to 320 to fit the extra Leaderboard button comfortably
-        this.contentBox.setMaxHeight(320);
-        this.contentBox.setStyle("-fx-border-color: #aaaaaa; -fx-border-radius: 8; -fx-background-color: white; -fx-background-radius: 8;");
+        // Center the buttons within the VBox
+        contentBox.setAlignment(Pos.CENTER);
+        contentBox.setPadding(new Insets(30));
+
+        // Set constraints so the VBox doesn't stretch to fill the whole screen
+        contentBox.setMaxWidth(250);
+        contentBox.setMaxHeight(320);
+
+        contentBox.setStyle("-fx-background-color: transparent;");
 
         // Configure the root StackPane
-        this.stPane.setAlignment(Pos.CENTER);
-        this.stPane.setPadding(new Insets(40));
+        stPane.setAlignment(Pos.CENTER);
+        stPane.setPadding(new Insets(-40));
+        stPane.getChildren().setAll(contentBox);
+    }
 
-        // Use setAll to prevent duplicate children errors if this method is called again
-        this.stPane.getChildren().setAll(contentBox);
+
+    private Button createMenuButton(String text) {
+        Button button = new Button(text);
+        button.setPrefWidth(150);
+        button.setPrefHeight(35);
+        return button;
     }
 
     public void showConfirmationOverlay(String message, Runnable onConfirm) {
         StackPane overlay = new StackPane();
-        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7);");
+
+        overlay.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 
         VBox dialog = new VBox(20);
         dialog.setAlignment(Pos.CENTER);
@@ -105,40 +101,27 @@ public class MainMenuView {
         HBox buttons = new HBox(20);
         buttons.setAlignment(Pos.CENTER);
 
-        Button btnYes = new Button("Yes, Exit");
-        Button btnNo = new Button("Cancel");
+        Button btnYes = createMenuButton("Yes, Exit");
+        Button btnNo = createMenuButton("Cancel");
 
         btnYes.setOnAction(e -> onConfirm.run());
         btnNo.setOnAction(e -> stPane.getChildren().remove(overlay));
 
         buttons.getChildren().addAll(btnYes, btnNo);
         dialog.getChildren().addAll(label, buttons);
+
+        StackPane.setAlignment(dialog, Pos.CENTER);
         overlay.getChildren().add(dialog);
 
         this.stPane.getChildren().add(overlay);
     }
 
-    public StackPane getPane() {
-        return this.stPane;
-    }
-
-    public Button getStartButton() {
-        return this.btnStart;
-    }
-
-    public Button getRulesButton() {
-        return this.btnRules;
-    }
-
-    public Button getSettingsButton() {
-        return this.btnSettings;
-    }
-
-    public Button getLeaderboardButton() {
-        return this.btnLeaderBoard;
-    }
-
-    public Button getBtnExit() {
-        return this.btnExit;
-    }
+    // Getters
+    public StackPane getPane() { return stPane; }
+    public Button getStartButton() { return btnStart; }
+    public Button getRulesButton() { return btnRules; }
+    public Button getSettingsButton() { return btnSettings; }
+    public Button getLeaderboardButton() { return btnLeaderBoard; }
+    public Button getBtnExit() { return btnExit; }
+    public Button getContinueButton(){return btnContinue;}
 }

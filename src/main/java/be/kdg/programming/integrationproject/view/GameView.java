@@ -40,6 +40,7 @@ public class GameView {
     // Controls
     private Button btnPass;
     private Button btnRotate;
+    private Button btnPause;
     private Button btnQuit;
 
     // Confirmation Overlay Components
@@ -75,23 +76,26 @@ public class GameView {
 
     private void initBackground() {
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
-        this.bgImage = new Image(path);
-        this.background = new BackgroundImage(
-                this.bgImage,
-                BackgroundRepeat.REPEAT,
-                BackgroundRepeat.REPEAT,
+        Image image = new Image(path);
+        BackgroundSize bgSize = new BackgroundSize(150, 150, false, false, false, false);
+
+        BackgroundImage background = new BackgroundImage(
+                image,
+                BackgroundRepeat.REPEAT,   // Repeat on X-axis
+                BackgroundRepeat.REPEAT,   // Repeat on Y-axis
                 BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT
+                bgSize
         );
-        this.gamePane.setBackground(new Background(this.background));
+        this.gamePane.setBackground(new Background(background));
     }
 
     private void initButtons() {
         this.btnPass = new Button("Pass");
         this.btnRotate = new Button("Rotate");
+        this.btnPause = new Button("Pause");
         this.btnQuit = new Button("Quit Game");
 
-        for (Button btn : new Button[]{this.btnPass, this.btnRotate, this.btnQuit}) {
+        for (Button btn : new Button[]{this.btnPass, this.btnRotate,this.btnPause, this.btnQuit}) {
             btn.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
             btn.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
             btn.setMaxSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -146,7 +150,7 @@ public class GameView {
         bottomPatches.setAlignment(Pos.CENTER);
         bottomPatches.setMaxHeight(PATCH_SLOT_HEIGHT);
 
-        HBox controlBar = new HBox(15, this.btnPass, this.btnRotate, this.btnQuit);
+        HBox controlBar = new HBox(15, this.btnPass, this.btnRotate,this.btnPause, this.btnQuit);
         controlBar.setAlignment(Pos.CENTER);
         controlBar.setPadding(new Insets(10, 0, 0, 0));
         controlBar.setMinHeight(55);
@@ -202,7 +206,7 @@ public class GameView {
         this.confirmationContentBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12;");
 
         this.confirmationOverlay = new StackPane(this.confirmationContentBox);
-        this.confirmationOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
+        this.confirmationOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 
         this.btnCancelQuit.setOnAction(e -> this.root.getChildren().remove(this.confirmationOverlay));
         this.btnConfirmQuit.setOnAction(e -> {
@@ -262,4 +266,5 @@ public class GameView {
     public Button getBtnPass() { return this.btnPass; }
     public Button getBtnRotate() { return this.btnRotate; }
     public Button getBtnQuit() { return this.btnQuit; }
+    public Button getBtnPause(){return btnPause;}
 }

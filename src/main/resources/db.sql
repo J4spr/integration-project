@@ -69,6 +69,8 @@ CREATE TABLE "MoveTable"
 
     "TurnID"                  int,
 
+    "PlayerID"                int,
+
     "PatchID"                 int,
 
     "MoveStartTime"           time NOT NULL,
@@ -130,6 +132,8 @@ ALTER TABLE "MoveTable"
 
 ALTER TABLE "MoveTable"
     ADD FOREIGN KEY ("PatchID") REFERENCES "PatchTable" ("PatchID") DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "MoveTable"
+    ADD FOREIGN KEY ("PlayerID") REFERENCES "PlayerTable"("PlayerID");
 
 ALTER TABLE "PlayerTable"
     ADD CONSTRAINT unique_username UNIQUE ("Username"),
@@ -150,3 +154,110 @@ ALTER TABLE "MoveTable"
 ALTER TABLE "PatchTable"
     ADD CONSTRAINT check_patch_costs CHECK ("ButtonCost" >= 0 AND "TimeCost" >= 0),
     ADD CONSTRAINT check_patch_income CHECK ("ButtonIncome" >= 0);
+
+
+INSERT INTO "PatchTable"
+("PatchID","ButtonCost","TimeCost","ButtonIncome")
+VALUES
+    (999,0,0,0),
+    (1,2,1,0),
+    (2,1,3,0),
+    (3,3,1,0),
+    (4,2,2,0),
+    (5,3,2,1),
+    (6,3,2,1),
+    (7,2,2,0),
+    (8,1,4,1),
+    (9,0,3,1),
+    (10,6,5,2),
+    (11,4,2,0),
+    (12,2,2,0),
+    (13,1,2,0),
+    (14,7,1,1),
+    (15,3,3,1),
+    (16,7,1,1),
+    (17,3,4,1),
+    (18,7,4,2),
+    (19,3,6,2),
+    (20,2,1,0),
+    (21,4,6,2),
+    (22,4,2,1),
+    (23,5,4,2),
+    (24,2,3,0),
+    (25,5,3,1),
+    (26,10,3,2),
+    (27,5,5,2),
+    (28,10,5,3),
+    (29,1,2,0),
+    (30,7,2,2),
+    (31,10,4,3),
+    (32,2,3,1);
+
+ALTER TABLE "GameTable"
+    ADD COLUMN "ButtonsP1" int,
+    ADD COLUMN "ButtonsP2" int,
+    ADD COLUMN "IncomeP1" int,
+    ADD COLUMN "IncomeP2" int;
+ALTER TABLE "GameTable"
+    ADD COLUMN "ColorP1" varchar,
+    ADD COLUMN "ColorP2" varchar;
+
+CREATE VIEW move_outliers AS
+WITH move_data AS (
+    SELECT
+        p."Username" AS player,
+        g."GameStartTime" AS game_start,
+
+        CASE
+            WHEN g."WinnerID" = p."PlayerID" THEN 'W'
+            WHEN g."WinnerID" IS NULL THEN 'D'
+            ELSE 'L'
+            END AS outcome,
+
+        m."MoveStartTime" AS move_time,
+
+        EXTRACT(EPOCH FROM (m."MoveEndTime" - m."MoveStartTime")) AS duration
+
+    FROM "MoveTable" m
+             JOIN "TurnTable" t ON m."TurnID" = t."TurnID"
+             JOIN "GameTable" g ON t."GameID" = g."GameID"
+             JOIN "PlayerTable" p ON p."PlayerID" IN (g."Player1ID", g."Player2ID")
+
+    WHERE g."State" = 'Finished'
+      AND m."MoveEndTime" IS NOT NULL
+),
+
+     quartiles AS (
+         SELECT
+                     percentile_cont(0.25) WITHIN GROUP (ORDER BY duration) AS q1,
+                     percentile_cont(0.75) WITHIN GROUP (ORDER BY duration) AS q3
+         FROM move_data
+     ),
+
+     final_data AS (
+         SELECT
+             md.*,
+             q.q1,
+             q.q3,
+             (q.q3 - q.q1) AS iqr
+         FROM move_data md
+                  CROSS JOIN quartiles q
+     )
+
+SELECT
+    player,
+    game_start,
+    outcome,
+    move_time,
+    duration,
+
+    CASE
+        WHEN duration < (q1 - 1.5 * iqr)
+            OR duration > (q3 + 1.5 * iqr)
+            THEN 'X'
+        ELSE NULL
+        END AS outlier
+
+FROM final_data;
+
+SELECT * FROM move_outliers;
