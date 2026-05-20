@@ -6,13 +6,25 @@ import be.kdg.programming.integrationproject.model.Patch;
 
 import java.util.List;
 
+/**
+ * Presenter class coordinating updates for the purchaseable patch market display.
+ * Links layout wrapper slots to selection triggers managed by the parent {@link GamePresenter}.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class PatchStackPresenter {
-
     private final Game game;
     private final GameView view;
-    //reference to the game presenter to access and modify shared selection state
     private final GamePresenter gamePresenter;
 
+    /**
+     * Binds a market component manager to the application lifecycle handlers.
+     *
+     * @param game          active core engine tracking session mapping
+     * @param view          main layout interface mapping component nodes
+     * @param gamePresenter reference pointer anchoring core game interaction parameters
+     */
     public PatchStackPresenter(Game game, GameView view, GamePresenter gamePresenter) {
         this.game = game;
         this.view = view;
@@ -20,16 +32,17 @@ public class PatchStackPresenter {
         addEventHandlers();
     }
 
+    /**
+     * Attaches interaction handlers to structural view panels.
+     * Handlers target container wrappers to persist through runtime updates.
+     */
     private void addEventHandlers() {
-        //attach click handlers to the stable wrappers, not the GridPanes
-        //because the GridPanes are rebuilt on every initializeView call
         for (int i = 0; i < view.getPatchStoreSize(); i++) {
             int slotIndex = i;
             view.getPatchSlotWrapper(i).setOnMouseClicked(e -> {
                 Object userData = view.getPatchSlot(slotIndex).getUserData();
                 if (userData != null) {
                     int newPatchId = (int) userData;
-                    //only reset rotation if a different patch is selected
                     if (newPatchId != gamePresenter.getSelectedPatchId()) {
                         gamePresenter.setSelectedPatchId(newPatchId);
                         gamePresenter.setSelectedRotation(PatchRotation.NOROTATION);
@@ -40,9 +53,7 @@ public class PatchStackPresenter {
         }
 
         view.getBtnRotate().setOnAction(e -> {
-            //only rotate if a patch is selected
             if (gamePresenter.getSelectedPatchId() == -1) return;
-            //cycle through the 4 rotations
             PatchRotation next = switch (gamePresenter.getSelectedRotation()) {
                 case NOROTATION -> PatchRotation.NINETY;
                 case NINETY -> PatchRotation.ONEEIGHTY;
@@ -50,12 +61,15 @@ public class PatchStackPresenter {
                 case TWOSEVENTY -> PatchRotation.NOROTATION;
             };
             gamePresenter.setSelectedRotation(next);
-            //re-initialize the patch stack so the preview updates with the new rotation
             initializeView();
         });
     }
 
-    //initializes the patch stack view based on the current available patches
+    /**
+     * Refreshes market components based on available pool items.
+     * Previews shape transformations for the selected item while keeping
+     * unselected items in their default positions.
+     */
     public void initializeView() {
         List<Patch> available = game.getPatchStack().getAvailablePatches();
 
@@ -63,10 +77,8 @@ public class PatchStackPresenter {
             Patch patch = available.get(i);
             boolean[][] shape;
             if (patch.getPatchID() == gamePresenter.getSelectedPatchId()) {
-                //get the preview shape for the selected rotation without modifying the patch's state
                 shape = patch.getRotatedShapeFor(gamePresenter.getSelectedRotation());
             } else {
-                //show the patch in its own default rotation without modifying it
                 shape = patch.getRotatedShapeFor(patch.getRotation());
             }
             view.updatePatchSlot(
@@ -79,7 +91,6 @@ public class PatchStackPresenter {
             );
         }
 
-        //highlight the selected patch slot wrapper if any
         boolean foundSelected = false;
         for (int i = 0; i < view.getPatchStoreSize(); i++) {
             if (view.getPatchSlot(i).getUserData() != null
@@ -89,7 +100,6 @@ public class PatchStackPresenter {
                 break;
             }
         }
-        //if no patch is selected, clear all highlights
         if (!foundSelected) {
             view.highlightPatchSlot(-1);
         }

@@ -7,8 +7,14 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
+/**
+ * Main dashboard view class. Builds tiled structural layouts,
+ * renders control buttons, and handles verification overlays for exit requests.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class MainMenuView {
-    // Buttons
     private Button btnStart;
     private Button btnRules;
     private Button btnSettings;
@@ -16,20 +22,24 @@ public class MainMenuView {
     private Button btnExit;
     private Button btnContinue;
 
-    // Background Components
     private Image bgImage;
     private BackgroundSize bgSize;
     private BackgroundImage background;
 
-    // Containers
     private StackPane stPane;
     private VBox contentBox;
 
+    /**
+     * Initializes structural element nodes and sets up background canvas configurations.
+     */
     public MainMenuView() {
         initialiseNodes();
         layoutNodes();
     }
 
+    /**
+     * Loads background image parameters, sets up menu buttons, and builds box layout containers.
+     */
     private void initialiseNodes() {
         stPane = new StackPane();
 
@@ -47,36 +57,39 @@ public class MainMenuView {
 
         stPane.setBackground(new Background(this.background));
 
-        // 2. Initialize Buttons with a helper to keep code DRY
         btnStart = createMenuButton("Start");
         btnRules = createMenuButton("Rules");
         btnSettings = createMenuButton("Settings");
         btnLeaderBoard = createMenuButton("Leaderboard");
         btnExit = createMenuButton("Exit to Desktop");
-        btnContinue=createMenuButton("Continue Game");
+        btnContinue = createMenuButton("Continue Game");
 
-        // 3. Setup ContentBox (Transparent by default now)
-        contentBox = new VBox(15, btnStart,btnContinue, btnRules, btnSettings, btnLeaderBoard, btnExit);
+        contentBox = new VBox(15, btnStart, btnContinue, btnRules, btnSettings, btnLeaderBoard, btnExit);
     }
 
+    /**
+     * Centers action containers while maintaining strict size constraints.
+     */
     private void layoutNodes() {
-        // Center the buttons within the VBox
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setPadding(new Insets(30));
 
-        // Set constraints so the VBox doesn't stretch to fill the whole screen
         contentBox.setMaxWidth(250);
         contentBox.setMaxHeight(320);
 
         contentBox.setStyle("-fx-background-color: transparent;");
 
-        // Configure the root StackPane
         stPane.setAlignment(Pos.CENTER);
         stPane.setPadding(new Insets(-40));
         stPane.getChildren().setAll(contentBox);
     }
 
-
+    /**
+     * Factory utility formatting menu buttons to match standard widths and heights.
+     *
+     * @param text string literal descriptor label to imprint on the face of the node
+     * @return a button adjusted to system dimensions
+     */
     private Button createMenuButton(String text) {
         Button button = new Button(text);
         button.setPrefWidth(150);
@@ -84,6 +97,13 @@ public class MainMenuView {
         return button;
     }
 
+    /**
+     * Darkens the background stage canvas and launches a confirmation dialog
+     * before executing desktop shutdown commands.
+     *
+     * @param message   confirmation dialog text message
+     * @param onConfirm operational callback lambda hook executing upon validation
+     */
     public void showConfirmationOverlay(String message, Runnable onConfirm) {
         StackPane overlay = new StackPane();
 
@@ -116,12 +136,11 @@ public class MainMenuView {
         this.stPane.getChildren().add(overlay);
     }
 
-    // Getters
     public StackPane getPane() { return stPane; }
     Button getStartButton() { return btnStart; }
     Button getRulesButton() { return btnRules; }
     Button getSettingsButton() { return btnSettings; }
     Button getLeaderboardButton() { return btnLeaderBoard; }
     Button getBtnExit() { return btnExit; }
-    Button getContinueButton(){return btnContinue;}
+    Button getContinueButton() { return btnContinue; }
 }

@@ -10,14 +10,35 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Controller class that bridges structural input streams and rule interfaces.
+ * <p>
+ * Handles processing steps to convert structural asset documentation streams (such as raw headers
+ * enclosed inside {@code =====}) directly into dynamic rule cards.
+ * </p>
+ *
+ * @author YourName
+ * @version 1.0
+ */
 public class RulesPresenter {
+    /** The view panel structure being updated by incoming file elements. */
     private final RulesView view;
+    /** The parent main menu view node used for backward tracking steps. */
     private final MainMenuView mainMenuView;
+    /** Placeholder layout tracking variable for specific background images. */
     private Image image;
+    /** Placeholder configuration wrapper variable managing canvas background patterns. */
     private BackgroundImage backgroundImage;
+    /** Placeholder scale dimensions variable managing background asset bounds metrics. */
     private BackgroundSize backgroundSize;
 
-
+    /**
+     * Instantiates an active presenter pairing, starting data streams parsing operations
+     * and link event pipelines.
+     *
+     * @param view         the interactive canvas components receiver structure reference
+     * @param mainMenuView the parent navigation target pointer
+     */
     public RulesPresenter(RulesView view, MainMenuView mainMenuView) {
         this.view = view;
         this.mainMenuView = mainMenuView;
@@ -25,10 +46,20 @@ public class RulesPresenter {
         addEventHandlers();
     }
 
+    /**
+     * Pairs interaction steps with JavaFX controls to swap root view nodes.
+     */
     private void addEventHandlers() {
         view.getBtnBack().setOnAction(event -> view.getPane().getScene().setRoot(mainMenuView.getPane()));
     }
 
+    /**
+     * Stream reads raw file lines from system properties files and interprets content formatting.
+     * <p>
+     * Sections containing equals-sign strings (e.g., {@code ===== SETUP =====}) are parsed out as headers
+     * to split text blocks into clean, distinct cards.
+     * </p>
+     */
     private void loadRules() {
         try (InputStream is = getClass().getResourceAsStream("/rules.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
@@ -60,6 +91,4 @@ public class RulesPresenter {
             view.setRulesText("Error loading rules: " + e.getMessage());
         }
     }
-
-
 }

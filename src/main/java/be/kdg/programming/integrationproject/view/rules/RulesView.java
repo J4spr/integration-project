@@ -13,23 +13,52 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+/**
+ * View class responsible for displaying game documentation and instructions.
+ * <p>
+ * Employs a stylized card-based visual format housed inside an autonomous vertical layout container.
+ * Sections can be added dynamically and viewed via structured scrolling.
+ * </p>
+ *
+ * @author YourName
+ * @version 1.0
+ */
 public class RulesView {
+    /** Navigation button to return to the preceding screen. */
     private Button btnBack;
+    /** The core canvas layer containing the background image patterns and rules wrapper. */
     private StackPane pane;
+    /** The visual image asset used for tiling the menu canvas background. */
     private Image image;
+    /** The configured background layout logic mapping the background image. */
     private BackgroundImage backgroundImage;
+    /** The size bounds configurations used to constraint background asset scales. */
     private BackgroundSize backgroundSize;
 
-    // We keep the name txRules so the Presenter stays happy,
-    // but we change it to a VBox to allow for the "Card" layout.
+    /**
+     * The structural container holding segmented visual rule cards.
+     * <p>
+     * Kept as a {@code VBox} configuration under the historical name {@code txRules}
+     * to keep backward compatibility layers intact within handling presenters.
+     * </p>
+     */
     private VBox txRules;
+    /** Scroll viewport wrapper allowing users to browse rule entries that exceed display bounds. */
     private ScrollPane scrollPane;
 
+    /**
+     * Initializes a new instance of {@code RulesView}, setting up structural containers
+     * and visual content wrappers.
+     */
     public RulesView() {
         initialiseNodes();
         layoutNodes();
     }
 
+    /**
+     * Initializes structural panels, sets up tiled imagery paths,
+     * and prepares the main scrolling content components.
+     */
     private void initialiseNodes() {
         this.pane = new StackPane();
         this.btnBack = new Button("Go back");
@@ -58,6 +87,9 @@ public class RulesView {
         this.scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
     }
 
+    /**
+     * Arranges view elements and maps target constraint spaces inside the primary canvas layout.
+     */
     private void layoutNodes() {
         StackPane.setAlignment(btnBack, Pos.TOP_LEFT);
         StackPane.setMargin(btnBack, new Insets(15));
@@ -68,15 +100,25 @@ public class RulesView {
         pane.getChildren().addAll(scrollPane, btnBack);
     }
 
-    // Inside RulesView.java
-
-    // Keep this so your error handling in the Presenter still works
+    /**
+     * Overwrites active view components by wiping out current cards and setting a single error fallback message card.
+     * <p>
+     * Maintained to provide generic pipeline safety fallbacks for existing presenter classes.
+     * </p>
+     *
+     * @param text the raw literal messaging context to output
+     */
     public void setRulesText(String text) {
         this.txRules.getChildren().clear();
         addRuleCard("Rules", text);
     }
 
-    // The new method that creates a separate card for each section
+    /**
+     * Generates a separate drop-shadow card graphic segment mapping specific headers alongside contextual strings.
+     *
+     * @param title       the section heading string matching the individual category rule text card
+     * @param contentText the extensive details text data mapped to wrap cleanly into the card
+     */
     public void addRuleCard(String title, String contentText) {
         VBox card = new VBox(10);
         card.setPadding(new Insets(20));
@@ -100,11 +142,20 @@ public class RulesView {
         this.txRules.getChildren().add(card);
     }
 
+    /**
+     * Retrieves the structural core StackPane mapping active scene layer variables.
+     *
+     * @return the primary root {@code StackPane} reference
+     */
     public StackPane getPane() {
         return pane;
     }
 
-    // Kept the return type as ButtonBase or Button so the Presenter doesn't "tweak"
+    /**
+     * Returns the back navigation trigger node component.
+     *
+     * @return the navigation return trigger {@code Button} object reference
+     */
     Button getBtnBack() {
         return this.btnBack;
     }
