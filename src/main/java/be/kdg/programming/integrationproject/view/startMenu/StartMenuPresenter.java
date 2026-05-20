@@ -13,17 +13,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Controller class that processes form data from the match startup menu.
+ * <p>
+ * Performs validation checks on character names, maps visual configurations, registers information
+ * records into database entities, and links initialization states into active game panels.
+ * </p>
+ *
+ * @author YourName
+ * @version 1.0
+ */
 public class StartMenuPresenter {
 
+    /** The underlying selection view component structure being updated. */
     private final StartMenuView view;
+    /** The fallback parent menu frame used during backwards routing operations. */
     private final MainMenuView mainMenuView;
 
+    /**
+     * Assembles a presenter pair, binding user data handlers
+     * to manage user profile forms initialization.
+     *
+     * @param view         the configuration panel view instance reference
+     * @param mainMenuView the parent main menu controller path pointer
+     */
     public StartMenuPresenter(StartMenuView view, MainMenuView mainMenuView) {
         this.view = view;
         this.mainMenuView = mainMenuView;
         addEventHandlers();
     }
 
+    /**
+     * Maps functional action triggers to view event listeners.
+     */
     private void addEventHandlers() {
         view.getBtnBack().setOnAction(e ->
                 view.getPane().getScene().setRoot(mainMenuView.getPane())
@@ -32,6 +54,10 @@ public class StartMenuPresenter {
         view.getBtnStartGame().setOnAction(e -> startGame());
     }
 
+    /**
+     * Validates configuration parameters, stores model parameters, registers active database records,
+     * and shifts active scene states into game components.
+     */
     private void startGame() {
         //validate that the player has entered a name
         if (view.getPlayerName().isEmpty()) {
@@ -69,7 +95,13 @@ public class StartMenuPresenter {
         view.getPane().getScene().setRoot(gameView.getPane());
     }
 
-    //picks a random TokenColor that is not the same as the human player's color
+    /**
+     * Randomly assigns an available token color variant to the computer player
+     * to prevent duplicates with the human player.
+     *
+     * @param playerColor the configuration value chosen by the human user
+     * @return a distinct {@code TokenColor} selection for the AI player
+     */
     private TokenColor pickCpuColor(TokenColor playerColor) {
         List<TokenColor> colors = new ArrayList<>(List.of(TokenColor.values()));
         colors.remove(playerColor);
@@ -77,8 +109,15 @@ public class StartMenuPresenter {
         return colors.get(0);
     }
 
-    //converts a TokenColor enum to a hex color string usable in JavaFX CSS
-    private String tokenColorToHex(TokenColor color) {
+    /**
+     * Converts internal game token enum color states into hexadecimal text representations
+     * for JavaFX CSS injection.
+     *
+     * @param color the enum value matching targeted tracking pieces
+     * @return a hex code string (e.g., {@code "#ef5350"}) representing the color,
+     * or a fallback default color string if unspecified
+     */
+    public String tokenColorToHex(TokenColor color) {
         if (color == null) return "#aaaaaa";
         return switch (color) {
             case RED -> "#ef5350";
@@ -88,6 +127,11 @@ public class StartMenuPresenter {
         };
     }
 
+    /**
+     * Triggers a modal popup warning window displaying explicit error tracking data to users.
+     *
+     * @param message the informational alert context string text
+     */
     private void showWarning(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning");

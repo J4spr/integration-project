@@ -8,10 +8,24 @@ import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Controller class responsible for querying metric logs through data layer objects
+ * and updating the leaderboard interface.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class LeaderBoardPresenter {
     private final LeaderBoardView view;
     private final PlayerDao playerDao;
     private final MainMenuView mmv;
+
+    /**
+     * Instantiates a new Leaderboard presenter controller profile wrapper.
+     *
+     * @param view         target list panel view display framework component layer anchor
+     * @param mainMenuView menu interface state tracker handling navigation
+     */
     public LeaderBoardPresenter(LeaderBoardView view, MainMenuView mainMenuView) {
         this.view = view;
         this.mmv = mainMenuView;
@@ -21,9 +35,12 @@ public class LeaderBoardPresenter {
         addHandlers();
     }
 
+    /**
+     * Fetches up-to-date performance history profiles from database views
+     * and pushes records directly into active user list frameworks.
+     */
     public void refreshLeaderboard() {
         try {
-            // Correctly fetch the List of DTOs
             List<PlayerStats> stats = playerDao.getDetailedLeaderboard();
             view.setStatsData(stats);
         } catch (SQLException e) {
@@ -31,6 +48,9 @@ public class LeaderBoardPresenter {
         }
     }
 
+    /**
+     * Binds navigation listeners to returning dashboard button targets.
+     */
     private void addHandlers() {
         if (view.getBtnBack() != null) {
             view.getBtnBack().setOnAction(event -> {

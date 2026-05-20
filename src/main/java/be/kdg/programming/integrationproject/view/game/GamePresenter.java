@@ -12,6 +12,14 @@ import be.kdg.programming.integrationproject.view.resultsScreen.ResultsScreenVie
 import java.util.Random;
 import be.kdg.programming.integrationproject.dao.GameDao;
 
+/**
+ * Top-level gameplay controller anchoring the MVP game architecture.
+ * Manages player actions, synchronizes database states, controls automated
+ * CPU workflows, and checks game-end victory parameters.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class GamePresenter {
     private final Game game;
     private final GameView view;
@@ -24,6 +32,14 @@ public class GamePresenter {
     private int selectedPatchId = -1;
     private PatchRotation selectedRotation;
 
+    /**
+     * Initializes the core game presenter, binds sub-component controllers,
+     * and handles initial turn assignment.
+     *
+     * @param game         active domain state model tracking session configuration parameters
+     * @param view          gameplay staging panel layout node package components
+     * @param mainMenuView fall-back parent container menu mapping framework trace hooks
+     */
     public GamePresenter(Game game, GameView view, MainMenuView mainMenuView) {
         this.game = game;
         this.view = view;
@@ -38,12 +54,19 @@ public class GamePresenter {
         this.addEventHandlers();
     }
 
+    /**
+     * Synchronizes view metrics across all child presenters to update UI text fields.
+     */
     public void initializeView() {
         this.quiltboardPresenter.initializeView();
         this.patchStackPresenter.initializeView();
         this.timeboardPresenter.initializeView();
     }
 
+    /**
+     * Configures button listeners for turn progression, layout adjustments,
+     * pause actions, and session serialization tasks.
+     */
     private void addEventHandlers() {
         this.view.getBtnPass().setOnAction(e -> {
             if (!this.game.getCurrentLeatherPatchQueue().isEmpty()) {
@@ -66,24 +89,20 @@ public class GamePresenter {
                 this.view.showWarningBanner("Select a patch first to rotate it.");
                 return;
             }
-            // Cycle the rotation state
             this.selectedRotation = this.selectedRotation.next();
-            this.initializeView(); // Re-render previews with new rotation
+            this.initializeView();
         });
+
         this.view.getBtnPause().setOnAction(e -> {
-
-            try{GameDao dao = new GameDao(new DbConnection());
-
+            try {
+                GameDao dao = new GameDao(new DbConnection());
                 dao.savePausedState(game);
-
+            } catch(Exception ex) {
+                ex.printStackTrace();
             }
-            catch(Exception ex){ex.printStackTrace();
-            }
-
             this.view.showConfirmationOverlay(
                     "Game paused. Return to main menu?",
                     () -> this.view.getPane().getScene().setRoot(this.mainMenuView.getPane()));
-
         });
 
         this.view.getBtnQuit().setOnAction(e ->
@@ -94,6 +113,10 @@ public class GamePresenter {
         );
     }
 
+    /**
+     * Loops turn operations while an automated {@link CpuPlayer} holds control.
+     * Coordinates the placement of collected rewards before evaluating standard choices.
+     */
     public void handleCpuTurn() {
         while (this.game.getCurrentPlayer() instanceof CpuPlayer cpu) {
             if (!this.game.getLeatherPatchQueue(cpu).isEmpty()) {
@@ -107,10 +130,12 @@ public class GamePresenter {
         this.initializeView();
     }
 
+    /**
+     * Handles random coordinate lookups for automated CPU 1x1 tile placement tasks.
+     */
     private void placeCpuLeatherPatches() {
         Random random = new Random();
         Player cpu = this.game.getCurrentPlayer();
-        //use the cpu's own queue so human leather patches are never touched
         while (!this.game.getLeatherPatchQueue(cpu).isEmpty()) {
             boolean placed = false;
             for (int attempt = 0; attempt < 100 && !placed; attempt++) {
@@ -122,8 +147,10 @@ public class GamePresenter {
         }
     }
 
-    //checks if the leather patch queue is non-empty after a move and shows the appropriate notification
-    //handles the case where multiple leather patches are collected in a single move (e.g. passing multiple positions)
+    /**
+     * Inspects active collection tracking arrays to trigger interface notifications
+     * when a player earns leather patches.
+     */
     public void notifyLeatherPatchIfNeeded() {
         if (!this.game.getCurrentLeatherPatchQueue().isEmpty()) {
             int count = this.game.getCurrentLeatherPatchQueue().size();
@@ -134,6 +161,9 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * Displays the results view overlay if active models flag a finished status.
+     */
     public void checkGameEnd() {
         if (this.game.getStatus() == GameStatus.FINISHED) {
             ResultsScreenView resultsScreenView = new ResultsScreenView();
@@ -142,11 +172,20 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * Resets active structural component parameters back to default values.
+     */
     public void resetSelection() {
         this.selectedPatchId = -1;
         this.selectedRotation = PatchRotation.NOROTATION;
     }
 
+    /**
+     * Utility converter mapping color enums to standard hexadecimal CSS style strings.
+     *
+     * @param color structural player enum color indicator code value matching token
+     * @return hex color format web styling code string value representation
+     */
     public String tokenColorToHex(TokenColor color) {
         if (color == null) return "#aaaaaa";
         return switch (color) {
@@ -157,7 +196,6 @@ public class GamePresenter {
         };
     }
 
-    // Getters and Setters
     public int getSelectedPatchId() { return this.selectedPatchId; }
     public void setSelectedPatchId(int selectedPatchId) { this.selectedPatchId = selectedPatchId; }
     public PatchRotation getSelectedRotation() { return this.selectedRotation; }

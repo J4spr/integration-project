@@ -2,24 +2,41 @@ package be.kdg.programming.integrationproject.dao;
 
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Game;
+import be.kdg.programming.integrationproject.model.HumanPlayer;
+import be.kdg.programming.integrationproject.model.CpuPlayer;
+import be.kdg.programming.integrationproject.model.Patch;
+import be.kdg.programming.integrationproject.model.PatchPlacement;
+import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
+import be.kdg.programming.integrationproject.model.Enums.TokenColor;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.kdg.programming.integrationproject.model.HumanPlayer;
-import be.kdg.programming.integrationproject.model.CpuPlayer;
-import be.kdg.programming.integrationproject.model.Patch;
-import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
-import be.kdg.programming.integrationproject.model.PatchPlacement;
-import be.kdg.programming.integrationproject.model.Enums.TokenColor;
-
+/**
+ * Data Access Object responsible for managing lifecycle states, configurations,
+ * saves, pauses, and metric statistics for {@link Game} instances in the database.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class GameDao extends AbstractDao implements Dao<Game> {
 
+    /**
+     * Initializes a new GameDao instance.
+     *
+     * @param dbConnection the database connection manager
+     */
     public GameDao(DbConnection dbConnection) {
         super(dbConnection);
     }
 
+    /**
+     * Counts the total number of entries tracked within the game tables.
+     *
+     * @return total matches played or registered
+     * @throws SQLException if a database access error occurs
+     */
     public int getTotalGamesCount() throws SQLException {
         String sql = "SELECT COUNT(*) FROM \"GameTable\"";
         try (Connection c = getConnection();
@@ -29,6 +46,12 @@ public class GameDao extends AbstractDao implements Dao<Game> {
         }
     }
 
+    /**
+     * Calculates the database-wide average length duration of completed games.
+     *
+     * @return a text representation of the average duration, or "0" if unavailable
+     * @throws SQLException if a database access error occurs
+     */
     public String getAverageDuration() throws SQLException {
         String sql = "SELECT AVG(\"GameEndTime\"-\"GameStartTime\") FROM \"GameTable\" WHERE \"GameEndTime\" IS NOT NULL";
         try (Connection c = getConnection();
@@ -38,6 +61,12 @@ public class GameDao extends AbstractDao implements Dao<Game> {
         }
     }
 
+    /**
+     * Retrieves the highest individual score recorded by Player 1 across all moves.
+     *
+     * @return maximum button score found
+     * @throws SQLException if a database access error occurs
+     */
     public int getTopScore() throws SQLException {
         String sql = "SELECT MAX(\"ButtonsP1\") FROM \"MoveTable\"";
         try (Connection c = getConnection();
@@ -66,8 +95,13 @@ public class GameDao extends AbstractDao implements Dao<Game> {
     @Override
     public void delete(int id) throws SQLException {}
 
+    /**
+     * Fetches details of all matches stored under an 'Ongoing' status flag.
+     *
+     * @return a list of formatted description strings representing unfinished game states
+     * @throws SQLException if a database access error occurs
+     */
     public List<String> getUnfinishedGames() throws SQLException {
-
         List<String> games = new ArrayList<>();
         String sql = """
         SELECT  g."GameID",p."Username"
@@ -81,18 +115,22 @@ public class GameDao extends AbstractDao implements Dao<Game> {
                 Statement st=c.createStatement();
                 ResultSet rs=st.executeQuery(sql)
         ){
-
             while(rs.next()){
                 games.add(rs.getString("Username") + " - Game #" + rs.getInt("GameID"));
             }
         }
-
         return games;
     }
 
-    public Game loadUnfinishedGame(int gameId)
-            throws SQLException {
-
+    /**
+     * Reconstructs an active, ongoing game object hierarchy complete with players,
+     * stats, colors, stack configurations, and chronological board placements from database logs.
+     *
+     * @param gameId the identification number of the target match to parse
+     * @return a fully populated {@link Game} instance or {@code null} if not found
+     * @throws SQLException if structural mapping maps fail or database queries error out
+     */
+    public Game loadUnfinishedGame(int gameId) throws SQLException {
         String gameSql="""
       SELECT *
       FROM "GameTable"
@@ -109,11 +147,8 @@ public class GameDao extends AbstractDao implements Dao<Game> {
     """;
 
         try(Connection c=getConnection()){
-
             PreparedStatement gStmt= c.prepareStatement(gameSql);
-
             gStmt.setInt(1,gameId);
-
             ResultSet gRs=gStmt.executeQuery();
 
             if(!gRs.next()) return null;
@@ -122,7 +157,6 @@ public class GameDao extends AbstractDao implements Dao<Game> {
             p1.setPlayerId(gRs.getInt("Player1ID"));
 
             CpuPlayer p2= new CpuPlayer(be.kdg.programming.integrationproject.model.Enums.Difficulty.EASY);
-
             p2.setPlayerId(gRs.getInt("Player2ID"));
 
             Game game= new Game(p1, p2, gRs.getInt("StartingPlayer"));
@@ -141,11 +175,9 @@ public class GameDao extends AbstractDao implements Dao<Game> {
             game.setGameId(gameId);
 
             PreparedStatement mStmt= c.prepareStatement(moveSql);mStmt.setInt(1,gameId);
-
             ResultSet mRs= mStmt.executeQuery();
 
             while(mRs.next()){
-
                 int patchId=mRs.getInt("PatchID");
                 int row=mRs.getInt("SpacesMoved");
                 int col=mRs.getInt("Position");
@@ -153,7 +185,6 @@ public class GameDao extends AbstractDao implements Dao<Game> {
                 int owner=mRs.getInt("PlayerID");
 
                 Patch patch;
-
                 if(patchId == 999){
                     patch = Patch.createLeatherPatch(999);
                 } else {
@@ -161,112 +192,112 @@ public class GameDao extends AbstractDao implements Dao<Game> {
                 }
 
                 if(patch!=null){
-
                     if(rot==90) patch.setRotation(PatchRotation.NINETY);
                     else if(rot==180) patch.setRotation(PatchRotation.ONEEIGHTY);
                     else if(rot==270) patch.setRotation(PatchRotation.TWOSEVENTY);
 
                     if(patchId != 999){
-                        game.getPatchStack().removePatch(patchId);}
+                        game.getPatchStack().removePatch(patchId);
+                    }
 
                     if(owner==p1.getPlayerId()){
                         p1.getQuiltBoard().placePatch(patch,row,col);
-                    }
-                    else{
+                    } else {
                         p2.getQuiltBoard().placePatch(patch,row,col);
                     }
-
                 }
-
             }
-
-
-
             game.updateCurrentPlayer();
-
             return game;
         }
     }
-    public void pauseGame(int gameId) throws SQLException {
 
+    /**
+     * Explicitly tags or forces a game's reference state back to 'Ongoing'.
+     *
+     * @param gameId target game ID reference
+     * @throws SQLException if reference update fails
+     */
+    public void pauseGame(int gameId) throws SQLException {
         String sql = """
        UPDATE "GameTable"
        SET "State"='Ongoing'
        WHERE "GameID"=?
     """;
-        try(PreparedStatement st = getConnection().prepareStatement(sql)){st.setInt(1, gameId);st.executeUpdate();}
+        try(PreparedStatement st = getConnection().prepareStatement(sql)){
+            st.setInt(1, gameId);
+            st.executeUpdate();
+        }
     }
-    public int createNewPausedGame(
-            int player1Id,
-            int player2Id,
-            int startingPlayer
-    ) throws SQLException {
 
+    /**
+     * Creates a new standard match trace entry in the database initialized with an 'Ongoing' status flag.
+     *
+     * @param player1Id      ID reference of player 1
+     * @param player2Id      ID reference of player 2
+     * @param startingPlayer integer assignment tag noting who moves first
+     * @return the generated GameID identifier from the table sequence, or -1 if insertion fails
+     * @throws SQLException if row initialization query encounters database issues
+     */
+    public int createNewPausedGame(int player1Id, int player2Id, int startingPlayer) throws SQLException {
         String sql = """
        INSERT INTO "GameTable"
        ("GameType","State","Player1ID","Player2ID","StartingPlayer","GameStartTime")
        VALUES('Standard','Ongoing',?,?,?,CURRENT_TIME)
        RETURNING "GameID"
 """;
-
         try(PreparedStatement st= getConnection().prepareStatement(sql)){
-
             st.setInt(1,player1Id);
             st.setInt(2,player2Id);
             st.setInt(3,startingPlayer);
 
             ResultSet rs= st.executeQuery();
-
             if(rs.next()){return rs.getInt(1);}
         }
-
         return -1;
     }
-    public void savePausedState(Game game) throws SQLException{
+
+    /**
+     * Commits the comprehensive, transient live parameters of a match state into the database.
+     * Purges outdated move logs, tracks new active structures, and caches values such as
+     * scores, income rates, and player token colors.
+     *
+     * @param game the active game domain state object configuration to serialise
+     * @throws SQLException if state synchronisation database procedures fail
+     */
+    public void savePausedState(Game game) throws SQLException {
         String deleteMoves="""
-DELETE FROM "MoveTable"
-WHERE "TurnID" IN
-(
-SELECT "TurnID"
-FROM "TurnTable"
-WHERE "GameID"=?
-)
-""";
+        DELETE FROM "MoveTable"
+        WHERE "TurnID" IN
+        (SELECT "TurnID" FROM "TurnTable" WHERE "GameID"=?)
+        """;
 
         String deleteTurns="""
-DELETE FROM "TurnTable"
-WHERE "GameID"=?
-""";
+        DELETE FROM "TurnTable"
+        WHERE "GameID"=?
+        """;
 
         String createTurn="""
-INSERT INTO "TurnTable"
-("GameID",
-"TurnStartTime")
-VALUES(?,CURRENT_TIMESTAMP)RETURNING "TurnID"
-""";
+        INSERT INTO "TurnTable"
+        ("GameID","TurnStartTime")
+        VALUES(?,CURRENT_TIMESTAMP) RETURNING "TurnID"
+        """;
+
         String insertMove="""
-INSERT INTO "MoveTable"
-(
-"TurnID",
-"PlayerID",
-"PatchID",
-"MoveStartTime",
-"SpecialPatchesCollected",
-"ButtonsP1",
-"ButtonsP2",
-"SpacesMoved",
-"Position",
-"RotationDegrees"
-)
-VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
+        INSERT INTO "MoveTable"
+        ("TurnID","PlayerID","PatchID","MoveStartTime","SpecialPatchesCollected",
+        "ButtonsP1","ButtonsP2","SpacesMoved","Position","RotationDegrees")
+        VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
 
         Connection c=getConnection();
         PreparedStatement d1= c.prepareStatement(deleteMoves);
         d1.setInt(1, game.getGameId());
         d1.executeUpdate();
+
         PreparedStatement d2= c.prepareStatement(deleteTurns);
         d2.setInt(1, game.getGameId());
         d2.executeUpdate();
+
         PreparedStatement turn= c.prepareStatement(createTurn);
         turn.setInt(1, game.getGameId());
         ResultSet rs= turn.executeQuery();rs.next();
@@ -274,7 +305,6 @@ VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
         int turnId= rs.getInt(1);
         PreparedStatement move= c.prepareStatement(insertMove);
         for(PatchPlacement pp : game.getPlayer1().getQuiltBoard().getPlacements()){
-
             move.setInt(1,turnId);
             move.setInt(2,game.getPlayer1().getPlayerId());
             move.setInt(3,pp.getPatch().getPatchID());
@@ -282,12 +312,11 @@ VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
             move.setInt(5,game.getPlayer2().getTotalButtons());
             move.setInt(6,pp.getRow());
             move.setInt(7,pp.getCol());
-            move.setInt(8, pp.getPatch().getRotation().getRotation());move.executeUpdate();
+            move.setInt(8, pp.getPatch().getRotation().getRotation());
+            move.executeUpdate();
         }
 
-        for(PatchPlacement pp :
-                game.getPlayer2().getQuiltBoard().getPlacements()){
-
+        for(PatchPlacement pp : game.getPlayer2().getQuiltBoard().getPlacements()){
             move.setInt(1,turnId);
             move.setInt(2,game.getPlayer2().getPlayerId());
             move.setInt(3,pp.getPatch().getPatchID());
@@ -297,28 +326,27 @@ VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
             move.setInt(7,pp.getCol());
             move.setInt(8, pp.getPatch().getRotation().getRotation());
             move.executeUpdate();
-
         }
+
         String updateGame = """
-UPDATE "GameTable"
-SET "ButtonsP1"=?, "ButtonsP2"=?, "IncomeP1"=?, "IncomeP2"=?
-WHERE "GameID"=?
-""";
+        UPDATE "GameTable"
+        SET "ButtonsP1"=?, "ButtonsP2"=?, "IncomeP1"=?, "IncomeP2"=?
+        WHERE "GameID"=?
+        """;
 
         PreparedStatement st = c.prepareStatement(updateGame);
-
         st.setInt(1, game.getPlayer1().getTotalButtons());
         st.setInt(2, game.getPlayer2().getTotalButtons());
         st.setInt(3, game.getPlayer1().getTotalButtonIncome());
         st.setInt(4, game.getPlayer2().getTotalButtonIncome());
         st.setInt(5, game.getGameId());
-
         st.executeUpdate();
+
         String updateColors = """
-UPDATE "GameTable"
-SET "ColorP1"=?, "ColorP2"=?
-WHERE "GameID"=?
-""";
+        UPDATE "GameTable"
+        SET "ColorP1"=?, "ColorP2"=?
+        WHERE "GameID"=?
+        """;
 
         PreparedStatement stColors = c.prepareStatement(updateColors);
         stColors.setString(1, game.getPlayer1().getColor().name());
@@ -327,7 +355,5 @@ WHERE "GameID"=?
         stColors.executeUpdate();
 
         c.close();
-
     }
 }
-

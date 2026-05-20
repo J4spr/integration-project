@@ -10,8 +10,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object mapping structural timelines for sequential play interactions
+ * contained within the {@code TurnTable}.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class TurnDao extends AbstractDao implements Dao<Turn> {
 
+    /**
+     * Initializes a new TurnDao instance.
+     *
+     * @param conn the database connection manager
+     */
     public TurnDao(DbConnection conn) {
         super(conn);
     }
@@ -54,6 +66,13 @@ public class TurnDao extends AbstractDao implements Dao<Turn> {
         }
     }
 
+    /**
+     * Maps ResultSet tracking data directly into clear runtime game context objects.
+     *
+     * @param rs active database transaction response tracking cursor
+     * @return constructed Turn container configuration instance
+     * @throws SQLException if a column reading assignment error triggers
+     */
     private Turn mapResultSetToTurn(ResultSet rs) throws SQLException {
         return new Turn(
                 rs.getInt("TurnID"),
