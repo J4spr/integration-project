@@ -202,6 +202,7 @@ public class GameDao extends AbstractDao implements Dao<Game> {
             int startingPlayer
     ) throws SQLException {
 
+
         String sql = """
        INSERT INTO "GameTable"
        ("GameType","State","Player1ID","Player2ID","StartingPlayer","GameStartTime")
@@ -282,7 +283,8 @@ VALUES(?,?,?,CURRENT_TIMESTAMP,0,?,?,?,?,?)""";
             move.setInt(5,game.getPlayer2().getTotalButtons());
             move.setInt(6,pp.getRow());
             move.setInt(7,pp.getCol());
-            move.setInt(8, pp.getPatch().getRotation().getRotation());move.executeUpdate();
+            move.setInt(8, pp.getPatch().getRotation().getRotation());
+            move.executeUpdate();
         }
 
         for(PatchPlacement pp :
@@ -328,6 +330,22 @@ WHERE "GameID"=?
 
         c.close();
 
+    }
+    public void saveGameResult(int gameId, int winnerId) throws SQLException {
+        String sql = """
+        UPDATE "GameTable"
+        SET "WinnerID" = ?,
+            "State"    = 'Finished',
+            "GameEndTime" = CURRENT_TIMESTAMP
+        WHERE "GameID" = ?
+    """;
+        try (Connection c = getConnection();
+             PreparedStatement st = c.prepareStatement(sql)) {
+            st.setInt(1, winnerId);
+            st.setInt(2, gameId);
+            int rows = st.executeUpdate();
+            System.out.println("saveGameResult: updated " + rows + " rows for gameId=" + gameId + " winnerId=" + winnerId);
+        }
     }
 }
 
