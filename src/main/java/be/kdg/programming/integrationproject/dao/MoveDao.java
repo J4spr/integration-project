@@ -6,8 +6,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object managing operations targeted around single player step logs
+ * inside the {@code MoveTable}.
+ * Note: Mutation processes such as {@code update} and {@code delete} are explicitly unsupported.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class MoveDao extends AbstractDao implements Dao<Move> {
 
+    /**
+     * Initializes a new MoveDao instance.
+     *
+     * @param conn the database connection manager
+     */
     public MoveDao(DbConnection conn) {
         super(conn);
     }
@@ -39,10 +52,16 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
         return moves;
     }
 
+    /**
+     * Inserts a player move event log row and synchronizes the generated structural auto-increment
+     * Primary Key assignment straight back to the runtime model domain object reference.
+     *
+     * @param move target move configuration instance payload
+     * @throws SQLException if a database storage error occurs
+     */
     @Override
     public void insert(Move move) throws SQLException {
         String sql = "INSERT INTO \"MoveTable\" (\"TurnID\", \"PatchID\", \"MoveStartTime\", \"MoveEndTime\", \"SpecialPatchesCollected\", \"SpacesMoved\", \"Position\", \"RotationDegrees\", \"ButtonsP1\", \"ButtonsP2\") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        //RETURN_GENERATED_KEYS ensures the DB-generated MoveID is accessible after insert
         try (PreparedStatement stmnt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmnt.setInt(1, move.getTurnId());
             stmnt.setInt(2, move.getPatchId());
@@ -55,7 +74,7 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
             stmnt.setInt(9, move.getButtonsP1());
             stmnt.setInt(10, move.getButtonsP2());
             stmnt.executeUpdate();
-            //read back the generated ID and set it on the move object
+
             ResultSet keys = stmnt.getGeneratedKeys();
             if (keys.next()) {
                 move.setMoveId(keys.getInt(1));
@@ -63,8 +82,13 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
         }
     }
 
-    //maps a single row from the ResultSet to a Move object
-    //used by both findById() and findAll() to avoid code duplication
+    /**
+     * Maps database rows parsed from raw ResultSets down cleanly into single domain objects.
+     *
+     * @param rs an active cursor from an executed SQL search action sequence
+     * @return a structured operational runtime object representation container mapping matching fields
+     * @throws SQLException if query index column adjustments throw structural format exceptions
+     */
     private Move mapResultSetToMove(ResultSet rs) throws SQLException {
         return new Move(
                 rs.getInt("MoveID"),
@@ -81,11 +105,21 @@ public class MoveDao extends AbstractDao implements Dao<Move> {
         );
     }
 
+    /**
+     * Unsupported modification tracking functionality constraint.
+     *
+     * @throws UnsupportedOperationException update sequences cannot modify historical steps
+     */
     @Override
     public void update(Move move) {
         throw new UnsupportedOperationException("update() is not supported for MoveDao");
     }
 
+    /**
+     * Unsupported step erasure structural constraint.
+     *
+     * @throws UnsupportedOperationException step historical logs cannot be cleared individually
+     */
     @Override
     public void delete(int id) {
         throw new UnsupportedOperationException("delete() is not supported for MoveDao");

@@ -7,7 +7,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object providing extraction mapping constraints for foundational tile layout
+ * components within the application.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class PatchDao extends AbstractDao implements Dao<Patch> {
+
+    /**
+     * Initializes a new PatchDao instance.
+     *
+     * @param conn the database connection manager
+     */
     public PatchDao(DbConnection conn) {
         super(conn);
     }
@@ -50,6 +63,14 @@ public class PatchDao extends AbstractDao implements Dao<Patch> {
         }
     }
 
+    /**
+     * Maps database configuration details cleanly down into structural dynamic Game Patch instances.
+     * Utilizes a placeholder configuration default flag for basic shapes.
+     *
+     * @param rs active query data cursor
+     * @return configured Patch object instances mapping specifications
+     * @throws SQLException if structural mapping parameters throw errors
+     */
     private Patch mapResultSetToPatch(ResultSet rs) throws SQLException {
         return new Patch(
                 rs.getInt("PatchID"),

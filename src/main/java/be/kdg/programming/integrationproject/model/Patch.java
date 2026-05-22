@@ -3,6 +3,13 @@ package be.kdg.programming.integrationproject.model;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
 import be.kdg.programming.integrationproject.model.Enums.PatchShape;
 
+/**
+ * Domain component tracking parameters for individual game tiles, including costs,
+ * geometry blueprints, income generation, and structural rotation matrices.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class Patch {
     private int patchID;
     private PatchShape shape;
@@ -11,6 +18,15 @@ public class Patch {
     private int timeCost;
     private int buttonIncome;
 
+    /**
+     * Constructs a standard patch tile instance.
+     *
+     * @param patchID      unique identity sequence integer value
+     * @param shape        the geometric pattern blueprint classification mapping
+     * @param buttonCost   purchase currency threshold requirement value
+     * @param timeCost     linear progression timeline tracking steps addition
+     * @param buttonIncome repetitive resource addition asset score value factor
+     */
     public Patch(int patchID, PatchShape shape, int buttonCost, int timeCost, int buttonIncome) {
         this.patchID = patchID;
         this.shape = shape;
@@ -20,51 +36,52 @@ public class Patch {
         this.rotation = PatchRotation.NOROTATION;
     }
 
-    public int getPatchID() {
-        return this.patchID;
-    }
+    public int getPatchID() { return this.patchID; }
+    public PatchShape getShape() { return this.shape; }
+    public PatchRotation getRotation() { return this.rotation; }
+    public void setRotation(PatchRotation rotation) { this.rotation = rotation; }
+    public int getButtonCost() { return this.buttonCost; }
+    public int getTimeCost() { return this.timeCost; }
+    public int getButtonIncome() { return this.buttonIncome; }
 
-    public PatchShape getShape() {
-        return this.shape;
-    }
-
-    public PatchRotation getRotation() {
-        return this.rotation;
-    }
-
-    public void setRotation(PatchRotation rotation) {
-        this.rotation = rotation;
-    }
-
-    public int getButtonCost() {
-        return this.buttonCost;
-    }
-
-    public int getTimeCost() {
-        return this.timeCost;
-    }
-
-    public int getButtonIncome() {
-        return this.buttonIncome;
-    }
-
+    /**
+     * Factory method creating a specialized single-cell leather patch.
+     *
+     * @param patchID designated tracking identifier code index sequence reference
+     * @return a premium custom single cell asset {@link Patch} model component configuration
+     */
     public static Patch createLeatherPatch(int patchID) {
         return new Patch(999, PatchShape.LEATHER_PATCH, 0, 0, 0);
     }
 
-    //returns the patch shape as a 2D boolean array rotated according to the current rotation
-    //the dimensions of the array change when rotating 90 or 270 degrees (rows and cols are swapped)
+    /**
+     * Rotates the multi-dimensional boolean grid array to reflect the patch's current rotation state.
+     * Swaps rows and columns during 90-degree or 270-degree adjustments.
+     *
+     * @return a transformed two-dimensional boolean matrix grid matching active settings
+     */
     public boolean[][] getRotatedShape() {
         return rotateShape(this.rotation);
     }
 
-    //returns the rotated shape for a given rotation without modifying the patch's own rotation
-    //used by the presenter for preview purposes only
+    /**
+     * Generates a preview matrix for a target orientation without altering the patch's internal state.
+     * Primarily used by presenter layers for placement previews.
+     *
+     * @param targetRotation the prospective transform direction layer option configuration to test
+     * @return a temporary independent blueprint multi-array mirroring the evaluated choice layout parameters
+     */
     public boolean[][] getRotatedShapeFor(PatchRotation targetRotation) {
         return rotateShape(targetRotation);
     }
 
-    //core rotation logic extracted so both getRotatedShape and getRotatedShapeFor can use it
+    /**
+     * Core mapping engine transforming raw boolean matrices through
+     * index transpose steps based on selected rotation angles.
+     *
+     * @param targetRotation the active angle transformation matrix mapping parameter layout choice
+     * @return updated target nested array grid structures representing shifted layout limits
+     */
     private boolean[][] rotateShape(PatchRotation targetRotation) {
         boolean[][] original = this.shape.getShape();
         int rows = original.length;
@@ -72,7 +89,6 @@ public class Patch {
 
         switch (targetRotation) {
             case NINETY: {
-                //rotating 90 degrees clockwise: new dimensions are [cols][rows]
                 boolean[][] rotated = new boolean[cols][rows];
                 for (int r = 0; r < rows; r++)
                     for (int c = 0; c < cols; c++)
@@ -80,7 +96,6 @@ public class Patch {
                 return rotated;
             }
             case ONEEIGHTY: {
-                //rotating 180 degrees: dimensions stay the same, values are mirrored
                 boolean[][] rotated = new boolean[rows][cols];
                 for (int r = 0; r < rows; r++)
                     for (int c = 0; c < cols; c++)
@@ -88,7 +103,6 @@ public class Patch {
                 return rotated;
             }
             case TWOSEVENTY: {
-                //rotating 270 degrees clockwise: new dimensions are [cols][rows]
                 boolean[][] rotated = new boolean[cols][rows];
                 for (int r = 0; r < rows; r++)
                     for (int c = 0; c < cols; c++)
@@ -96,7 +110,6 @@ public class Patch {
                 return rotated;
             }
             default:
-                //no rotation, return original shape
                 return original;
         }
     }

@@ -1,0 +1,15 @@
+module:be.kdg.programming.integrationproject
+be.kdg.programming.integrationproject
+be.kdg.programming.integrationproject.dao
+be.kdg.programming.integrationproject.model
+be.kdg.programming.integrationproject.model.Enums
+be.kdg.programming.integrationproject.view.game
+be.kdg.programming.integrationproject.view.leaderboard
+be.kdg.programming.integrationproject.view.mainMenu
+be.kdg.programming.integrationproject.view.quiltboard
+be.kdg.programming.integrationproject.view.resultsScreen
+be.kdg.programming.integrationproject.view.rules
+be.kdg.programming.integrationproject.view.settings
+be.kdg.programming.integrationproject.view.startMenu
+be.kdg.programming.integrationproject.view.timeBoard
+be.kdg.programming.integrationproject.view.unfinishedGames
