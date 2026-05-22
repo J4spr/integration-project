@@ -26,6 +26,7 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
         LEFT JOIN "GameTable" g ON p."PlayerID" = g."Player1ID" OR p."PlayerID" = g."Player2ID"
         LEFT JOIN "TurnTable" t ON g."GameID" = t."GameID"
         LEFT JOIN "MoveTable" m ON t."TurnID" = m."TurnID"
+        WHERE p."Username" != 'CPU_Player'
         GROUP BY p."Username"
         ORDER BY wins DESC;
             """;
