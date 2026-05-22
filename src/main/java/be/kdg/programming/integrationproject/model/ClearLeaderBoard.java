@@ -31,10 +31,13 @@ public class ClearLeaderBoard {
      */
     public void executeClear() {
         String scriptPath = "/db.sql";
+        String mockupdataScriptPath = "/mockupData.sql";
 
         try (Connection conn = dbConn.getConnection()) {
             clear(conn, scriptPath);
             System.out.println("Leaderboard cleared successfully.");
+            clear(conn, mockupdataScriptPath);
+            System.out.println("MockupData inserted succesfully");
         } catch (Exception e) {
             System.err.println("Error executing script: " + e.getMessage());
             e.printStackTrace();

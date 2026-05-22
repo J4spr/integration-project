@@ -57,7 +57,6 @@ public class MainMenuPresenter {
 
         mmv.getSettingsButton().setOnAction(event -> {
             new SettingsPresenter(sv, mmv);
-            System.out.println("Settings pressed");
             mmv.getPane().getScene().setRoot(sv.getPane());
         });
 
