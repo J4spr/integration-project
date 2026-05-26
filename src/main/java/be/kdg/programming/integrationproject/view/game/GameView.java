@@ -22,7 +22,7 @@ import javafx.scene.control.ScrollPane;
  * @version 1.0
  */
 public class GameView {
-    private static final int PATCH_STORE_SIZE = 33;
+    private static final int PATCH_STORE_SIZE = 3;
     private static final double PATCH_SLOT_WIDTH = 190;
     private static final double PATCH_SLOT_HEIGHT = 180;
     private static final double BUTTON_WIDTH = 100;
