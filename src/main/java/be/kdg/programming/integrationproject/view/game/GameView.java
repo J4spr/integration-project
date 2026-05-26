@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
+import javafx.scene.control.ScrollPane;
 
 /**
  * Main gameplay interface view wrapper.
@@ -21,9 +22,9 @@ import javafx.util.Duration;
  * @version 1.0
  */
 public class GameView {
-    private static final int PATCH_STORE_SIZE = 3;
-    private static final double PATCH_SLOT_WIDTH = 140;
-    private static final double PATCH_SLOT_HEIGHT = 120;
+    private static final int PATCH_STORE_SIZE = 33;
+    private static final double PATCH_SLOT_WIDTH = 190;
+    private static final double PATCH_SLOT_HEIGHT = 180;
     private static final double BUTTON_WIDTH = 100;
     private static final double BUTTON_HEIGHT = 35;
     private static final double SIDE_PANE_WIDTH = 340;
@@ -112,15 +113,22 @@ public class GameView {
      * Enforces uniform structural size constraints on command button panels.
      */
     private void initButtons() {
-        this.btnPass = new Button("Pass");
-        this.btnRotate = new Button("Rotate");
-        this.btnPause = new Button("Pause");
-        this.btnQuit = new Button("Quit Game");
 
-        for (Button btn : new Button[]{this.btnPass, this.btnRotate, this.btnPause, this.btnQuit}) {
-            btn.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-            btn.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-            btn.setMaxSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        this.btnPass = createStyledButton("Pass");
+        this.btnRotate = createStyledButton("Rotate");
+        this.btnPause = createStyledButton("Pause");
+        this.btnQuit = createStyledButton("Quit");
+
+        for (Button btn : new Button[]{
+                this.btnPass,
+                this.btnRotate,
+                this.btnPause,
+                this.btnQuit
+        }) {
+
+            btn.setPrefSize(130, 42);
+            btn.setMinSize(130, 42);
+            btn.setMaxSize(130, 42);
         }
     }
 
@@ -131,11 +139,21 @@ public class GameView {
         for (int i = 0; i < PATCH_STORE_SIZE; i++) {
             this.patchSlots[i] = new GridPane();
             Label lblSlotNumber = new Label("Patch " + (i + 1));
-            lblSlotNumber.setStyle("-fx-font-size: 11; -fx-font-weight: bold;");
+            lblSlotNumber.setStyle("""
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+""");
 
             this.patchSlotWrappers[i] = new VBox(5, lblSlotNumber, this.patchSlots[i]);
             this.patchSlotWrappers[i].setAlignment(Pos.TOP_CENTER);
-            this.patchSlotWrappers[i].setStyle("-fx-border-color: #aaaaaa; -fx-border-radius: 4; -fx-background-color: #fafafa; -fx-background-radius: 4;");
+            this.patchSlotWrappers[i].setStyle("""
+    -fx-background-color: rgba(0,0,0,0.82);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(255,255,255,0.18);
+    -fx-border-width: 1.5;
+""");
             this.patchSlotWrappers[i].setPadding(new Insets(6));
 
             this.patchSlotWrappers[i].setPrefSize(PATCH_SLOT_WIDTH, PATCH_SLOT_HEIGHT);
@@ -175,21 +193,36 @@ public class GameView {
      * @return a structured layout container holding central UI elements
      */
     private VBox buildCenterPane() {
-        HBox topPatches = new HBox(10, this.patchSlotWrappers[0]);
-        topPatches.setAlignment(Pos.CENTER);
-        topPatches.setMaxHeight(PATCH_SLOT_HEIGHT);
 
-        HBox bottomPatches = new HBox(10, this.patchSlotWrappers[1], this.patchSlotWrappers[2]);
-        bottomPatches.setAlignment(Pos.CENTER);
-        bottomPatches.setMaxHeight(PATCH_SLOT_HEIGHT);
+        HBox patchMarket = new HBox(15);
 
-        HBox controlBar = new HBox(15, this.btnPass, this.btnRotate, this.btnPause, this.btnQuit);
+        for (VBox wrapper : this.patchSlotWrappers) {patchMarket.getChildren().add(wrapper);}
+
+        patchMarket.setAlignment(Pos.CENTER_LEFT);
+        patchMarket.setPadding(new Insets(10));
+
+        ScrollPane patchScroller = new ScrollPane(patchMarket);
+
+        patchScroller.setFitToHeight(true);
+        patchScroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        patchScroller.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        patchScroller.setStyle("""
+        -fx-background: transparent;
+        -fx-background-color: transparent;
+    """);
+
+        HBox controlBar = new HBox(15,
+                this.btnPass,
+                this.btnRotate,
+                this.btnPause,
+                this.btnQuit);
+
         controlBar.setAlignment(Pos.CENTER);
-        controlBar.setPadding(new Insets(10, 0, 0, 0));
-        controlBar.setMinHeight(55);
 
-        VBox centerPane = new VBox(8, topPatches, this.timeboardView.getPane(), bottomPatches, controlBar);
+        VBox centerPane = new VBox(18, patchScroller, this.timeboardView.getPane(), controlBar);
         centerPane.setAlignment(Pos.CENTER);
+
         return centerPane;
     }
 
@@ -298,8 +331,13 @@ public class GameView {
             for (int c = 0; c < shape[r].length; c++) {
                 if (shape[r][c]) {
                     Button cell = new Button();
-                    cell.setPrefSize(18, 18);
-                    cell.setStyle("-fx-background-color: #90caf9; -fx-border-color: #42a5f5;");
+                    cell.setPrefSize(24, 24);
+                    cell.setStyle("""
+    -fx-background-color: #d6ecff;
+    -fx-border-color: white;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+""");
                     cell.setUserData(patchId);
                     slot.add(cell, c, r);
                 }
@@ -307,7 +345,11 @@ public class GameView {
         }
 
         Label lblInfo = new Label("Cost: " + buttonCost + "  Time: " + timeCost + "  Income: " + buttonIncome);
-        lblInfo.setStyle("-fx-font-size: 9;");
+        lblInfo.setStyle("""
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+""");
         slot.add(lblInfo, 0, shape.length, Math.max(shape[0].length, 1), 1);
 
         this.patchSlots[slotIndex] = slot;
@@ -320,10 +362,24 @@ public class GameView {
      * @param slotIndex chosen component sequence target coordinate slot index to highlight
      */
     public void highlightPatchSlot(int slotIndex) {
+
         for (int i = 0; i < PATCH_STORE_SIZE; i++) {
+
             this.patchSlotWrappers[i].setStyle(i == slotIndex
-                    ? "-fx-border-color: #f57c00; -fx-border-width: 2; -fx-border-radius: 4; -fx-background-color: #fff9c4; -fx-background-radius: 4;"
-                    : "-fx-border-color: #aaaaaa; -fx-border-radius: 4; -fx-background-color: #fafafa; -fx-background-radius: 4;");
+                    ? """
+                -fx-background-color: rgba(20,20,20,0.95);
+                -fx-background-radius: 18;
+                -fx-border-radius: 18;
+                -fx-border-color: #ffd54f;
+                -fx-border-width: 3;
+                """
+                    : """
+                -fx-background-color: rgba(0,0,0,0.82);
+                -fx-background-radius: 18;
+                -fx-border-radius: 18;
+                -fx-border-color: rgba(255,255,255,0.18);
+                -fx-border-width: 1.5;
+                """);
         }
     }
 
@@ -338,4 +394,54 @@ public class GameView {
     Button getBtnRotate() { return this.btnRotate; }
     Button getBtnQuit() { return this.btnQuit; }
     Button getBtnPause() { return this.btnPause; }
+
+    private Button createStyledButton(String text) {
+
+        Button button = new Button(text);
+
+        button.setPrefWidth(130);
+        button.setPrefHeight(42);
+
+        button.setStyle("""
+        -fx-background-color: rgba(0,0,0,0.72);
+        -fx-text-fill: white;
+        -fx-font-size: 14px;
+        -fx-font-weight: bold;
+        -fx-background-radius: 14;
+        -fx-border-radius: 14;
+        -fx-border-color: rgba(255,255,255,0.18);
+        -fx-border-width: 1.5;
+        -fx-cursor: hand;
+    """);
+
+        button.setOnMouseEntered(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(25,25,25,0.92);
+                -fx-text-fill: white;
+                -fx-font-size: 14px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: white;
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
+        button.setOnMouseExited(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(0,0,0,0.72);
+                -fx-text-fill: white;
+                -fx-font-size: 14px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: rgba(255,255,255,0.18);
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
+        return button;
+    }
 }

@@ -2,6 +2,8 @@ package be.kdg.programming.integrationproject.model;
 
 import be.kdg.programming.integrationproject.model.Enums.Difficulty;
 import be.kdg.programming.integrationproject.model.Enums.PatchRotation;
+import java.util.ArrayList;
+import java.util.Random;
 
 import java.util.List;
 
@@ -65,19 +67,313 @@ public class CpuPlayer extends Player {
      * @param game active engine context session configuration target
      */
     public void decideTurn(Game game){
-        Move bestMove = findBestMove(game);
 
-        if(bestMove != null){
+        Move selectedMove;
+
+        switch (difficulty) {
+
+            case EASY -> selectedMove = findRandomMove(game);
+
+            case MEDIUM -> selectedMove = findBestMove(game);
+
+            case HARD -> {
+
+                Move blockingMove = findBlockingMove(game);
+
+                if (blockingMove != null) {
+
+                    selectedMove = blockingMove;
+
+                } else {
+
+                    selectedMove = findStrategicMove(game);
+                }
+            }
+
+            default -> selectedMove = findBestMove(game);
+        }
+
+        if(selectedMove != null){
+
             game.buyAndPlacePatch(
-                    bestMove.patchId,
-                    bestMove.row,
-                    bestMove.col,
-                    bestMove.rotation
+                    selectedMove.patchId,
+                    selectedMove.row,
+                    selectedMove.col,
+                    selectedMove.rotation
             );
+
         } else {
+
             game.pass();
         }
     }
+
+    private Move findRandomMove(Game game) {
+
+        List<Move> possibleMoves = new ArrayList<>();
+
+        List<Patch> availablePatches = game.getPatchStack().getAvailablePatches();
+
+        for (Patch patch : availablePatches) {
+
+            if (this.getTotalButtons() < patch.getButtonCost()) continue;
+
+            for (PatchRotation rotation : PatchRotation.values()) {
+
+                patch.setRotation(rotation);
+
+                for (int r = 0; r < Quiltboard.getSize(); r++) {
+
+                    for (int c = 0; c < Quiltboard.getSize(); c++) {
+
+                        if (this.getQuiltBoard().canPlacePatch(patch, r, c)) {
+
+                            possibleMoves.add(
+                                    new Move(
+                                            patch.getPatchID(),
+                                            r,
+                                            c,
+                                            rotation,
+                                            0
+                                    )
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        if (possibleMoves.isEmpty()) {
+            return null;
+        }
+
+        Random random = new Random();
+
+        return possibleMoves.get(
+                random.nextInt(possibleMoves.size())
+        );
+    }
+
+    private Move findBlockingMove(Game game) {
+
+        Player opponent;
+
+        if (game.getPlayer2() == this) {
+
+            opponent = game.getPlayer1();
+
+        } else {
+
+            opponent = game.getPlayer1();
+        }
+
+        int opponentEmptySpaces =
+                opponent.getQuiltBoard().countEmptySpaces();
+
+        if (opponentEmptySpaces > 15) {
+            return null;
+        }
+
+        List<Patch> availablePatches =
+                game.getPatchStack().getAvailablePatches();
+
+        Move bestBlockingMove = null;
+
+        double bestBlockingScore = Double.NEGATIVE_INFINITY;
+
+        for (Patch patch : availablePatches) {
+
+            if (this.getTotalButtons() < patch.getButtonCost()) continue;
+
+            for (PatchRotation rotation : PatchRotation.values()) {
+
+                patch.setRotation(rotation);
+
+                for (int r = 0; r < Quiltboard.getSize(); r++) {
+
+                    for (int c = 0; c < Quiltboard.getSize(); c++) {
+
+                        if (this.getQuiltBoard().canPlacePatch(patch, r, c)) {
+
+                            double blockingScore =
+                                    calculateBlockingScore(
+                                            patch,
+                                            opponent
+                                    );
+
+                            if (blockingScore > bestBlockingScore) {
+
+                                bestBlockingScore = blockingScore;
+
+                                bestBlockingMove = new Move(
+                                        patch.getPatchID(),
+                                        r,
+                                        c,
+                                        rotation,
+                                        blockingScore
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return bestBlockingMove;
+    }
+
+    private double calculateBlockingScore(
+            Patch patch,
+            Player opponent
+    ) {
+
+        double score = 0;
+
+        boolean[][] shape = patch.getRotatedShape();
+
+        int size = 0;
+
+        for (int r = 0; r < shape.length; r++) {
+
+            for (int c = 0; c < shape[r].length; c++) {
+
+                if (shape[r][c]) {
+                    size++;
+                }
+            }
+        }
+
+        score += size * 4;
+
+        score += patch.getButtonIncome() * 3;
+
+        score -= patch.getButtonCost();
+
+        if (opponent.getQuiltBoard().countEmptySpaces() < 10) {
+
+            score += 15;
+        }
+
+        return score;
+    }
+
+    private Move findStrategicMove(Game game) {
+
+        List<Patch> availablePatches =
+                game.getPatchStack().getAvailablePatches();
+
+        Move bestMove = null;
+
+        double bestScore = Double.NEGATIVE_INFINITY;
+
+        for (Patch patch : availablePatches) {
+
+            if (this.getTotalButtons() < patch.getButtonCost()) continue;
+
+            for (PatchRotation rotation : PatchRotation.values()) {
+
+                patch.setRotation(rotation);
+
+                for (int r = 0; r < Quiltboard.getSize(); r++) {
+
+                    for (int c = 0; c < Quiltboard.getSize(); c++) {
+
+                        if (this.getQuiltBoard().canPlacePatch(patch, r, c)) {
+
+                            double score =
+                                    calculateStrategicScore(
+                                            patch,
+                                            r,
+                                            c
+                                    );
+
+                            if (score > bestScore) {
+
+                                bestScore = score;
+
+                                bestMove = new Move(
+                                        patch.getPatchID(),
+                                        r,
+                                        c,
+                                        rotation,
+                                        score
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return bestMove;
+    }
+
+    private double calculateStrategicScore(
+            Patch patch,
+            int row,
+            int col
+    ) {
+
+        double score =
+                calculateMoveScore(
+                        null,
+                        patch,
+                        row,
+                        col
+                );
+
+        boolean[][] shape =
+                patch.getRotatedShape();
+
+        int touchingSides = 0;
+
+        for (int r = 0; r < shape.length; r++) {
+
+            for (int c = 0; c < shape[r].length; c++) {
+
+                if (!shape[r][c]) continue;
+
+                int boardRow = row + r;
+                int boardCol = col + c;
+
+                int[][] directions = {
+                        {-1,0},
+                        {1,0},
+                        {0,-1},
+                        {0,1}
+                };
+
+                for (int[] dir : directions) {
+
+                    int nr = boardRow + dir[0];
+                    int nc = boardCol + dir[1];
+
+                    if (nr >= 0 && nr < 9 &&
+                            nc >= 0 && nc < 9) {
+
+                        if (this.getQuiltBoard()
+                                .getGrid()[nr][nc]) {
+
+                            touchingSides++;
+                        }
+                    }
+                }
+            }
+        }
+
+        score += touchingSides * 1.5;
+
+        int emptySpaces =
+                this.getQuiltBoard().countEmptySpaces();
+
+        if (emptySpaces < 20) {
+
+            score += 10;
+        }
+
+        return score;
+    }
+
 
     /**
      * Scans currently exposed stack structures across all coordinate vectors

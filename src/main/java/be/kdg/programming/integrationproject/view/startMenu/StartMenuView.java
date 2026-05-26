@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
 
 /**
  * Graphical interface wrapper processing initialization data parameters for new matches.
@@ -22,7 +23,7 @@ public class StartMenuView {
 
     /** The root canvas layout panel mapping background imagery and content overlays. */
     private StackPane root;
-
+    private VBox contentBox;
     //player settings
     /** Informative label component pointing to the player identity text fields. */
     private Label lblPlayerName;
@@ -89,13 +90,8 @@ public class StartMenuView {
         cbStartPlayer.getItems().addAll("You", "CPU");
         cbStartPlayer.setValue("You");
 
-        btnStartGame = new Button("Start");
-        btnStartGame.setPrefWidth(100);
-        btnStartGame.setPrefHeight(35);
-
-        btnBack = new Button("Back");
-        btnBack.setPrefWidth(100);
-        btnBack.setPrefHeight(35);
+        btnStartGame = createStyledButton("Start");
+        btnBack = createStyledButton("Back");
     }
 
     /**
@@ -112,6 +108,7 @@ public class StartMenuView {
             ((HBox) row).setAlignment(Pos.CENTER_LEFT);
         }
         TitledPane playerSection = new TitledPane("Player settings", playerFields);
+        styleSection(playerSection);
         playerSection.setCollapsible(false);
 
         //game settings section in a titled box
@@ -123,6 +120,7 @@ public class StartMenuView {
             ((HBox) row).setAlignment(Pos.CENTER_LEFT);
         }
         TitledPane gameSection = new TitledPane("Game settings", gameFields);
+        styleSection(gameSection);
         gameSection.setCollapsible(false);
 
         HBox btnBar = new HBox(10, btnStartGame, btnBack);
@@ -131,11 +129,17 @@ public class StartMenuView {
         VBox.setMargin(btnBar, new Insets(15, 0, 0, 0));
 
         //inner box that holds all content, with a visible border and fixed max width/height
-        VBox contentBox = new VBox(10, playerSection, gameSection, btnBar);
+        contentBox = new VBox(20, playerSection, gameSection, btnBar);
         contentBox.setPadding(new Insets(20));
         contentBox.setMaxWidth(450);
         contentBox.setMaxHeight(350);
-        contentBox.setStyle("-fx-border-color: #aaaaaa; -fx-border-radius: 8; -fx-background-color: white; -fx-background-radius: 8;");
+        contentBox.setStyle("""
+    -fx-background-color: rgba(0,0,0,0.82);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(255,255,255,0.18);
+    -fx-border-width: 1.5;
+""");
 
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
         Image image = new Image(path);
@@ -218,5 +222,125 @@ public class StartMenuView {
      */
     Button getBtnBack() {
         return btnBack;
+    }
+
+    private Button createStyledButton(String text) {
+
+        Button button = new Button(text);
+
+        button.setPrefWidth(180);
+        button.setPrefHeight(45);
+
+        button.setStyle("""
+        -fx-background-color: rgba(0,0,0,0.72);
+        -fx-text-fill: white;
+        -fx-font-size: 15px;
+        -fx-font-weight: bold;
+        -fx-background-radius: 14;
+        -fx-border-radius: 14;
+        -fx-border-color: rgba(255,255,255,0.18);
+        -fx-border-width: 1.5;
+        -fx-cursor: hand;
+    """);
+
+        button.setOnMouseEntered(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(25,25,25,0.92);
+                -fx-text-fill: white;
+                -fx-font-size: 15px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: white;
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
+        button.setOnMouseExited(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(0,0,0,0.72);
+                -fx-text-fill: white;
+                -fx-font-size: 15px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: rgba(255,255,255,0.18);
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
+        return button;
+
+    }
+
+    private void styleSection(TitledPane pane) {
+
+        pane.setStyle("""
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+""");
+
+        pane.lookup(".title");
+        pane.setStyle("""
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+""");
+
+        pane.setCollapsible(false);
+
+        pane.setAnimated(false);
+
+        pane.lookup(".content");
+
+        lblPlayerName.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+        lblTokenColor.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+        lblDifficulty.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+        lblStartPlayer.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        tfPlayerName.setStyle("""
+        -fx-background-color: #2b2b2b;
+        -fx-text-fill: white;
+        -fx-background-radius: 10;
+    """);
+
+        cbTokenColor.setStyle("""
+        -fx-background-color: #2b2b2b;
+        -fx-text-fill: white;
+        -fx-background-radius: 10;
+    """);
+
+        cbDifficulty.setStyle("""
+        -fx-background-color: #2b2b2b;
+        -fx-text-fill: white;
+        -fx-background-radius: 10;
+    """);
+
+        cbStartPlayer.setStyle("""
+        -fx-background-color: #2b2b2b;
+        -fx-text-fill: white;
+        -fx-background-radius: 10;
+    """);
+        pane.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+
+            Region titleRegion = (Region) pane.lookup(".title");
+            if (titleRegion != null) {
+                titleRegion.setStyle("""
+            -fx-background-color: #1f1f1f;
+            -fx-background-radius: 12 12 0 0;
+        """);
+            }
+
+            Region contentRegion = (Region) pane.lookup(".content");
+            if (contentRegion != null) {
+                contentRegion.setStyle("""
+            -fx-background-color: #2b2b2b;
+            -fx-background-radius: 0 0 12 12;
+            -fx-border-color: transparent;
+        """);
+            }
+        });
+
     }
 }

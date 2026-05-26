@@ -25,11 +25,16 @@ public class PatchStack {
      * @return a sub-list containing exactly 3 choice options
      */
     public List<Patch> getAvailablePatches() {
+
         List<Patch> available = new ArrayList<>();
-        for (int i = 1; i <= 3; i++) {
+
+        for (int i = 0; i < patches.size(); i++) {
+
             int index = (neutralTokenPosition + i) % patches.size();
+
             available.add(patches.get(index));
         }
+
         return available;
     }
 

@@ -90,18 +90,19 @@ public class QuiltboardPresenter {
     private void showHoverPreview(int row, int col, boolean isP1) {
         boolean[][] shape;
         Patch previewPatch;
-        Player human = game.getPlayer1();
+        Player currentPlayer = game.getCurrentPlayer();
 
-        if (!game.getLeatherPatchQueue(human).isEmpty()) {
-            previewPatch = game.getLeatherPatchQueue(human).peek();
+        if (!game.getLeatherPatchQueue(currentPlayer).isEmpty()) {
+            previewPatch = game.getLeatherPatchQueue(currentPlayer).peek();
             if (previewPatch == null) return;
             shape = previewPatch.getRotatedShape();
         } else {
             if (gamePresenter.getSelectedPatchId() == -1) return;
             previewPatch = game.getPatchStack().getPatch(gamePresenter.getSelectedPatchId());
             if (previewPatch == null) return;
-            previewPatch.setRotation(gamePresenter.getSelectedRotation());
-            shape = previewPatch.getRotatedShape();
+            shape = previewPatch.getRotatedShapeFor(
+                    gamePresenter.getSelectedRotation()
+            );
         }
 
         boolean canPlace = isP1
@@ -115,7 +116,7 @@ public class QuiltboardPresenter {
                 if (shape[r][c]) {
                     int targetRow = row + r;
                     int targetCol = col + c;
-                    if (targetRow >= 0 && targetRow < 9 && targetCol >= 9 && targetCol < 9) { // structural bounds validation logic
+                    if (targetRow >= 0 && targetRow < 9 && targetCol >= 0 && targetCol < 9) { // structural bounds validation logic
                         String cellStyle = "-fx-background-color: " + previewColor + "; -fx-border-color: #cccccc;";
                         if (isP1) {
                             view.getQuiltboardViewP1().getCells()[targetRow][targetCol].setStyle(cellStyle);

@@ -40,13 +40,20 @@ public class PatchStackPresenter {
         for (int i = 0; i < view.getPatchStoreSize(); i++) {
             int slotIndex = i;
             view.getPatchSlotWrapper(i).setOnMouseClicked(e -> {
+
                 Object userData = view.getPatchSlot(slotIndex).getUserData();
+
                 if (userData != null) {
+
                     int newPatchId = (int) userData;
+
                     if (newPatchId != gamePresenter.getSelectedPatchId()) {
+
                         gamePresenter.setSelectedPatchId(newPatchId);
+
                         gamePresenter.setSelectedRotation(PatchRotation.NOROTATION);
                     }
+
                     initializeView();
                 }
             });
@@ -74,6 +81,11 @@ public class PatchStackPresenter {
         List<Patch> available = game.getPatchStack().getAvailablePatches();
 
         for (int i = 0; i < view.getPatchStoreSize(); i++) {
+
+            if (i >= available.size()) {
+                continue;
+            }
+
             Patch patch = available.get(i);
             boolean[][] shape;
             if (patch.getPatchID() == gamePresenter.getSelectedPatchId()) {
@@ -97,6 +109,9 @@ public class PatchStackPresenter {
                     && (int) view.getPatchSlot(i).getUserData() == gamePresenter.getSelectedPatchId()) {
                 view.highlightPatchSlot(i);
                 foundSelected = true;
+                if (gamePresenter.getSelectedPatchId() == -1) {
+                    view.highlightPatchSlot(-1);
+                }
                 break;
             }
         }

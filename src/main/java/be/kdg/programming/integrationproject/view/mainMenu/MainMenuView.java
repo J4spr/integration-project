@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 /**
@@ -28,6 +29,7 @@ public class MainMenuView {
 
     private StackPane stPane;
     private VBox contentBox;
+    private ImageView titleImage;
 
     /**
      * Initializes structural element nodes and sets up background canvas configurations.
@@ -56,6 +58,12 @@ public class MainMenuView {
         );
 
         stPane.setBackground(new Background(this.background));
+        Image img = new Image(getClass().getResource("/menus/patchwork_title.png").toExternalForm());
+
+        titleImage = new ImageView(img);
+
+        titleImage.setPreserveRatio(true);
+        titleImage.setFitWidth(500);
 
         btnStart = createMenuButton("Start");
         btnRules = createMenuButton("Rules");
@@ -64,7 +72,7 @@ public class MainMenuView {
         btnExit = createMenuButton("Exit to Desktop");
         btnContinue = createMenuButton("Continue Game");
 
-        contentBox = new VBox(15, btnStart, btnContinue, btnRules, btnSettings, btnLeaderBoard, btnExit);
+        contentBox = new VBox(20, btnStart, btnContinue, btnRules, btnSettings, btnLeaderBoard, btnExit);
     }
 
     /**
@@ -81,7 +89,11 @@ public class MainMenuView {
 
         stPane.setAlignment(Pos.CENTER);
         stPane.setPadding(new Insets(-40));
-        stPane.getChildren().setAll(contentBox);
+        VBox mainLayout = new VBox(35, titleImage, contentBox);
+
+        mainLayout.setAlignment(Pos.CENTER);
+
+        stPane.getChildren().setAll(mainLayout);
     }
 
     /**
@@ -91,9 +103,52 @@ public class MainMenuView {
      * @return a button adjusted to system dimensions
      */
     private Button createMenuButton(String text) {
+
         Button button = new Button(text);
-        button.setPrefWidth(150);
-        button.setPrefHeight(35);
+
+        button.setPrefWidth(240);
+        button.setPrefHeight(50);
+
+        button.setStyle("""
+        -fx-background-color: rgba(0,0,0,0.72);
+        -fx-text-fill: white;
+        -fx-font-size: 16px;
+        -fx-font-weight: bold;
+        -fx-background-radius: 14;
+        -fx-border-radius: 14;
+        -fx-border-color: rgba(255,255,255,0.18);
+        -fx-border-width: 1.5;
+        -fx-cursor: hand;
+    """);
+
+        button.setOnMouseEntered(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(25,25,25,0.9);
+                -fx-text-fill: white;
+                -fx-font-size: 16px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: white;
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
+        button.setOnMouseExited(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(0,0,0,0.72);
+                -fx-text-fill: white;
+                -fx-font-size: 16px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: rgba(255,255,255,0.18);
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
         return button;
     }
 

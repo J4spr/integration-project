@@ -22,7 +22,7 @@ public class SettingsView {
     /** Button trigger that tells the view layer to adjust stage scales. */
     private Button fullscreenBtn;
     /** Internal container used for vertical stacking of interactive settings widgets. */
-    private VBox pane;
+    private VBox contentBox;
     /** The asset file used for rendering the background wallpaper. */
     private Image image;
     /** Layout specifications bounding the scale transformations of the background imagery. */
@@ -39,6 +39,7 @@ public class SettingsView {
     private Slider musicSlider;
     /** Accompanying text header describing audio control properties. */
     private Label musicSliderLabel;
+    private Label titleLabel;
 
     /**
      * Initializes a new instance of {@code SettingsView}, setting up the nodes
@@ -68,35 +69,70 @@ public class SettingsView {
         this.sp = new StackPane();
         this.sp.setBackground(new Background(this.backgroundImage));
 
-        this.pane = new VBox();
+        this.contentBox = new VBox();
         this.musicSlider = new Slider(0, 100, 50);
 
         this.musicSliderLabel = new Label("Music controls");
-        this.btnBack = new Button("Go back");
-        this.fullscreenBtn = new Button("Toggle Fullscreen");
-        this.clearLeaderBoardBtn = new Button("Clear leaderboard");
+        this.titleLabel = new Label("Settings");
+        this.btnBack = createStyledButton("Go back");
+        this.fullscreenBtn = createStyledButton("Toggle Fullscreen");
+        this.clearLeaderBoardBtn = createStyledButton("Clear Leaderboard");
 
         sp.setBackground(new Background(backgroundImage));
         btnBack = new Button("Go back");
-        pane.getChildren().add(fullscreenBtn);
-        pane.getChildren().addAll(musicSliderLabel, musicSlider);
-        sp.getChildren().addAll(pane, btnBack);
+        contentBox.getChildren().addAll(
+                titleLabel,
+                fullscreenBtn,
+                musicSliderLabel,
+                musicSlider,
+                clearLeaderBoardBtn,
+                btnBack
+        );
+
+        sp.getChildren().add(contentBox);
     }
 
     /**
      * Assigns layout alignments, sets element margins, and applies default bounds properties.
      */
     private void layoutNodes() {
-        StackPane.setAlignment(btnBack, Pos.TOP_LEFT);
-        pane.setAlignment(Pos.CENTER);
-        btnBack.setStyle("-fx-margin: 10");
-        sp.setPadding(new Insets(15));
-        pane.setPadding(new Insets(20));
-        pane.setSpacing(20);
-        musicSlider.adjustValue(100);
-        this.sp.getChildren().add(this.clearLeaderBoardBtn);
-    }
 
+        sp.setAlignment(Pos.CENTER);
+
+        contentBox.setAlignment(Pos.CENTER);
+
+        contentBox.setSpacing(22);
+
+        contentBox.setPadding(new Insets(35));
+
+        contentBox.setMaxWidth(420);
+
+        contentBox.setStyle("""
+        -fx-background-color: rgba(0,0,0,0.82);
+        -fx-background-radius: 18;
+        -fx-border-radius: 18;
+        -fx-border-color: rgba(255,255,255,0.18);
+        -fx-border-width: 1.5;
+    """);
+
+        titleLabel.setStyle("""
+        -fx-text-fill: white;
+        -fx-font-size: 28px;
+        -fx-font-weight: bold;
+    """);
+
+        musicSliderLabel.setStyle("""
+        -fx-text-fill: white;
+        -fx-font-size: 15px;
+        -fx-font-weight: bold;
+    """);
+
+        musicSlider.setStyle("""
+        -fx-control-inner-background: #2b2b2b;
+    """);
+
+        musicSlider.adjustValue(100);
+    }
     /**
      * Returns the back navigation button.
      *
@@ -149,5 +185,54 @@ public class SettingsView {
      */
     Button getClearLeaderBoardBtn() {
         return this.clearLeaderBoardBtn;
+    }
+    private Button createStyledButton(String text) {
+
+        Button button = new Button(text);
+
+        button.setPrefWidth(220);
+        button.setPrefHeight(48);
+
+        button.setStyle("""
+        -fx-background-color: rgba(0,0,0,0.72);
+        -fx-text-fill: white;
+        -fx-font-size: 15px;
+        -fx-font-weight: bold;
+        -fx-background-radius: 14;
+        -fx-border-radius: 14;
+        -fx-border-color: rgba(255,255,255,0.18);
+        -fx-border-width: 1.5;
+        -fx-cursor: hand;
+    """);
+
+        button.setOnMouseEntered(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(25,25,25,0.92);
+                -fx-text-fill: white;
+                -fx-font-size: 15px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: white;
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
+        button.setOnMouseExited(e ->
+                button.setStyle("""
+                -fx-background-color: rgba(0,0,0,0.72);
+                -fx-text-fill: white;
+                -fx-font-size: 15px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: rgba(255,255,255,0.18);
+                -fx-border-width: 1.5;
+                -fx-cursor: hand;
+            """)
+        );
+
+        return button;
     }
 }
