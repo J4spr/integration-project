@@ -3,42 +3,27 @@ package be.kdg.programming.integrationproject.view.leaderboard;
 import be.kdg.programming.integrationproject.dao.PlayerDao;
 import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.PlayerStats;
+import be.kdg.programming.integrationproject.view.leaderboard.LeaderBoardView;
 import be.kdg.programming.integrationproject.view.mainMenu.MainMenuView;
+import javafx.collections.FXCollections;
 
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 
-/**
- * Controller class responsible for querying metric logs through data layer objects
- * and updating the leaderboard interface.
- *
- * @author Team 4
- * @version 1.0
- */
 public class LeaderBoardPresenter {
     private final LeaderBoardView view;
     private final PlayerDao playerDao;
     private final MainMenuView mmv;
 
-    /**
-     * Instantiates a new Leaderboard presenter controller profile wrapper.
-     *
-     * @param view         target list panel view display framework component layer anchor
-     * @param mainMenuView menu interface state tracker handling navigation
-     */
     public LeaderBoardPresenter(LeaderBoardView view, MainMenuView mainMenuView) {
         this.view = view;
         this.mmv = mainMenuView;
         this.playerDao = new PlayerDao(new DbConnection());
-
         refreshLeaderboard();
         addHandlers();
     }
 
-    /**
-     * Fetches up-to-date performance history profiles from database views
-     * and pushes records directly into active user list frameworks.
-     */
     public void refreshLeaderboard() {
         try {
             List<PlayerStats> stats = playerDao.getDetailedLeaderboard();
@@ -48,10 +33,8 @@ public class LeaderBoardPresenter {
         }
     }
 
-    /**
-     * Binds navigation listeners to returning dashboard button targets.
-     */
     private void addHandlers() {
+        // Terug naar hoofdmenu
         if (view.getBtnBack() != null) {
             view.getBtnBack().setOnAction(event -> {
                 if (view.getBtnBack().getScene() != null) {
@@ -60,5 +43,54 @@ public class LeaderBoardPresenter {
                 }
             });
         }
+
+        // Sorteren op wins (hoog naar laag)
+        view.getBtnSortWins().setOnAction(e -> {
+            List<PlayerStats> sorted = view.getStatsData().stream()
+                    .sorted(Comparator.comparingInt(PlayerStats::getWins).reversed())
+                    .toList();
+            view.setStatsData(sorted);
+            highlightButton(view.getBtnSortWins());
+        });
+
+        // Sorteren op games gespeeld (hoog naar laag)
+        view.getBtnSortGames().setOnAction(e -> {
+            List<PlayerStats> sorted = view.getStatsData().stream()
+                    .sorted(Comparator.comparingInt(PlayerStats::getGamesPlayed).reversed())
+                    .toList();
+            view.setStatsData(sorted);
+            highlightButton(view.getBtnSortGames());
+        });
+
+        // Sorteren op win% (hoog naar laag)
+        view.getBtnSortWinPct().setOnAction(e -> {
+            List<PlayerStats> sorted = view.getStatsData().stream()
+                    .sorted(Comparator.comparingDouble(PlayerStats::getWinPercentage).reversed())
+                    .toList();
+            view.setStatsData(sorted);
+            highlightButton(view.getBtnSortWinPct());
+        });
+
+        // Sorteren op spent (hoog naar laag)
+        view.getBtnSortSpent().setOnAction(e -> {
+            List<PlayerStats> sorted = view.getStatsData().stream()
+                    .sorted(Comparator.comparingInt(PlayerStats::getTotalButtonsSpent).reversed())
+                    .toList();
+            view.setStatsData(sorted);
+            highlightButton(view.getBtnSortSpent());
+        });
+    }
+
+    // Markeer de actieve sorteerknop oranje, reset de rest
+    private void highlightButton(javafx.scene.control.Button active) {
+        String defaultStyle = "-fx-background-color: #e0e0e0; -fx-border-color: #aaaaaa; -fx-border-radius: 4; -fx-background-radius: 4;";
+        String activeStyle  = "-fx-background-color: #f57c00; -fx-text-fill: white; -fx-border-color: #e65100; -fx-border-radius: 4; -fx-background-radius: 4;";
+
+        view.getBtnSortWins().setStyle(defaultStyle);
+        view.getBtnSortGames().setStyle(defaultStyle);
+        view.getBtnSortWinPct().setStyle(defaultStyle);
+        view.getBtnSortSpent().setStyle(defaultStyle);
+
+        active.setStyle(activeStyle);
     }
 }
