@@ -28,7 +28,7 @@ public class PatchStack {
 
         List<Patch> available = new ArrayList<>();
 
-        for (int i = 0; i < patches.size(); i++) {
+        for (int i = 0; i < Math.min(patches.size(), 3); i++) {
 
             int index = (neutralTokenPosition + i) % patches.size();
 
