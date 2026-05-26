@@ -2,20 +2,36 @@ package be.kdg.programming.integrationproject.model;
 
 import be.kdg.programming.integrationproject.model.Enums.TokenColor;
 
+/**
+ * Abstract base class representing a generic participant in the game.
+ * Maintains core state attributes including unique tracking IDs, track progress,
+ * button bank balances, button income rates, token colors, and the player's personal grid board.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public abstract class Player {
+    /** The unique identification number assigned to this player by the persistence layer. */
     private int playerId;
+    /** The linear tracking position index of the player's token on the timeboard. */
     private int position;
+    /** The current spendable button currency bank balance of the player. */
     private int totalButtons;
+    /** The aggregate button income received whenever a button event position is crossed. */
     private int totalButtonIncome;
+    /** The personal matrix tile grid board owned by the player. */
     private Quiltboard quiltBoard;
+    /** The assigned visual token color used to identify the player on UI components. */
     private TokenColor color;
 
-    //constructor
+    /**
+     * Base constructor initializing an independent, empty structural {@link Quiltboard}
+     * instance for the player.
+     */
     public Player() {
         this.quiltBoard = new Quiltboard();
     }
 
-    //getters & setters
     public int getPlayerId() {
         return playerId;
     }
@@ -28,6 +44,11 @@ public abstract class Player {
         return quiltBoard;
     }
 
+    /**
+     * Abstract position mutation hook implemented by subclasses to handle timeline movement transformations.
+     *
+     * @param steps the count of spaces or indices to advance forward along the board path
+     */
     abstract void updatePosition(int steps);
 
     public int getPosition() {

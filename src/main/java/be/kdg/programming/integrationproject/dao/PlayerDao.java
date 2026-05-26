@@ -10,11 +10,32 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object responsible for querying information related to application
+ * participants, constructing detailed leaderboards, and counting active users.
+ *
+ * @author Team 4
+ * @version 1.0
+ */
 public class PlayerDao extends AbstractDao implements Dao<Player> {
+
+    /**
+     * Initializes a new PlayerDao instance.
+     *
+     * @param dbConnection the database connection manager
+     */
     public PlayerDao(DbConnection dbConnection) {
         super(dbConnection);
     }
 
+    /**
+     * Aggregates database records to build a comprehensive analytics leaderboard matrix tracking
+     * overall win counts, total matches played, overall button points scored, and calculated
+     * win percentage rates.
+     *
+     * @return list containing computed leaderboard statistical data containers for every matching user profile
+     * @throws SQLException if a multi-table database aggregation join routine breaks
+     */
     public List<PlayerStats> getDetailedLeaderboard() throws SQLException {
         List<PlayerStats> statsList = new ArrayList<>();
         String sql = """
@@ -41,21 +62,18 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                // 1. Get the raw values from the ResultSet columns
                 String user = rs.getString("Username");
                 int games = rs.getInt("gamesPlayed");
                 int wins = rs.getInt("wins");
                 int buttons = rs.getInt("totalButtons");
 
-                // 2. Calculate the percentage in Java (since it's not in the SQL SELECT)
                 double winPerc = (games == 0) ? 0 : (wins * 100.0 / games);
 
-                // 3. Add to the list using your calculated 'winPerc' variable
                 statsList.add(new PlayerStats(
                         user,
                         wins,
                         games,
-                        winPerc,  // Use the variable, NOT rs.getDouble("winPercentage")
+                        winPerc,
                         buttons
                 ));
             }
@@ -63,6 +81,12 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
         return statsList;
     }
 
+    /**
+     * Calculates the total number of distinct tracked profile names logged inside the database.
+     *
+     * @return total unique players found
+     * @throws SQLException if connection sessions error out
+     */
     public int getActivePlayerCount() throws SQLException {
         try (Connection c = getConnection();
              Statement st = c.createStatement();
@@ -80,9 +104,17 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
     public List<Player> findAll() throws SQLException {
         return List.of();
     }
+
+    /**
+     * Inserts a user tracking trace element if not already present. Checks credentials
+     * by username. If the record already exists, it maps the matching ID configuration back
+     * onto the player variable directly without duplicating rows.
+     *
+     * @param player the player model component object trace configuration to serialize
+     * @throws SQLException if transaction insert validation constraints fail
+     */
     @Override
     public void insert(Player player) throws SQLException {
-
         String username;
 
         if(player instanceof HumanPlayer human){
@@ -91,23 +123,20 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
             username = "CPU_Player";
         }
 
-        String checkSql =
-                "SELECT \"PlayerID\" FROM \"PlayerTable\" WHERE \"Username\"=?";
+        String checkSql = "SELECT \"PlayerID\" FROM \"PlayerTable\" WHERE \"Username\"=?";
 
         try(PreparedStatement check= getConnection().prepareStatement(checkSql)){
-
             check.setString(1,username);
-
             ResultSet rs=check.executeQuery();
 
-            if(rs.next()){player.setPlayerId(rs.getInt("PlayerID"));
+            if(rs.next()){
+                player.setPlayerId(rs.getInt("PlayerID"));
                 return;
             }
         }
 
-        String email= username.toLowerCase().replace(" ","") +"@game.com";
-
-        String sql="""
+        String email = username.toLowerCase().replace(" ","") +"@game.com";
+        String sql = """
     INSERT INTO "PlayerTable"
     ("Username","Email")
     VALUES (?,?)
@@ -115,36 +144,29 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
     """;
 
         try(PreparedStatement st= getConnection().prepareStatement(sql)){
-
             st.setString(1,username);
             st.setString(2,email);
-
             ResultSet rs=st.executeQuery();
 
-            if(rs.next()){player.setPlayerId(rs.getInt(1));}
+            if(rs.next()){
+                player.setPlayerId(rs.getInt(1));
+            }
         }
     }
 
     @Override
-    public void update(Player player) throws SQLException {
-
-    }
+    public void update(Player player) throws SQLException {}
 
     @Override
-    public void delete(int id) throws SQLException {
-
-    }
+    public void delete(int id) throws SQLException {}
 
     @Override
     protected Connection getConnection() throws SQLException {
         return super.getConnection();
     }
 
-    public void getGlobalStats() {
-
-    }
-
-
-
-
+    /**
+     * Placeholder structural trace hook intended for capturing broad international game statistics.
+     */
+    public void getGlobalStats() {}
 }
