@@ -1,5 +1,7 @@
 package be.kdg.programming.integrationproject.view.resultsScreen;
 
+import be.kdg.programming.integrationproject.dao.GameDao;
+import be.kdg.programming.integrationproject.model.DbConnection;
 import be.kdg.programming.integrationproject.model.Game;
 import be.kdg.programming.integrationproject.model.HumanPlayer;
 import be.kdg.programming.integrationproject.model.Player;
@@ -59,6 +61,17 @@ public class ResultsScreenPresenter {
                     : "CPU";
         }
         view.setResults(winnerName, scoreP1, nameP1, scoreP2, nameP2, specialTileOwner);
+
+        // Sla winnaar op in de database
+        try {
+            System.out.println("GameId: " + game.getGameId());
+            System.out.println("WinnerId: " + winner.getPlayerId());
+            GameDao dao = new GameDao(new DbConnection());
+            dao.saveGameResult(game.getGameId(), winner.getPlayerId());
+        } catch (Exception e) {
+            System.err.println("Fout bij opslaan winnaar: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -69,4 +82,5 @@ public class ResultsScreenPresenter {
                 gameRoot.getScene().setRoot(mainMenuView.getPane())
         );
     }
+
 }

@@ -42,13 +42,19 @@ public class PlayerDao extends AbstractDao implements Dao<Player> {
         SELECT p."Username",
             COUNT(DISTINCT g."GameID") AS gamesPlayed,
             COUNT(DISTINCT CASE WHEN g."WinnerID" = p."PlayerID" THEN g."GameID" END) AS wins,
-            SUM(COALESCE(m."ButtonsP1", 0) + COALESCE(m."ButtonsP2", 0)) AS totalButtons
+            COALESCE((
+                SELECT SUM(pt."ButtonCost")
+                FROM "MoveTable" m
+                JOIN "TurnTable" t ON m."TurnID" = t."TurnID"
+                JOIN "GameTable" g2 ON t."GameID" = g2."GameID"
+                JOIN "PatchTable" pt ON m."PatchID" = pt."PatchID"
+                WHERE m."PlayerID" = p."PlayerID"
+                ), 0) AS totalButtons
         FROM "PlayerTable" p
-        LEFT JOIN "GameTable" g ON p."PlayerID" = g."Player1ID" OR p."PlayerID" = g."Player2ID"
-        LEFT JOIN "TurnTable" t ON g."GameID" = t."GameID"
-        LEFT JOIN "MoveTable" m ON t."TurnID" = m."TurnID"
-        GROUP BY p."Username"
-        ORDER BY wins DESC;
+        LEFT JOIN "GameTable" g
+            ON p."PlayerID" = g."Player1ID" OR p."PlayerID" = g."Player2ID"
+        GROUP BY p."PlayerID", p."Username"
+        ORDER BY wins DESC, gamesPlayed ASC;
             """;
 
         try (Connection c = getConnection();

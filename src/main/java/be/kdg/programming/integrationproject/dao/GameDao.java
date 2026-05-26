@@ -356,4 +356,21 @@ public class GameDao extends AbstractDao implements Dao<Game> {
 
         c.close();
     }
+    public void saveGameResult(int gameId, int winnerId) throws SQLException {
+        String sql = """
+        UPDATE "GameTable"
+        SET "WinnerID" = ?,
+            "State"    = 'Finished',
+            "GameEndTime" = CURRENT_TIMESTAMP
+        WHERE "GameID" = ?
+    """;
+        try (Connection c = getConnection();
+             PreparedStatement st = c.prepareStatement(sql)) {
+            st.setInt(1, winnerId);
+            st.setInt(2, gameId);
+            int rows = st.executeUpdate();
+            System.out.println("saveGameResult: updated " + rows + " rows for gameId=" + gameId + " winnerId=" + winnerId);
+        }
+    }
 }
+
