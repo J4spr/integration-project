@@ -24,7 +24,7 @@ public class Headless {
         // Time formattings matching PostgreSQL expectations
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-        try (FileWriter sqlWriter = new FileWriter(outputSqlFile, true)) {
+        try (FileWriter sqlWriter = new FileWriter(outputSqlFile, false)) {
             sqlWriter.append("\n\n-- =============================================\n");
             sqlWriter.append("-- GENERATED HEADLESS GAME SIMULATION INSERTS   \n");
             sqlWriter.append("-- DIFFICULTY SPECIFICATION: MEDIUM             \n");
@@ -99,6 +99,7 @@ public class Headless {
 
                     int rotationDegrees = (random.nextBoolean()) ? 0 : 90;
 
+                    // FIX: This fully maps the unified 'activePlayerSubquery' string into your SQL placeholder (%s)
                     sqlWriter.append(String.format(
                             "INSERT INTO \"MoveTable\" (\"TurnID\", \"PlayerID\", \"PatchID\", \"MoveStartTime\", \"MoveEndTime\", \"SpecialPatchesCollected\", \"SpacesMoved\", \"Position\", \"RotationDegrees\", \"ButtonsP1\", \"ButtonsP2\") " +
                                     "VALUES (%d, %s, %s, '%s', '%s', %d, %d, %d, %d, %d, %d);\n",
