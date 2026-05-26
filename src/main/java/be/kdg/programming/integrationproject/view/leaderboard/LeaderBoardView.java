@@ -1,49 +1,40 @@
-package be.kdg.programming.integrationproject.view.leaderboard;
+package be.kdg.programming.integrationproject.view;
 
 import be.kdg.programming.integrationproject.model.PlayerStats;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-
 import java.util.List;
 
-/**
- * Custom layout component rendering recorded metrics logs using cell list components
- * formatted into clear, structured text tables.
- *
- * @author Team 4
- * @version 1.0
- */
 public class LeaderBoardView extends VBox {
     private ListView<PlayerStats> listView;
     private StackPane pane;
     private Button btnBack;
+    private Button btnSortWins;
+    private Button btnSortGames;
+    private Button btnSortWinPct;
+    private Button btnSortSpent;
 
     private Image bgImage;
     private BackgroundSize bgSize;
     private BackgroundImage background;
 
-    /**
-     * Initializes structural element nodes and configures layout bounds.
-     */
     public LeaderBoardView() {
         initialiseNodes();
         layoutNodes();
     }
 
-    /**
-     * Builds canvas layouts, loads backgrounds, and initializes buttons.
-     */
     private void initialiseNodes() {
         this.pane = new StackPane();
         String path = getClass().getResource("/menus/BackGrnd.png").toExternalForm();
         this.bgImage = new Image(path);
         this.bgSize = new BackgroundSize(150, 150, false, false, false, false);
-
         this.background = new BackgroundImage(
                 this.bgImage,
                 BackgroundRepeat.REPEAT,
@@ -53,15 +44,21 @@ public class LeaderBoardView extends VBox {
         );
         this.pane.setBackground(new Background(this.background));
 
-        this.btnBack = new Button("Back");
+        this.btnBack      = new Button("Back");
+        this.btnSortWins  = new Button("Sort: Wins");
+        this.btnSortGames = new Button("Sort: Games Played");
+        this.btnSortWinPct = new Button("Sort: Win%");
+        this.btnSortSpent = new Button("Sort: Spent");
+
         this.btnBack.setPrefWidth(80);
+        for (Button btn : new Button[]{btnSortWins, btnSortGames, btnSortWinPct, btnSortSpent}) {
+            btn.setPrefWidth(140);
+            btn.setStyle("-fx-background-color: #e0e0e0; -fx-border-color: #aaaaaa; -fx-border-radius: 4; -fx-background-radius: 4;");
+        }
+
         this.listView = new ListView<>();
     }
 
-    /**
-     * Binds custom string format layout templates to the list cell generation
-     * framework to produce clean column alignments.
-     */
     private void layoutNodes() {
         listView.setCellFactory(lv -> new ListCell<PlayerStats>() {
             @Override
@@ -77,40 +74,44 @@ public class LeaderBoardView extends VBox {
             }
         });
 
-        HBox buttonContainer = new HBox(btnBack);
-        buttonContainer.setPadding(new Insets(15));
+        // Top bar: Back button links, sort buttons rechts
+        HBox topBar = new HBox(10, btnBack);
+        topBar.setAlignment(Pos.CENTER_LEFT);
+        topBar.setPadding(new Insets(15));
+
+        VBox sortButtons = new VBox(8, btnSortWins, btnSortGames, btnSortWinPct, btnSortSpent);
+        sortButtons.setAlignment(Pos.TOP_RIGHT);
+        sortButtons.setPadding(new Insets(10));
 
         BorderPane mainLayout = new BorderPane();
-        mainLayout.setTop(buttonContainer);
+        mainLayout.setTop(topBar);
         mainLayout.setCenter(listView);
+        mainLayout.setRight(sortButtons);
 
-        BorderPane.setMargin(listView, new Insets(0, 20, 20, 20));
+        BorderPane.setMargin(listView, new Insets(0, 10, 20, 20));
+        BorderPane.setMargin(sortButtons, new Insets(0, 10, 0, 0));
 
         this.pane.getChildren().setAll(mainLayout);
         this.getChildren().setAll(pane);
-
         VBox.setVgrow(pane, Priority.ALWAYS);
     }
 
-    /**
-     * Formats database configuration errors out into systemic standard error streams.
-     *
-     * @param message logging track error information summary text line
-     */
-    void showError(String message) {
+    public void showError(String message) {
         System.err.println(message);
     }
 
-    ListView<PlayerStats> getTable() { return this.listView; }
-    public StackPane getPane() { return this.pane; }
-    Button getBtnBack() { return btnBack; }
-
-    /**
-     * Converts raw list collections into observable arrays to refresh visible items.
-     *
-     * @param stats collection list of database statistical metrics log data objects
-     */
-    void setStatsData(List<PlayerStats> stats) {
+    public void setStatsData(List<PlayerStats> stats) {
         listView.setItems(FXCollections.observableArrayList(stats));
     }
+
+    public ObservableList<PlayerStats> getStatsData() {
+        return listView.getItems();
+    }
+
+    public StackPane getPane()         { return this.pane; }
+    public Button getBtnBack()         { return btnBack; }
+    public Button getBtnSortWins()     { return btnSortWins; }
+    public Button getBtnSortGames()    { return btnSortGames; }
+    public Button getBtnSortWinPct()   { return btnSortWinPct; }
+    public Button getBtnSortSpent()    { return btnSortSpent; }
 }
